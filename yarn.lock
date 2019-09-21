@@ -2594,6 +2594,14 @@ expo-asset@^6.0.0, expo-asset@~6.0.0:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-camera@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-7.0.0.tgz#3beee6c88df4d87dc3d0daefc8a9b3f5864a63bd"
+  integrity sha512-OukSvj9dzrTdADDfMZQlxfCyLjwg/nyTm2u9NDFQh6poEmu+IE2gn5ICnc7pmqR+ctAmU312KiRcLoBe/6sfIw==
+  dependencies:
+    lodash "^4.6.0"
+    prop-types "^15.6.0"
+
 expo-constants@6.0.0, expo-constants@~6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-6.0.0.tgz#ff4598985ba006e24949be3f05be7429e5bedacf"
@@ -5647,6 +5655,12 @@ react-native-line-chart@^1.0.4:
   resolved "https://registry.yarnpkg.com/react-native-line-chart/-/react-native-line-chart-1.0.4.tgz#4dbb8ea0370dcf959d5b6e84389b85e3ed84bbb9"
   integrity sha512-6DBKRAcDwo0REWweUs7+OP/7kN9nVb3NuqnCvQZhu/OJSGMWCT3yX2R70qKYIDu+/VdUuyxaRN2/kN8kX/tRgQ==
 
+react-native-onboarding-swiper@Rakeda/react-native-onboarding-swiper:
+  version "1.1.0"
+  resolved "https://codeload.github.com/Rakeda/react-native-onboarding-swiper/tar.gz/556d39e0c94c4cf6f2228e940c29c650bd858bd0"
+  dependencies:
+    tinycolor2 "^1.4.1"
+
 react-native-platform-touchable@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/react-native-platform-touchable/-/react-native-platform-touchable-1.1.1.tgz#fde4acc65eea585d28b164d0c3716a42129a68e4"
@@ -5688,6 +5702,13 @@ react-native-svg-charts@^5.3.0:
     d3-scale "^1.0.6"
     d3-shape "^1.0.6"
     prop-types "^15.6.0"
+
+react-native-svg-uri@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-svg-uri/-/react-native-svg-uri-1.2.3.tgz#2f67f30564068a0fee68a751845332a5185a1aab"
+  integrity sha1-L2fzBWQGig/uaKdRhFMypRhaGqs=
+  dependencies:
+    xmldom "^0.1.22"
 
 react-native-svg@^9.9.4:
   version "9.9.4"
@@ -6715,6 +6736,11 @@ tiny-warning@^1.0.0:
   resolved "https://registry.yarnpkg.com/tiny-warning/-/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
   integrity sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==
 
+tinycolor2@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
+  integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -7206,7 +7232,7 @@ xmldoc@^0.4.0:
   dependencies:
     sax "~1.1.1"
 
-xmldom@0.1.x:
+xmldom@0.1.x, xmldom@^0.1.22:
   version "0.1.27"
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.27.tgz#d501f97b3bdb403af8ef9ecc20573187aadac0e9"
   integrity sha1-1QH5ezvbQDr4757MIFcxh6rawOk=

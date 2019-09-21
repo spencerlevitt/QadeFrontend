@@ -32,9 +32,7 @@ export default function App(props) {
     }else{
       return (
         <View style={styles.container}>
-          <TouchableOpacity style={{marginTop: 60}} onPress={()=>checkOnboard()}>
-            <Text>Hello</Text>
-          </TouchableOpacity>
+          {/* Implmentation onboard if before login */}
         </View>
       );
     }
