@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  Image,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -52,7 +53,7 @@ export default class HomeScreen extends React.Component {
 
           <View style={styles.welcomeButtonContainer}>
             <View style={styles.alignCenter}>
-              <TouchableOpacity onPress={this.changeLayout} style={styles.welcomeButton}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate("Transfer")} style={styles.welcomeButton}>
                 <EvilIcons name={'credit-card'} size={35} color={'#7ed3ff'} />
               </TouchableOpacity>
               <Text style={styles.welcomeButtonText}>Transfer</Text>
@@ -64,8 +65,8 @@ export default class HomeScreen extends React.Component {
               <Text style={styles.welcomeButtonText}>Submit</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center' }}>
-              <TouchableOpacity onPress={this.changeLayout} style={styles.welcomeButton}>
-                <FontAwesome name={'hand-rock-o'} size={25} color={'#7ed3ff'} />
+              <TouchableOpacity onPress={() => this.props.navigation.navigate("Challenge")} style={styles.welcomeButton}>
+                <Image style={{height: 25, width: 25}} tintColor="#7ed3ff" source={require('../assets/images/gloves.png')} />
               </TouchableOpacity>
               <Text style={styles.welcomeButtonText}>Challenge</Text>
             </View>

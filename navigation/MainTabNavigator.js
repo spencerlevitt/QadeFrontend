@@ -19,6 +19,9 @@ import ScoreConfirm from '../screens/game/ScoreConfirm'
 import ScoreA from '../screens/game/ScoreA'
 import ScoreB from '../screens/game/ScoreB'
 
+import Challenge from '../screens/challenge'
+import Transfer from '../screens/transfer'
+
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -28,11 +31,14 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
+    Challenge,
+    Transfer
   },
   config
 );
 
-HomeStack.navigationOptions = {
+HomeStack.navigationOptions = ({ navigation }) => ({
+  tabBarVisible: navigation.state.index < 1,
   tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -40,7 +46,7 @@ HomeStack.navigationOptions = {
       name={'logo-game-controller-b'}
     />
   ),
-};
+});
 
 HomeStack.path = '';
 
@@ -78,12 +84,13 @@ const LinksStack = createStackNavigator(
   config
 );
 
-LinksStack.navigationOptions = {
+LinksStack.navigationOptions = ({ navigation }) => ({
+  tabBarVisible: navigation.state.index < 1,
   tabBarLabel: 'Links',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-wifi' : 'md-wifi'} />
   ),
-};
+});
 
 LinksStack.path = '';
 
@@ -94,12 +101,13 @@ const SettingsStack = createStackNavigator(
   config
 );
 
-SettingsStack.navigationOptions = {
+SettingsStack.navigationOptions = ({ navigation }) => ({
+  tabBarVisible: navigation.state.index < 1,
   tabBarLabel: 'Settings',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-person' : 'md-person'} />
   ),
-};
+});
 
 SettingsStack.path = '';
 
