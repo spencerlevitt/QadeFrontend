@@ -4,9 +4,9 @@ import { createStackNavigator, createBottomTabNavigator, createAppContainer } fr
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import Game from '../screens/game';
+import Recent from '../screens/Recent';
+import Profile from '../screens/Profile';
+import Game from '../screens/Game';
 
 import NavigationService from './NavigationService'
 
@@ -21,6 +21,9 @@ import ScoreB from '../screens/game/ScoreB'
 
 import Challenge from '../screens/challenge'
 import Transfer from '../screens/transfer'
+
+import Requests from '../screens/profile/index'
+import Matches from '../screens/profile/matches'
 
 
 const config = Platform.select({
@@ -77,14 +80,14 @@ GameStack.navigationOptions = ({ navigation }) => ({
 GameStack.path = '';
 
 
-const LinksStack = createStackNavigator(
+const RecentStack = createStackNavigator(
   {
-    Links: LinksScreen,
+    Recent,
   },
   config
 );
 
-LinksStack.navigationOptions = ({ navigation }) => ({
+RecentStack.navigationOptions = ({ navigation }) => ({
   tabBarVisible: navigation.state.index < 1,
   tabBarLabel: 'Links',
   tabBarIcon: ({ focused }) => (
@@ -92,16 +95,18 @@ LinksStack.navigationOptions = ({ navigation }) => ({
   ),
 });
 
-LinksStack.path = '';
+RecentStack.path = '';
 
-const SettingsStack = createStackNavigator(
+const ProfileStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Profile,
+    Requests,
+    Matches
   },
   config
 );
 
-SettingsStack.navigationOptions = ({ navigation }) => ({
+ProfileStack.navigationOptions = ({ navigation }) => ({
   tabBarVisible: navigation.state.index < 1,
   tabBarLabel: 'Settings',
   tabBarIcon: ({ focused }) => (
@@ -109,14 +114,15 @@ SettingsStack.navigationOptions = ({ navigation }) => ({
   ),
 });
 
-SettingsStack.path = '';
+ProfileStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
   GameStack,
-  LinksStack,
-  SettingsStack,
+  RecentStack,
+  ProfileStack,
 }, {
+  initialRouteName: 'ProfileStack',
   tabBarOptions: {
     showLabel: false,
   }

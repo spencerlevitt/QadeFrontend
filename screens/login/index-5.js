@@ -30,7 +30,7 @@ export default class Login extends React.Component {
 
 
                     <View style={{ flex: 0.3, width: '100%', justifyContent: 'center' }}>
-                        <TouchableOpacity style={{ height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}  onPress={() => this.props.navigation.navigate("Main")}>
+                        <TouchableOpacity style={{ height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}  onPress={() => this.props.navigation.navigate("Login")}>
                             <Text style={{ color: '#888', fontSize: 10 }}>If you still didn't receive an email <Text style={{color: '#3A8FFF'}}>Contact Us</Text></Text>
                         </TouchableOpacity>
                     </View>
