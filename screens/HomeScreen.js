@@ -13,6 +13,12 @@ import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIc
 
 import HomeTabs from '../components/home/homeTabs'
 import GameTabs from '../components/home/gameTabs'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as userActions from '../redux/actions/userActions';
+import * as statsActions from '../redux/actions/statsActions';
+import * as standingsActions from '../redux/actions/standingsActions';
 
 /*
 DEV
@@ -32,7 +38,29 @@ DEV
 
 */
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
+
+  componentDidMount() {
+    const { user, stats, standings, actions } = this.props;
+    
+    if (!user.balance) {
+      actions.loadUser().catch(error => {
+        alert('Loading user failed' + error);
+      });
+    }
+
+    if (stats.length === 0) {
+      actions.loadStats().catch(error => {
+        alert('Loading stats failed' + error);
+      });
+    }
+
+    if (stats.length === 0) {
+      actions.loadStandings().catch(error => {
+        alert('Loading standings failed' + error);
+      });
+    }
+  }
 
   render() {
     return (
@@ -46,7 +74,7 @@ export default class HomeScreen extends React.Component {
               Current Balance
             </Text>
             <Text style={styles.welcomeBalance}>
-              $32.55
+            ${this.props.loading ? '0.00' : this.props.user.balance}
             </Text>
           </View>
 
@@ -146,6 +174,35 @@ export default class HomeScreen extends React.Component {
 HomeScreen.navigationOptions = {
   header: null,
 };
+
+HomeScreen.propTypes = {
+  actions: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  stats: PropTypes.object.isRequired,
+  standings: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
+}
+
+function mapStateToProps(state) {
+  return {
+    user: state.user,
+    stats: state.stats,
+    standings: state.standings,
+    loading: state.apiCallsInProgress > 0
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      loadUser: bindActionCreators(userActions.loadUser, dispatch),
+      loadStats: bindActionCreators(statsActions.loadStats, dispatch),
+      loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {

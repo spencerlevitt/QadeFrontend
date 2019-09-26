@@ -116,7 +116,7 @@ ProfileStack.navigationOptions = ({ navigation }) => ({
 
 ProfileStack.path = '';
 
-const tabNavigator = createBottomTabNavigator({
+export const tabNavigator = createBottomTabNavigator({
   HomeStack,
   GameStack,
   RecentStack,

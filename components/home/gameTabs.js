@@ -169,7 +169,8 @@ export default class GameTabs extends React.Component {
                     return (
                         <TouchableOpacity
                             style={styles.tabItem}
-                            onPress={() => this.setState({ index: i })}>
+                            onPress={() => this.setState({ index: i })}
+                            key={i}>
                             <Animated.Text style={{ color, fontSize: 12, fontWeight: 'bold' }}>{route.title}</Animated.Text>
                         </TouchableOpacity>
                     );

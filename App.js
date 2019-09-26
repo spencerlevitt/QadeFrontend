@@ -4,11 +4,13 @@ import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View, Text, AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
 import AppNavigator from './navigation/AppNavigator';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import configureStore from './redux/configureStore.dev';
+import { Provider as ReduxProvider } from 'react-redux';
 
-let onboard = true
+let onboard = true;
+const store = configureStore();
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -24,10 +26,12 @@ export default function App(props) {
   } else {
     if(onboard != false){
       return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
-        </View>
+        <ReduxProvider store={store}>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            <AppNavigator />
+          </View>
+        </ReduxProvider>
       );
     }else{
       return (
