@@ -23,7 +23,7 @@ export default class Profile extends React.Component {
             <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 60, width: 60, borderRadius: 5 }} />
           </View>
           <View style={{ flex: 1 }}>
-            <TouchableOpacity style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-end', padding: 20 }}>
+            <TouchableOpacity style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-end', padding: 20 }} onPress={() => this.props.navigation.navigate("Settings")}>
               <EvilIcons name={'gear'} size={35} color={'#7697E8'} />
             </TouchableOpacity>
           </View>

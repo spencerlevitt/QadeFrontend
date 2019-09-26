@@ -24,7 +24,13 @@ import Transfer from '../screens/transfer'
 
 import Requests from '../screens/profile/index'
 import Matches from '../screens/profile/matches'
-
+import Match from '../screens/profile/match'
+import Settings from '../screens/profile/settings'
+import EditProfile from '../screens/profile/editProfile'
+import Support from '../screens/profile/support'
+import ToS from '../screens/profile/tos'
+import Privacy from '../screens/profile/privacy'
+import GameRules from '../screens/profile/rules'
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -101,7 +107,14 @@ const ProfileStack = createStackNavigator(
   {
     Profile,
     Requests,
-    Matches
+    Matches,
+    Match,
+    Settings,
+    EditProfile,
+    Support,
+    ToS,
+    Privacy,
+    GameRules
   },
   config
 );
