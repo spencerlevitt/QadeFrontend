@@ -43,23 +43,23 @@ class HomeScreen extends React.Component {
   componentDidMount() {
     const { user, stats, standings, actions } = this.props;
     
-    if (!user.balance) {
+    if (!user.profile) {
       actions.loadUser().catch(error => {
         alert('Loading user failed' + error);
       });
     }
 
-    if (stats.length === 0) {
-      actions.loadStats().catch(error => {
-        alert('Loading stats failed' + error);
-      });
-    }
+    // if (stats.length === 0) {
+    //   actions.loadStats().catch(error => {
+    //     alert('Loading stats failed' + error);
+    //   });
+    // }
 
-    if (stats.length === 0) {
-      actions.loadStandings().catch(error => {
-        alert('Loading standings failed' + error);
-      });
-    }
+    // if (standings.length === 0) {
+    //   actions.loadStandings().catch(error => {
+    //     alert('Loading standings failed' + error);
+    //   });
+    // }
   }
 
   render() {
@@ -74,7 +74,7 @@ class HomeScreen extends React.Component {
               Current Balance
             </Text>
             <Text style={styles.welcomeBalance}>
-            ${this.props.loading ? '0.00' : this.props.user.balance}
+            ${this.props.loading ? '0' : this.props.user.profile?.balance}
             </Text>
           </View>
 
@@ -124,17 +124,23 @@ class HomeScreen extends React.Component {
 
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>22-10</Text>
+                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
+                      {this.props.loading ? '0-0' : `${this.props.user.statistics?.won_games}-${this.props.user.statistics?.lost_games}`}
+                    </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>68.8%</Text>
+                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
+                      {this.props.loading ? '0' : this.props.user.statistics?.win_percent}%
+                    </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win %</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>$24.33</Text>
+                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
+                      ${this.props.loading ? '0' : this.props.user.statistics?.net_gain}
+                    </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Net Gain</Text>
                   </View>
 
@@ -178,16 +184,17 @@ HomeScreen.navigationOptions = {
 HomeScreen.propTypes = {
   actions: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
-  stats: PropTypes.object.isRequired,
-  standings: PropTypes.object.isRequired,
+  // stats: PropTypes.object.isRequired,
+  // standings: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
 }
 
 function mapStateToProps(state) {
+  console.log(state);
   return {
     user: state.user,
-    stats: state.stats,
-    standings: state.standings,
+    // stats: state.stats,
+    // standings: state.standings,
     loading: state.apiCallsInProgress > 0
   };
 }
@@ -196,8 +203,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       loadUser: bindActionCreators(userActions.loadUser, dispatch),
-      loadStats: bindActionCreators(statsActions.loadStats, dispatch),
-      loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
+      // loadStats: bindActionCreators(statsActions.loadStats, dispatch),
+      // loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
     }
   };
 }

@@ -10,24 +10,26 @@ import {
     View,
 } from 'react-native';
 import Constants from 'expo-constants';
+import NavigationService from '../../navigation/NavigationService';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Matches() {
     return (
         <View style={styles.container}>
-            <ScrollView >
-                <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight, marginBottom: 25 }}>
-
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
-                        <EvilIcons name={'close-o'} size={50} color={'#888'} />
-                    </TouchableOpacity>
-                    <View style={{ flex: 0.6, justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 80, width: 80, borderRadius: 5, marginBottom: -15 }} />
-                    </View>
-                    <View style={{ flex: 0.2 }}>
-                    </View>
+            <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight, marginBottom: 25 }}>
+                <TouchableOpacity onPress={() => NavigationService.navigate("Profile")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
+                    <EvilIcons name={'close-o'} size={50} color={'#888'} />
+                </TouchableOpacity>
+                <View style={{ flex: 0.6, justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 80, width: 80, borderRadius: 5, marginBottom: -15 }} />
                 </View>
+                <View style={{ flex: 0.2 }}>
+                </View>
+            </View>
+
+            <ScrollView >
+
                 <Text style={{ marginLeft: 20, color: '#333', fontSize: 20, textAlign: 'center' }}>
                     My Matches
                 </Text>
@@ -91,8 +93,8 @@ export default function Matches() {
                             </View>
 
                             <View style={{ flex: 0.25 }}>
-                                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Transfer")} style={styles.welcomeButton}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={() => NavigationService.navigate("Match")} style={styles.welcomeButton}>
                                         <Feather name={'share-2'} size={20} color={'#7ed3ff'} />
                                     </TouchableOpacity>
                                     <Text style={styles.welcomeButtonText}>See Match Stats</Text>
@@ -163,8 +165,8 @@ export default function Matches() {
                             </View>
 
                             <View style={{ flex: 0.25 }}>
-                                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Transfer")} style={styles.welcomeButton}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={() => NavigationService.navigate("Transfer")} style={styles.welcomeButton}>
                                         <Feather name={'share-2'} size={20} color={'#7ed3ff'} />
                                     </TouchableOpacity>
                                     <Text style={styles.welcomeButtonText}>See Match Stats</Text>
@@ -235,8 +237,8 @@ export default function Matches() {
                             </View>
 
                             <View style={{ flex: 0.25 }}>
-                                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Transfer")} style={styles.welcomeButton}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={() => NavigationService.navigate("Transfer")} style={styles.welcomeButton}>
                                         <Feather name={'share-2'} size={20} color={'#7ed3ff'} />
                                     </TouchableOpacity>
                                     <Text style={styles.welcomeButtonText}>See Match Stats</Text>
@@ -307,8 +309,8 @@ export default function Matches() {
                             </View>
 
                             <View style={{ flex: 0.25 }}>
-                                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Transfer")} style={styles.welcomeButton}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={() => NavigationService.navigate("Transfer")} style={styles.welcomeButton}>
                                         <Feather name={'share-2'} size={20} color={'#7ed3ff'} />
                                     </TouchableOpacity>
                                     <Text style={styles.welcomeButtonText}>See Match Stats</Text>
@@ -418,8 +420,8 @@ const styles = StyleSheet.create({
         flex: 0.6,
         alignItems: 'flex-end',
         flexDirection: "row"
-      },
-      welcomeButton: {
+    },
+    welcomeButton: {
         height: 50,
         width: 50,
         borderRadius: 70,
@@ -434,11 +436,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 5
-      },
-      welcomeButtonText: {
+    },
+    welcomeButtonText: {
         color: '#888',
         fontSize: 6,
         textTransform: 'uppercase',
         fontWeight: 'bold'
-      },
+    },
 });
