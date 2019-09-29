@@ -1,8 +1,12 @@
+import HttpStatus from 'http-status-codes';
+
 // Parse server-side validation errors
 // Server side validation returns a string error message as text
 export async function handleResponse(response) {
-  if (response.ok) return response.json();
-  if (response.status === 400) {
+  if (response.status === HttpStatus.OK){
+    return response;
+  }
+  if (response.status === HttpStatus.BAD_REQUEST) {
     const error = await response.text();
     throw new Error(error);
   }
@@ -12,6 +16,11 @@ export async function handleResponse(response) {
 // Later this would likely call an error logging service.
 export function handleError(error) {
   // eslint-disable-next-line no-console
-  console.error("API call failed. " + error);
-  throw error;
+  // console.error("API call failed. " + error);
+  console.log(error);
+  if (error.status === HttpStatus.FORBIDDEN) {
+    throw(new Error('403 Forbidden'));
+  } else {
+    throw error.data.detail;
+  }
 }

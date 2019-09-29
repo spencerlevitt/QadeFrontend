@@ -44,7 +44,7 @@ class HomeScreen extends React.Component {
     const { user, stats, standings, actions } = this.props;
     
     if (!user.profile) {
-      actions.loadUser().catch(error => {
+      actions.loadUserDetails().catch(error => {
         alert('Loading user failed' + error);
       });
     }
@@ -187,12 +187,11 @@ HomeScreen.propTypes = {
   // stats: PropTypes.object.isRequired,
   // standings: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
-}
+};
 
 function mapStateToProps(state) {
-  console.log(state);
   return {
-    user: state.user,
+    user: state.userDetails,
     // stats: state.stats,
     // standings: state.standings,
     loading: state.apiCallsInProgress > 0
@@ -202,7 +201,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      loadUser: bindActionCreators(userActions.loadUser, dispatch),
+      loadUserDetails: bindActionCreators(userActions.loadUser, dispatch),
       // loadStats: bindActionCreators(statsActions.loadStats, dispatch),
       // loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
     }
