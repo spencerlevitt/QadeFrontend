@@ -41,10 +41,10 @@ DEV
 class HomeScreen extends React.Component {
 
   componentDidMount() {
-    const { user, stats, standings, actions } = this.props;
+    const { userDetails, stats, standings, actions } = this.props;
     
-    if (!user.profile) {
-      actions.loadUser().catch(error => {
+    if (!userDetails.profile) {
+      actions.loadUserDetails(this.props.csrfToken).catch(error => {
         alert('Loading user failed' + error);
       });
     }
@@ -65,8 +65,6 @@ class HomeScreen extends React.Component {
   render() {
     return (
       <View style={[styles.container, { paddingTop: Constants.statusBarHeight }]}>
-
-
         <View style={[styles.welcomeContainer]}>
 
           <View style={styles.welcomeContainerHeader}>
@@ -74,7 +72,7 @@ class HomeScreen extends React.Component {
               Current Balance
             </Text>
             <Text style={styles.welcomeBalance}>
-            ${this.props.loading ? '0' : this.props.user.profile?.balance}
+            ${!this.props.loading && this.props.userDetails ? this.props.userDetails.profile.balance : '0'}
             </Text>
           </View>
 
@@ -125,21 +123,21 @@ class HomeScreen extends React.Component {
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
-                      {this.props.loading ? '0-0' : `${this.props.user.statistics?.won_games}-${this.props.user.statistics?.lost_games}`}
+                      {!this.props.loading && this.props.userDetails ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
-                      {this.props.loading ? '0' : this.props.user.statistics?.win_percent}%
+                      {!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.win_percent : '0'}%
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win %</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
-                      ${this.props.loading ? '0' : this.props.user.statistics?.net_gain}
+                      ${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.net_gain : '0.00'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Net Gain</Text>
                   </View>
@@ -182,17 +180,22 @@ HomeScreen.navigationOptions = {
 };
 
 HomeScreen.propTypes = {
+  loggedInUser: PropTypes.object.isRequired,
+  loggedIn: PropTypes.bool.isRequired,
+  csrfToken: PropTypes.string.isRequired,
   actions: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
+  userDetails: PropTypes.object.isRequired,
   // stats: PropTypes.object.isRequired,
   // standings: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
-}
+};
 
 function mapStateToProps(state) {
-  console.log(state);
   return {
-    user: state.user,
+    userDetails: state.userDetails,
+    csrfToken: state.auth.csrfToken,
+    loggedInUser: state.auth.loggedInUser,
+    loggedIn: state.auth.loggedIn,
     // stats: state.stats,
     // standings: state.standings,
     loading: state.apiCallsInProgress > 0
@@ -202,7 +205,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      loadUser: bindActionCreators(userActions.loadUser, dispatch),
+      loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
       // loadStats: bindActionCreators(statsActions.loadStats, dispatch),
       // loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
     }

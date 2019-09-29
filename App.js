@@ -8,9 +8,10 @@ import AppNavigator from './navigation/AppNavigator';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import configureStore from './redux/configureStore.dev';
 import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 let onboard = true;
-const store = configureStore();
+const { store, persistor } = configureStore();
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -24,16 +25,18 @@ export default function App(props) {
       />
     );
   } else {
-    if(onboard != false){
+    if (onboard != false) {
       return (
         <ReduxProvider store={store}>
-          <View style={styles.container}>
-            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-            <AppNavigator />
-          </View>
+          <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+            <View style={styles.container}>
+              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+              <AppNavigator />
+            </View>
+          </PersistGate>
         </ReduxProvider>
       );
-    }else{
+    } else {
       return (
         <View style={styles.container}>
           {/* Implmentation onboard if before login */}
@@ -61,7 +64,7 @@ async function loadResourcesAsync() {
       'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
     }),
     onboard = AsyncStorage.getItem("onboard")
-    
+
   ]);
 }
 
