@@ -14,13 +14,14 @@ if (process.env.NODE_ENV === 'development') {
 
 const persistConfig = {
   key: 'root',
+  version: 1,
   storage: AsyncStorage,
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export default function configureStore(initialState) {
-  // Adding support for redux dev tools in development  mode
+  // Adding support for redux dev tools in development mode
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const store = createStore(
     persistedReducer,
@@ -30,10 +31,16 @@ export default function configureStore(initialState) {
   const persistor = persistStore(store);
   
   // USE THIS TO CLEAR PERSISTED STATE
-  // console.log('==========================');
-  // console.log('CLEARING THE PERSISTOR');
-  // persistor.purge();
-  // console.log('==========================');
+  // clearStorageAndPersistor(persistor);
+  
 
   return { store, persistor };
+}
+
+const clearStorageAndPersistor = (persistor) => {
+  console.log('=====================================');
+  console.log('CLEARING THE STORAGE AND PERSISTOR');
+  console.log('=====================================');
+  persistor.purge();
+  AsyncStorage.removeItem('root');
 }

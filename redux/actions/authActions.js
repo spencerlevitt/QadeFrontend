@@ -2,6 +2,7 @@ import * as types from '../actions/actionTypes';
 import * as authApi from '../../api/authApi';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
 import HttpStatus from 'http-status-codes';
+import * as userActions from '../actions/userActions';
 
 export function loginStart() {
   return { type: types.LOGIN_START };
@@ -27,6 +28,7 @@ export function loginUser (username, password, csrfToken) {
           dispatch(apiCallError(error));
           dispatch(loginError(error));
         }
+        dispatch(userActions.loadUserDetails(csrfToken));
         return dispatch(loginSuccess(loggedInUser));
       })
       .catch((error) => {

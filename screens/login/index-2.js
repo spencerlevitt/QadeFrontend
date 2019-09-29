@@ -33,20 +33,28 @@ class Login extends React.Component {
     };
 
     onLogin = async () => {
-        try {
-            const response = await this.props.loginUser(
-                this.state.username,
-                this.state.password,
-                this.props.csrfToken
-            );
-            
-            if (response && response.loggedInUser.status === HttpStatus.OK && this.props.loggedIn) {
-                this.props.navigation.navigate('Main');
-            } else if (this.props.hasError) {
-                alert(`Login failed: ${this.props.errorMessage.message}`);
-            }
-        } catch (error) {
-            console.error(error);
+        if (!this.state.username && !this.state.password) {
+            alert('Please enter your email address and password');
+        } else if (!this.state.username) {
+            alert('Please enter your email address');
+        } else if (!this.state.password) {
+            alert('Please enter your password');
+        } else {
+            try {
+                const response = await this.props.loginUser(
+                    this.state.username,
+                    this.state.password,
+                    this.props.csrfToken
+                );
+                
+                if (response && response.loggedInUser.status === HttpStatus.OK && this.props.loggedIn) {
+                    this.props.navigation.navigate('Main');
+                } else if (this.props.hasError) {
+                    alert(`Login failed: ${this.props.errorMessage.message}`);
+                }
+            } catch (error) {
+                console.error(error);
+            }   
         }
     };
 
@@ -62,10 +70,18 @@ class Login extends React.Component {
                     </Text>
                 </View>
                 <View style={{ flex: 0.3, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-                    <TextInput onChangeText={e => this.onChangeLogin(e, 'username')} style={{ backgroundColor: "#fff", height: 60, width: '100%', borderRadius: 5, borderColor: '#E2E6EA', borderWidth: 1, paddingLeft: 15 }} placeholder={'Email'} >
+                    <TextInput
+                        onChangeText={e => this.onChangeLogin(e, 'username')}
+                        style={{ backgroundColor: "#fff", height: 60, width: '100%', borderRadius: 5, borderColor: '#E2E6EA', borderWidth: 1, paddingLeft: 15 }}
+                        placeholder={'Email'} 
+                        keyboardType={'email-address'}>
                     </TextInput>
 
-                    <TextInput onChangeText={e => this.onChangeLogin(e, 'password')} style={{ backgroundColor: "#fff", height: 60, width: '100%', borderRadius: 5, borderColor: '#E2E6EA', borderWidth: 1, paddingLeft: 15, marginTop: 15 }} secureTextEntry placeholder={'Password'} >
+                    <TextInput 
+                        onChangeText={e => this.onChangeLogin(e, 'password')}
+                        style={{ backgroundColor: "#fff", height: 60, width: '100%', borderRadius: 5, borderColor: '#E2E6EA', borderWidth: 1, paddingLeft: 15, marginTop: 15 }}
+                        secureTextEntry
+                        placeholder={'Password'}>
                     </TextInput>
                 </View>
 
