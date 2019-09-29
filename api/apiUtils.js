@@ -20,6 +20,8 @@ export function handleError(error) {
   console.log(error);
   if (error.status === HttpStatus.FORBIDDEN) {
     throw(new Error('403 Forbidden'));
+  } else if (error.status === HttpStatus.BAD_REQUEST) {
+    throw(new Error('Incorrect email and password entered!'));
   } else {
     throw error.data.detail;
   }

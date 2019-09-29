@@ -43,7 +43,7 @@ class Login extends React.Component {
             if (response && response.loggedInUser.status === HttpStatus.OK && this.props.loggedIn) {
                 this.props.navigation.navigate('Main');
             } else if (this.props.hasError) {
-                alert(`Login failed: ${this.props.errorMessage}`);
+                alert(`Login failed: ${this.props.errorMessage.message}`);
             }
         } catch (error) {
             console.error(error);
