@@ -34,11 +34,13 @@ export default class Login extends React.Component {
 
                 <View style={{ flex: 0.5, padding: 20 }}>
                     <View style={{ width: '100%' }}>
-                        <TouchableOpacity style={{ backgroundColor: "#3A8FFF", height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("Login3")}>
+                        <TouchableOpacity
+                            style={{ backgroundColor: "#3A8FFF", height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}
+                            onPress={() => this.props.navigation.navigate("SignUp")}>
                             <Text style={{ color: '#fff', fontSize: 14 }}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={{marginTop: 20}} onPress={() => this.props.navigation.navigate('Login2')}>
+                    <TouchableOpacity style={{marginTop: 20}} onPress={() => this.props.navigation.navigate('Login')}>
                         <Text style={{textAlign: 'center'}}>Already have an account? <Text style={{color: '#3A8FFF'}}>Login</Text></Text>
                     </TouchableOpacity>
                 </View>

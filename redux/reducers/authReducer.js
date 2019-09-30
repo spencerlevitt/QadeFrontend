@@ -5,6 +5,7 @@ export default function authReducer(
   state = {
     loggedIn: initialState.loggedIn,
     loggedInUser: initialState.loggedInUser,
+    signedUpUser: initialState.signedUpUser,
     isFetching: initialState.isFetching,
     hasError: initialState.hasError,
     errorMessage: initialState.errorMessage,
@@ -62,6 +63,35 @@ export default function authReducer(
         hasError: true,
         loggedInUser: null,
         errorMessage: error
+      };
+    
+    case types.SIGNUP_START:
+      return {
+        ...state,
+        isFetching: true
+      };
+
+    case types.SIGNUP_SUCCESS:
+      const signupData = action.signedUpUser.data;
+      
+      return {
+        ...state,
+        isFetching: true,
+        loggedIn: true,
+        loggedInUser: signupData,
+        signedUpUser: signupData
+      };
+    
+    case types.SIGNUP_ERROR:
+      signupError = action.signupError;
+      return {
+        ...state,
+        isFetching: false,
+        loggedIn: false,
+        hasError: true,
+        loggedInUser: {},
+        signedUpUser: {},
+        errorMessage: signupError
       };
     
     default:

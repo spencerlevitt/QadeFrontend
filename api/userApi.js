@@ -8,7 +8,17 @@ const baseUrl = environment.API_URL;
 //later it will retrieve  the logged in users details
 export function getUserDetails(csrfToken) {
   return Axios.get(`${baseUrl}users/1/`, {
-    headers: {"X-CSRFToken": csrfToken},
+    headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
+  })
+    .then(handleResponse)
+    .catch(error => handleError(error.response));
+}
+
+export function signup(signupData, csrfToken) {
+  return Axios.post(`${baseUrl}users/`, {
+    ...signupData
+  }, {
+    headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
   })
     .then(handleResponse)
     .catch(error => handleError(error.response));

@@ -1,25 +1,57 @@
 import React from 'react';
 import {
-    Image,
     Text,
-    TouchableOpacity,
     View,
-    KeyboardAvoidingView,
-    ScrollView
+    ScrollView,
+    TouchableOpacity
 } from 'react-native';
-import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-import { TextInput } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
+import { connect } from 'react-redux';
+import SignUpForm from './SignupForm';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as authActions from '../../redux/actions/authActions';
+import HttpStatus from 'http-status-codes';
 
-export default class Login extends React.Component {
+class SignUp extends React.Component {
 
     constructor(props) {
         super(props)
     }
 
-    state = {
-        toggle: true
-    }
+    state = {}
+
+    signUp = async (signUpData) => {
+        const { actions } = this.props;
+        
+        // Transform data to suitable payload for Axios API call
+        this.state = {
+            ...signUpData,
+            profile: {
+                dob: signUpData.dob,
+                address: '',
+                country: 'US', // TODO: Confirm if US should be default
+                city: '',
+                zip: '',
+                // photo: '',   TODO: Create upload image for photo
+                bio: '',
+                console: 2  // TODO: Confirm if PS4 should be default
+            }
+        };
+
+        try {
+            const response = await actions.signupUser(this.state, this.props.csrfToken);
+
+            if (response && response.signedUpUser.status === HttpStatus.CREATED) {
+                this.props.navigation.navigate('Main');
+            } else if (this.props.hasError) {
+                alert(`Sign Up failed: ${this.props.errorMessage.message}`);
+            }
+        } catch (error) {
+            console.log('Error:', error);
+            alert(error);
+        }
+    };
 
     render() {
         return (
@@ -29,114 +61,49 @@ export default class Login extends React.Component {
                         Sign Up
                     </Text>
                 </View>
+                
+                <SignUpForm onSubmit={this.signUp} />
 
-                <View style={{ flex: 1, padding: 40 }}>
-                    <View style={{ marginBottom: 15 }}>
-                        <Text style={{ marginLeft: 10, color: '#888', fontSize: 10 }}>
-                            First Name
-                        </Text>
-                        <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} placeholder={'First Name'} placeholderTextColor={'#666'}>
-
-                        </TextInput>
-                    </View>
-
-                    <View style={{ marginBottom: 15 }}>
-                        <Text style={{ marginLeft: 10, color: '#888', fontSize: 10 }}>
-                            Last Name
-                        </Text>
-                        <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} placeholder={'Last Name'} placeholderTextColor={'#666'}>
-
-                        </TextInput>
-                    </View>
-
-                    <View style={{ marginBottom: 15 }}>
-                        <Text style={{ marginLeft: 10, color: '#888', fontSize: 10 }}>
-                            Email Address
-                        </Text>
-                        <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} placeholder={'Email Address'} placeholderTextColor={'#666'}>
-
-                        </TextInput>
-                    </View>
-
-                    <View style={{ marginBottom: 15 }}>
-                        <Text style={{ marginLeft: 10, color: '#888', fontSize: 10 }}>
-                            Date of Birth
-                        </Text>
-
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={{ flex: 0.3, marginRight: 5 }}>
-                                <Text style={{ color: '#888', fontSize: 10, textAlign: 'center' }}>
-                                    Month
-                            </Text>
-                                <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} textContentType={'creditCardNumber'} placeholderTextColor={'#666'}>
-
-                                </TextInput>
-                            </View>
-
-                            <View style={{ flex: 0.3, marginLeft: 5, marginRight: 5 }}>
-                                <Text style={{ color: '#888', fontSize: 10, textAlign: 'center' }}>
-                                    Day
-                            </Text>
-                                <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} textContentType={'creditCardNumber'} placeholderTextColor={'#666'}>
-
-                                </TextInput>
-                            </View>
-
-                            <View style={{ flex: 0.4, marginLeft: 5 }}>
-                                <Text style={{ color: '#888', fontSize: 10, textAlign: 'center' }}>
-                                    Year
-                            </Text>
-                                <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} textContentType={'creditCardNumber'} placeholderTextColor={'#666'}>
-
-                                </TextInput>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={{ marginBottom: 15 }}>
-                        <Text style={{ marginLeft: 10, color: '#888', fontSize: 10 }}>
-                            Password
-                        </Text>
-                        <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} secureTextEntry placeholderTextColor={'#666'}>
-
-                        </TextInput>
-                    </View>
-
-                    <View>
-                        <Text style={{ marginLeft: 10, color: '#888', fontSize: 10 }}>
-                            Password
-                        </Text>
-                        <TextInput style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} secureTextEntry placeholderTextColor={'#666'}>
-
-                        </TextInput>
-                    </View>
-
-                </View>
-
-                <View style={{ height: 150, paddingLeft: 40, paddingRight: 40, marginBottom: 40 }}>
-
-                    <TouchableOpacity style={{ marginBottom: 20, flexDirection: 'row', justifyContent: 'center' }} onPress={() => this.setState({ toggle: !this.state.toggle })} >
-                        <View style={{borderColor: '#C7C7CC', borderWidth: 1, height: 12, width: 12, justifyContent: 'center', alignItems: 'center', overflow: 'visible'}}>
-                            <FontAwesome name={'check'} style={{height: 10, width: 10}} color={this.state.toggle == true ? '#888' : '#fff'} />
-                        </View>
-                        <Text style={{ marginLeft: 7, textAlign: 'center', fontSize: 10, color: '#888' }}>I agree to the terms and conditions</Text>
-                    </TouchableOpacity>
-
-                    <View style={{ width: '100%' }}>
-                        <TouchableOpacity style={{ backgroundColor: "#3A8FFF", height: 40, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.navigation.navigate("Main")}>
-                            <Text style={{ color: '#fff', fontSize: 14 }}>Create account</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity style={{ marginTop: 20 }} onPress={() => this.props.navigation.navigate('Login')}>
-                        <Text style={{ textAlign: 'center' }}>Have an account? <Text style={{ color: '#3A8FFF' }}>Click here</Text></Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={{marginBottom: 40,}}
+                    onPress={() => this.props.navigation.navigate('Login')}>
+                    <Text style={{ textAlign: 'center' }}>Have an account? <Text style={{ color: '#3A8FFF' }}>Click here</Text></Text>
+                </TouchableOpacity>
 
             </ScrollView>
         )
     }
 }
 
-Login.navigationOptions = {
+SignUp.navigationOptions = {
     header: null,
 };
+
+SignUp.propTypes = {
+    loggedInUser: PropTypes.object.isRequired,
+    loggedIn: PropTypes.bool.isRequired,
+    actions: PropTypes.object.isRequired,
+    hasError: PropTypes.bool.isRequired,
+    csrfToken: PropTypes.string.isRequired,
+    errorMessage: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+  };
+  
+  const mapStateToProps = (state) => {
+    return {
+        loggedInUser: state.auth.loggedInUser,
+        loggedIn: state.auth.loggedIn,
+        csrfToken: state.auth.csrfToken,
+        hasError: state.auth.hasError,
+        errorMessage: state.auth.errorMessage,
+        loading: state.auth.apiCallsInProgress > 0
+    };
+  };
+  
+  const mapDispatchToProps = (dispatch) => ({
+    actions: {
+        signupUser: bindActionCreators(authActions.signupUser, dispatch)
+    }
+  });
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

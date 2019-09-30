@@ -1,6 +1,7 @@
 export default {
   loggedIn: false,
   loggedInUser: {},
+  signedUpUser: {},
   isFetching: false,
   csrfToken: '',
   hasError: false,

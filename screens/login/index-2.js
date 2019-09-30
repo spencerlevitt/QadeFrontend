@@ -32,16 +32,25 @@ class Login extends React.Component {
         this.setState({ [type]: e });
     };
 
+    validateEmail = (email) => {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    };
+
     onLogin = async () => {
+        const { actions } = this.props;
+
         if (!this.state.username && !this.state.password) {
             alert('Please enter your email address and password');
         } else if (!this.state.username) {
             alert('Please enter your email address');
+        } else if (this.state.username && !this.validateEmail(this.state.username)) {
+            alert('Please enter a valid email address');
         } else if (!this.state.password) {
             alert('Please enter your password');
         } else {
             try {
-                const response = await this.props.loginUser(
+                const response = await actions.loginUser(
                     this.state.username,
                     this.state.password,
                     this.props.csrfToken
@@ -74,6 +83,7 @@ class Login extends React.Component {
                         onChangeText={e => this.onChangeLogin(e, 'username')}
                         style={{ backgroundColor: "#fff", height: 60, width: '100%', borderRadius: 5, borderColor: '#E2E6EA', borderWidth: 1, paddingLeft: 15 }}
                         placeholder={'Email'} 
+                        textContentType={'emailAddress'}
                         keyboardType={'email-address'}>
                     </TextInput>
 
@@ -104,7 +114,9 @@ class Login extends React.Component {
                             <Text style={{ color: '#fff', fontSize: 14 }}>Login</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={{ marginTop: 20 }} onPress={() => this.props.navigation.navigate('Login')}>
+                    <TouchableOpacity
+                        style={{ marginTop: 20 }}
+                        onPress={() => this.props.navigation.navigate('SignUp')}>
                         <Text style={{ textAlign: 'center' }}>Don't have an account? <Text style={{ color: '#3A8FFF' }}>Sign Up</Text></Text>
                     </TouchableOpacity>
                 </View>
@@ -121,6 +133,7 @@ Login.navigationOptions = {
 Login.propTypes = {
     loggedInUser: PropTypes.object.isRequired,
     loggedIn: PropTypes.bool.isRequired,
+    actions: PropTypes.object.isRequired,
     hasError: PropTypes.bool.isRequired,
     csrfToken: PropTypes.string.isRequired,
     errorMessage: PropTypes.object.isRequired,
@@ -139,8 +152,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    loginUser: bindActionCreators(authActions.loginUser, dispatch),
-    logoutUser: bindActionCreators(authActions.logoutUser, dispatch),
+    actions: {
+        loginUser: bindActionCreators(authActions.loginUser, dispatch)
+    }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

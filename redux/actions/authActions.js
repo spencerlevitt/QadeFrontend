@@ -1,5 +1,6 @@
 import * as types from '../actions/actionTypes';
 import * as authApi from '../../api/authApi';
+import * as userApi from '../../api/userApi';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
 import HttpStatus from 'http-status-codes';
 import * as userActions from '../actions/userActions';
@@ -66,6 +67,40 @@ export function logoutUser (username, password) {
         dispatch(apiCallError(error));
         dispatch(logoutError(error));
         throw error;
+      });
+    }
+}
+
+
+export function signupStart() {
+  return { type: types.SIGNUP_START };
+}
+
+export function signupSuccess(signedUpUser) {
+  return { type: types.SIGNUP_SUCCESS, signedUpUser };
+}
+
+export function signupError(signupError) {
+  return { type: types.SIGNUP_ERROR, signupError };
+}
+
+export function signupUser (signupData, csrfToken) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(signupStart());
+    
+    return userApi.signup(signupData, csrfToken)
+      .then((signedUpUser) => {
+        if (signedUpUser.status !== HttpStatus.CREATED) {
+          const error = new Error(signedUpUser.statusMessage);
+          dispatch(apiCallError(error));
+          dispatch(signupError(error));
+        }
+        return dispatch(signupSuccess(signedUpUser));
+      })
+      .catch((error) => {
+        dispatch(apiCallError(error));
+        dispatch(signupError(error));
       });
     }
 }
