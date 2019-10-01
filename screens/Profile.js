@@ -37,28 +37,40 @@ export default class Profile extends React.Component {
             </Text>
 
             <View style={{ flexDirection: 'row', marginTop: 20 }}>
-              <View style={{ flex: 0.3 }}>
-                <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Requests", { friends: true })}>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>121 Friends</Text>
+              <View style={{ flex: 0.3, paddingHorizontal: 10 }}>
+                <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Requests", { friends: true })}>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>121 Friends</Text>
                 </TouchableOpacity>
               </View>
-              <View style={{ flex: 0.3 }}>
-                <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Requests", { friends: false })}>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Friend Requests</Text>
+              <View style={{ flex: 0.3  }}>
+                <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }} onPress={() => this.props.navigation.navigate("Requests", { friends: false })}>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>Friend Requests</Text>
+                  <Text style={{color: 'red', marginTop: -4}}>•</Text>
                 </TouchableOpacity>
               </View>
-              <View style={{ flex: 0.4 }}>
-                <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }}>
-                  <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center' }}>Money Transfer</Text>
+              <View style={{ flex: 0.4, paddingHorizontal: 10  }}>
+                <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Transfer")}>
+                  <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>Money Transfer</Text>
                 </TouchableOpacity>
               </View>
             </View>
+
+            {/* Remove before prod */}
+
+            <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
+                <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Loading")}>
+                  <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center' }}>Loading Example</Text>
+                </TouchableOpacity>
+              </View>
+
+            {/* */}
+
           </View>
 
           <View style={{ paddingLeft: 50, paddingRight: 50, marginTop: 20, marginBottom: 20 }}>
-            <TouchableOpacity style={{ borderBottomColor: '#333', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Matches")}>
+            <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Matches")}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ fontSize: 18 }}>
+                <Text style={{ fontSize: 12 }}>
                   Match History
                   </Text>
                 <EvilIcons name={'chevron-right'} size={20} color={'#888'} />
@@ -113,7 +125,7 @@ export default class Profile extends React.Component {
 
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>111</Text>
+                  <Text style={{ color: '#888', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>111</Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
@@ -121,14 +133,14 @@ export default class Profile extends React.Component {
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>120</Text>
+                  <Text style={{ color: '#888', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>120</Text>
                 </View>
               </View>
 
 
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>47%</Text>
+                  <Text style={{ color: '#888', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>47%</Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
@@ -136,13 +148,13 @@ export default class Profile extends React.Component {
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>48%</Text>
+                  <Text style={{ color: '#888', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>48%</Text>
                 </View>
               </View>
 
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>19%</Text>
+                  <Text style={{ color: '#888', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>19%</Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
@@ -150,7 +162,7 @@ export default class Profile extends React.Component {
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>42%</Text>
+                  <Text style={{ color: '#888', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>42%</Text>
                 </View>
               </View>
 

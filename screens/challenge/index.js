@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Constants from 'expo-constants';
 
 export default class Challenge extends React.Component {
@@ -34,25 +35,35 @@ export default class Challenge extends React.Component {
         })
     }
 
+    _scrollToInput(reactNode: any) {
+        // Add a 'scroll' ref to your ScrollView
+        this.scroll.props.scrollToFocusedInput(reactNode)
+    }
+
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <KeyboardAwareScrollView style={{ flex: 1 }} innerRef={ref => {
+                this.scroll = ref
+            }}>
                 <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
                     <View style={{ flex: 0.2 }}>
                     </View>
                     <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ color: '#333', fontSize: 20 }}>Challenge</Text>
+                        <Text style={{ color: '#333', fontSize: 16 }}>Challenge</Text>
                     </View>
                     <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
                         <EvilIcons name={'close-o'} size={50} color={'#888'} />
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={{ flex: 1, padding: 50, paddingTop: 20, paddingBottom: 0 }}>
-                    <KeyboardAvoidingView style={{ flex: 1 }} >
+                <View style={{ flex: 1, padding: 50, paddingTop: 20, paddingBottom: 0 }}>
+
                         <View style={{ height: 80, marginBottom: 40 }}>
                             <Text style={{ fontSize: 18, color: '#333', marginBottom: 20, fontSize: 18 }}>Opponent</Text>
                             <View style={{ flex: 1, borderRadius: 50, borderWidth: 1, borderColor: '#E5E5E5', justifyContent: 'center' }}>
-                                <TextInput style={{ color: '#A0A0A0', paddingLeft: 10}} placeholder={'Search Friends'} placeholderTextColor={'#A0A0A0'}>
+                                <TextInput onFocus={(event: Event) => {
+                            // `bind` the function if you're using ES6 classes
+                            this._scrollToInput((event.target))
+                        }} style={{ color: '#A0A0A0', paddingLeft: 10}} placeholder={'Search Friends'} placeholderTextColor={'#A0A0A0'}>
                                    
                         </TextInput>
                             </View>
@@ -116,18 +127,21 @@ export default class Challenge extends React.Component {
 
                                 </View>
                                 <View style={{ width: '70%', marginTop: 10 }}>
-                                    <TextInput style={{ borderBottomColor: this.state.selecte == 2 ? '#69C0FF' : '#eee', borderBottomWidth: 1 }} placeholder={'$ Enter Custom'} onChangeText={() => this.changeInde(2)}>
+                                    <TextInput onFocus={(event: Event) => {
+                            // `bind` the function if you're using ES6 classes
+                            this._scrollToInput((event.target))
+                        }} style={{ borderBottomColor: this.state.selecte == 2 ? '#69C0FF' : '#eee', borderBottomWidth: 1 }} placeholder={'$ Enter Custom'} onChangeText={() => this.changeInde(2)} keyboardType={'number-pad'}>
 
                                     </TextInput>
                                 </View>
                             </View>
                         </View>
 
-                        <View style={{ flex: 1, alignItems: 'center' }}>
+                        <View style={{ flex: 1, alignItems: 'center', marginBottom: 250 }}>
                             <TouchableOpacity onPress={this.changeLayout} style={{
                                 marginTop: 20,
-                                height: 80,
-                                width: 80,
+                                height: 60,
+                                width: 60,
                                 borderRadius: 80,
                                 borderWidth: 5,
                                 borderColor: '#eee',
@@ -141,7 +155,7 @@ export default class Challenge extends React.Component {
                                 justifyContent: 'center',
                                 marginBottom: 5
                             }}>
-                                <Image style={{ height: 40, width: 40 }} tintColor="#7ed3ff" source={require('../../assets/images/gloves.png')} />
+                                <Image style={{ height: 30, width: 30 }} tintColor="#7ed3ff" source={require('../../assets/images/gloves.png')} />
                             </TouchableOpacity>
                             <Text style={{
                                 color: '#888',
@@ -149,9 +163,8 @@ export default class Challenge extends React.Component {
                                 textTransform: 'uppercase',
                             }}>GO</Text>
                         </View>
-                    </KeyboardAvoidingView>
-                </ScrollView>
-            </View>
+                </View>
+            </KeyboardAwareScrollView>
         )
     }
 }

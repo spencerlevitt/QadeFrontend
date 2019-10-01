@@ -94,7 +94,7 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Matches")}>
+                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Profile")}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>
@@ -120,7 +120,7 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Matches")}>
+                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Profile")}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>
@@ -133,7 +133,7 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Matches")}>
+                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Login")}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>

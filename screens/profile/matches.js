@@ -18,7 +18,7 @@ export default function Matches() {
     return (
         <View style={styles.container}>
             <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight, marginBottom: 25 }}>
-                <TouchableOpacity onPress={() => NavigationService.navigate("Profile")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => NavigationService.navigate("Settings")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
                     <EvilIcons name={'close-o'} size={50} color={'#888'} />
                 </TouchableOpacity>
                 <View style={{ flex: 0.6, justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -70,7 +70,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 
@@ -142,7 +142,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 
@@ -214,7 +214,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 
@@ -286,7 +286,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 

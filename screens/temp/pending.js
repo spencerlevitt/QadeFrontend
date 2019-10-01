@@ -14,18 +14,21 @@ export default class Pending extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            true: false
+        }
     }
 
     render() {
-        if (true) {
+        if (true == this.state.true) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', padding: 30 }}>
                     <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no pending match requests. Challenge somebody to get started!</Text>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => NavigationService.navigate('Challenge')} style={{
                             marginTop: 20,
-                            height: 80,
-                            width: 80,
+                            height: 60,
+                            width: 60,
                             borderRadius: 80,
                             borderWidth: 5,
                             borderColor: '#eee',
@@ -39,7 +42,7 @@ export default class Pending extends React.Component {
                             justifyContent: 'center',
                             marginBottom: 5
                         }}>
-                            <Image style={{ height: 40, width: 40 }} tintColor="#7ed3ff" source={require('../../assets/images/gloves.png')} />
+                            <Image style={{ height: 30, width: 30 }} tintColor="#7ed3ff" source={require('../../assets/images/gloves.png')} />
                         </TouchableOpacity>
                         <Text style={{
                             color: '#888',
@@ -55,6 +58,23 @@ export default class Pending extends React.Component {
 
                     <View>
 
+
+                        {/* On Game Accepted */}
+                        <View key={0} style={{ height: 80, justifyContent: 'center', paddingLeft: 20 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Text style={{ color: '#888', fontSize: RFPercentage(2), paddingLeft: 5, paddingRight: 5 }}>Game Accepted</Text>
+                                </View>
+
+                                <View style={{ flex: 0.1, alignItems: 'center', justifyContent: 'center' }}>
+                                    <EvilIcons name={'check'} size={35} color={'#5eb97e'} />
+                                </View>
+
+                                <View style={{ flex: 0.5 }}>
+                                    <Text style={{ color: '#888', fontSize: RFPercentage(2), paddingLeft: 5, paddingRight: 5 }}>Don't quit the match before</Text>
+                                </View>
+                            </View>
+                        </View>
 
                         <View key={0} style={{ height: 80, justifyContent: 'center', paddingLeft: 20 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>

@@ -26,10 +26,10 @@ export default function ToS() {
 
                 <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: '#333', fontSize: 22, textAlign: 'center' }}>
-                        Terms of Service
+                        Privacy Policy
                     </Text>
                 </View>
-                <TouchableOpacity onPress={() => NavigationService.navigate("Profile")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => NavigationService.navigate("Settings")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
                     <EvilIcons name={'close-o'} size={50} color={'#888'} />
                 </TouchableOpacity>
 

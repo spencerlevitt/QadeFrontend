@@ -5,7 +5,8 @@ import {
     TouchableOpacity,
     View,
     KeyboardAvoidingView,
-    ScrollView
+    ScrollView,
+    Linking
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
@@ -30,7 +31,7 @@ export default class Login extends React.Component {
 
 
                     <View style={{ flex: 0.3, width: '100%', justifyContent: 'center' }}>
-                        <TouchableOpacity style={{ height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}  onPress={() => this.props.navigation.navigate("Login")}>
+                        <TouchableOpacity style={{ height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}  onPress={() => Linking.openURL(`mailto:qadeapp@gmail.com`)}>
                             <Text style={{ color: '#888', fontSize: 10 }}>If you still didn't receive an email <Text style={{color: '#3A8FFF'}}>Contact Us</Text></Text>
                         </TouchableOpacity>
                     </View>

@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
+import TabBarIcon2 from '../components/TabBarIcon2';
 import HomeScreen from '../screens/HomeScreen';
 import Recent from '../screens/Recent';
 import Profile from '../screens/Profile';
@@ -32,6 +33,13 @@ import ToS from '../screens/profile/tos'
 import Privacy from '../screens/profile/privacy'
 import GameRules from '../screens/profile/rules'
 
+import CameraPro from '../screens/profile/CameraPro'
+import CameraProPre from '../screens/profile/CameraProPre'
+
+//Test items
+import Loading from '../screens/temp/loading'
+
+
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -50,9 +58,9 @@ HomeStack.navigationOptions = ({ navigation }) => ({
   tabBarVisible: navigation.state.index < 1,
   tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
+    <TabBarIcon2
       focused={focused}
-      name={'logo-game-controller-b'}
+      name={require('../assets/noun_arcade_-1.png')}
     />
   ),
 });
@@ -114,7 +122,10 @@ const ProfileStack = createStackNavigator(
     Support,
     ToS,
     Privacy,
-    GameRules
+    GameRules,
+    Loading,
+    CameraPro,
+    CameraProPre
   },
   config
 );
@@ -135,7 +146,6 @@ const tabNavigator = createBottomTabNavigator({
   RecentStack,
   ProfileStack,
 }, {
-  initialRouteName: 'ProfileStack',
   tabBarOptions: {
     showLabel: false,
   }

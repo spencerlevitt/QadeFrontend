@@ -8,6 +8,8 @@ import {
 import Constants from 'expo-constants';
 import Animated from 'react-native-reanimated';
 import { TabView, SceneMap } from 'react-native-tab-view';
+import { EvilIcons } from '@expo/vector-icons';
+import NavigationService from '../../navigation/NavigationService'
 
 //There are two examples of how the data should be formatted once it is pulled from the server.
 import Requests from './requests'
@@ -18,18 +20,18 @@ export default class ProfileTabs extends React.Component {
 
   //This state handles the routing for the tabView
   //Index is which tab and the routes define the key and title
-  constructor(props){
-      super(props)
-      const friends = this.props.navigation.getParam("friends")
-      this.state = {
-        index: friends == true ? 1 : 0,
-        routes: [
-          { key: 'first', title: 'Requests' },
-          { key: 'second', title: "Friends" },
-        ],
-      };
+  constructor(props) {
+    super(props)
+    const friends = this.props.navigation.getParam("friends")
+    this.state = {
+      index: friends == true ? 1 : 0,
+      routes: [
+        { key: 'first', title: 'Requests' },
+        { key: 'second', title: "Friends" },
+      ],
+    };
   }
-  
+
 
   //Used to change Tab View
   _handleIndexChange = index => this.setState({ index });
@@ -39,6 +41,7 @@ export default class ProfileTabs extends React.Component {
     const inputRange = props.navigationState.routes.map((x, i) => i);
     return (
       <View style={styles.tabBarCenter}>
+
         <View style={styles.tabBar}>
           {props.navigationState.routes.map((route, i) => {
             const color = Animated.color(
@@ -99,6 +102,12 @@ export default class ProfileTabs extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+        <View style={{ backgroundColor: '#faf7f7'}}>
+        <TouchableOpacity onPress={() => NavigationService.navigate("Settings")} style={{ paddingLeft: 5, paddingTop: 5, alignItems: 'flex-start'}}>
+          <EvilIcons name={'arrow-left'} size={35} color={'#888'} />
+        </TouchableOpacity>
+        </View>
+        
         <TabView
           navigationState={this.state}
           renderScene={this._renderScene}

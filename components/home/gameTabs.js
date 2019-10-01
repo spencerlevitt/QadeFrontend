@@ -126,8 +126,8 @@ export default class GameTabs extends React.Component {
         index: 0,
         routes: [
             { key: 'first', title: 'FIFA' },
-            { key: 'second', title: 'Madden' },
-            { key: 'third', title: 'NBA 2k' },
+            { key: 'second', title: 'MADDEN' },
+            { key: 'third', title: 'NBA 2K' },
             { key: 'fourth', title: 'NHL' },
         ],
     };

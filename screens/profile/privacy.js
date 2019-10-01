@@ -29,7 +29,7 @@ export default function Privacy() {
                         Terms of Service
                     </Text>
                 </View>
-                <TouchableOpacity onPress={() => NavigationService.navigate("Profile")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => NavigationService.navigate("Settings")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
                     <EvilIcons name={'close-o'} size={50} color={'#888'} />
                 </TouchableOpacity>
 
