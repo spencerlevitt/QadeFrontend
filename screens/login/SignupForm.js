@@ -193,10 +193,10 @@ export default class SignupForm extends ValidationComponent {
 
         </View>
 
-        <View style={{ height: 150, paddingLeft: 40, paddingRight: 40, marginBottom: 0 }}>
+        <View style={{ height: 130, paddingLeft: 40, paddingRight: 40, marginBottom: 0 }}>
 
           <TouchableOpacity
-            style={{ marginBottom: 20, flexDirection: 'row', justifyContent: 'center' }}
+            style={{ marginTop:30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}
             onPress={() => this.setState({ tandc: !this.state.tandc })} >
             <View style={{ borderColor: '#C7C7CC', borderWidth: 1, height: 12, width: 12, justifyContent: 'center', alignItems: 'center', overflow: 'visible' }}>
               <FontAwesome

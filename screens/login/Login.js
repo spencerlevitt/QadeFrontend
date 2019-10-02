@@ -56,10 +56,13 @@ class Login extends React.Component {
                     this.props.csrfToken
                 );
                 
-                if (response && response.loggedInUser.status === HttpStatus.OK && this.props.loggedIn) {
-                    this.props.navigation.navigate('Main');
-                } else if (this.props.hasError) {
-                    alert(`Login failed: ${this.props.errorMessage.message}`);
+                console.log('eee',response);
+                if (response && !response.csrfTokenData) {
+                    if (response.loggedInUser && response.loggedInUser.status === HttpStatus.OK && this.props.loggedIn) {
+                        this.props.navigation.navigate('Main');
+                    } else if (this.props.hasError) {
+                        alert(`Login failed: ${this.props.errorMessage.message}`);
+                    }
                 }
             } catch (error) {
                 console.error(error);

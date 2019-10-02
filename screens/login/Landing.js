@@ -11,7 +11,7 @@ import { EvilIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 
-export default class Login extends React.Component {
+export default class Landing extends React.Component {
 
     constructor(props) {
         super(props)
@@ -50,6 +50,6 @@ export default class Login extends React.Component {
     }
 }
 
-Login.navigationOptions = {
+Landing.navigationOptions = {
     header: null,
 };
