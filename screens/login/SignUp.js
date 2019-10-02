@@ -43,7 +43,7 @@ class SignUp extends React.Component {
             const response = await actions.signupUser(this.state, this.props.csrfToken);
 
             if (response && response.signedUpUser.status === HttpStatus.CREATED) {
-                this.props.navigation.navigate('Main');
+                this.props.navigation.navigate('SignupEmailConfirmation');
             } else if (this.props.hasError) {
                 alert(`Sign Up failed: ${this.props.errorMessage.message}`);
             }
@@ -107,3 +107,4 @@ SignUp.propTypes = {
   });
   
   export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+  
