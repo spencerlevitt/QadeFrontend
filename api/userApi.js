@@ -7,7 +7,7 @@ const baseUrl = environment.API_URL;
 // get all the users from mockAPI.io
 //later it will retrieve  the logged in users details
 export function getUserDetails(csrfToken) {
-  return Axios.get(`${baseUrl}users/1/`, {
+  return Axios.get(`${baseUrl}users/?show=me`, {
     headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
   })
     .then(handleResponse)

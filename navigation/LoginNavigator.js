@@ -1,11 +1,11 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
-import Landing from '../screens/login/index'
-import Login from '../screens/login/index-2'
-import SignUp from '../screens/login/index-3'
-import Login4 from '../screens/login/index-4'
-import Login5 from '../screens/login/index-5'
+import Landing from '../screens/login/Landing'
+import Login from '../screens/login/Login'
+import SignUp from '../screens/login/SignUp'
+import ForgotPassword from '../screens/login/ForgotPassword'
+import SignupEmailConfirmation from '../screens/login/SignupEmailConfirmation'
 
 export default createAppContainer(
   createSwitchNavigator({
@@ -15,7 +15,7 @@ export default createAppContainer(
     Landing,
     Login,
     SignUp,
-    Login4,
-    Login5
+    ForgotPassword,
+    SignupEmailConfirmation
   })
 );
