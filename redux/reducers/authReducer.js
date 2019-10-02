@@ -22,11 +22,11 @@ export default function authReducer(
 
     case types.LOGIN_SUCCESS:
       const { data, headers } = action.loggedInUser;
-      const csrfToken = headers['set-cookie'][0].split(';')[0].split('=')[1];
+      let csrfToken = headers['set-cookie'][0].split(';')[0].split('=')[1];
       
       return {
         ...state,
-        isFetching: true,
+        isFetching: false,
         loggedIn: true,
         loggedInUser: data,
         csrfToken
@@ -76,7 +76,7 @@ export default function authReducer(
       
       return {
         ...state,
-        isFetching: true,
+        isFetching: false,
         loggedIn: true,
         loggedInUser: signupData,
         signedUpUser: signupData
@@ -92,6 +92,28 @@ export default function authReducer(
         loggedInUser: {},
         signedUpUser: {},
         errorMessage: signupError
+      };
+
+    case types.LOGIN_GETCSRF_TOKEN_START:
+      return {
+        ...state,
+        isFetching: true
+      };
+
+    case types.LOGIN_GETCSRF_TOKEN_SUCCESS:
+      csrfToken = action.csrfTokenData.data.csrfToken;
+      
+      return {
+        ...state,
+        csrfToken,
+        isFetching: false,
+      };
+    
+    case types.LOGIN_GETCSRF_TOKEN_ERROR:
+      const csrfTokenError = action.csrfTokenError;
+      return {
+        ...initialState,
+        errorMessage: csrfTokenError
       };
     
     default:

@@ -24,17 +24,26 @@ export function loginUser (username, password, csrfToken) {
     
     return authApi.login(username, password, csrfToken)
       .then((loggedInUser) => {
+        // If the login was not successful 
         if (loggedInUser.status !== HttpStatus.OK) {
+          // If there no CSRF token get a CSRF token
+          if (loggedInUser.status === HttpStatus.FORBIDDEN) {
+            dispatch(beginApiCall());
+            return dispatch(loginGetCSRFTokenUser(username, password));
+          }
           const error = new Error(loggedInUser.statusMessage);
           dispatch(apiCallError(error));
-          dispatch(loginError(error));
+          return dispatch(loginError(error));
         }
-        dispatch(userActions.loadUserDetails(csrfToken));
+
+        // If login was successful load user details
+        // and send a success action to authReducer
+        dispatch(userActions.loadUserDetails(username, csrfToken));
         return dispatch(loginSuccess(loggedInUser));
       })
       .catch((error) => {
         dispatch(apiCallError(error));
-        dispatch(loginError(error));
+        return dispatch(loginError(error));
       });
     }
 }
@@ -91,16 +100,58 @@ export function signupUser (signupData, csrfToken) {
     
     return userApi.signup(signupData, csrfToken)
       .then((signedUpUser) => {
-        if (signedUpUser.status !== HttpStatus.CREATED) {
+        if (signedUpUser.status == HttpStatus.FORBIDDEN) {
+          dispatch(beginApiCall());
+          return dispatch(loginGetCSRFTokenUser());
+        } else if (signedUpUser.status !== HttpStatus.CREATED) {
           const error = new Error(signedUpUser.statusMessage);
           dispatch(apiCallError(error));
           dispatch(signupError(error));
         }
+        
         return dispatch(signupSuccess(signedUpUser));
       })
       .catch((error) => {
         dispatch(apiCallError(error));
         dispatch(signupError(error));
+      });
+    }
+}
+
+export function loginGetCSRFTokenStart() {
+  return { type: types.LOGIN_GETCSRF_TOKEN_START };
+}
+
+export function loginGetCSRFTokenSuccess(csrfTokenData) {
+  return { type: types.LOGIN_GETCSRF_TOKEN_SUCCESS, csrfTokenData };
+}
+
+export function loginGetCSRFTokenError(csrfTokenError) {
+  return { type: types.LOGIN_GETCSRF_TOKEN_ERROR, csrfTokenError };
+}
+
+export function loginGetCSRFTokenUser (username = null, password = null) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(loginGetCSRFTokenStart());
+    
+    return authApi.getCSRFToken()
+      .then((csrfTokenData) => {
+        if (csrfTokenData.status !== HttpStatus.OK) {
+          const error = new Error(csrfTokenData.statusMessage);
+          dispatch(apiCallError(error));
+          return dispatch(loginGetCSRFTokenError(error));
+        } else if (csrfTokenData.status === HttpStatus.OK) {
+          if(username && password) {
+            dispatch(loginGetCSRFTokenSuccess(csrfTokenData));
+            return dispatch(loginUser(username, password, csrfTokenData.data.csrfToken));
+          }
+          return dispatch(loginGetCSRFTokenSuccess(csrfTokenData));
+        }
+      })
+      .catch((error) => {
+        dispatch(apiCallError(error));
+        dispatch(loginGetCSRFTokenError(error));
       });
     }
 }
