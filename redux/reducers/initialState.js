@@ -8,6 +8,12 @@ export default {
   errorMessage: {},
   userDetails: {},
   stats: {},
-  standings: {},
+  standings: {
+    isFetchingStandings: false,
+    nba: [],
+    fifa: [],
+    madden: [],
+    nhl: []
+  },
   apiCallsInProgress: 0
 }
