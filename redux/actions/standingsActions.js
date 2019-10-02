@@ -1,21 +1,42 @@
 import * as types from '../actions/actionTypes';
 import * as standingsApi from '../../api/standingsApi';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
+import HttpStatus from 'http-status-codes';
+
+export function loadingStandingsStart() {
+  return { type: types.LOAD_STANDINGS_START };
+}
 
 export function loadStandingsSuccess(standings) {
   return { type: types.LOAD_STANDINGS_SUCCESS, standings };
 }
 
-export function loadStandings() {
+export function loadStandingsError(loadStandingsError) {
+  return { type: types.LOAD_STANDINGS_ERROR, loadStandingsError };
+}
+
+export function loadStandings(csrfToken) {
   return function (dispatch) {
     dispatch(beginApiCall());
-    return standingsApi
-      .getStandings()
-      .then(standings => {
-        dispatch(loadStandingsSuccess(standings));
-      }).catch(error => {
-        dispatch(apiCallError(error));
-        throw error;
-      })
+    dispatch(loadingStandingsStart());
+    const games = ['nba', 'fifa', 'madden', 'nhl'];
+    const standings = games.map((game) => {
+      standingsApi
+        .getStandings(game, csrfToken)
+        .then(standings => {
+          if (standings.status !== HttpStatus.OK) {
+            const error = new Error(standings.statusMessage);
+            dispatch(apiCallError(error));
+            dispatch(loadStandingsError(error));
+          }
+
+          return dispatch(loadStandingsSuccess(standings));
+        }).catch(error => {
+          dispatch(apiCallError(error));
+          dispatch(loadStandingsError(error));
+          throw error;
+        })
+    });
+    return standings;
   }
 }

@@ -13,108 +13,46 @@ import Animated from 'react-native-reanimated';
 
 //console.disableYellowBox = true
 
-const FirstRoute = () => (
-    gameData()
+const FirstRoute = (props) => (
+    gameData(props.standingsList)
 );
-const SecondRoute = () => (
-    gameData()
-);
-
-const ThirdRoute = () => (
-    gameData()
+const SecondRoute = (props) => (
+    gameData(props.standingsList)
 );
 
-const FourthRoute = () => (
-    gameData()
+const ThirdRoute = (props) => (
+    gameData(props.standingsList)
 );
 
-gameData = () => {
+const FourthRoute = (props) => (
+    gameData(props.standingsList)
+);
+
+gameData = (standingsList) => {
     return (
         <View>
-            <View key={0} style={{ height: 80, justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>01</Text>
-                    </View>
-                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                    <View>
-                        <Text style={[styles.cardText, { fontSize: 16 }]}>Chris Wright</Text>
-                        <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
+            {standingsList.map((standing, idx) => 
+                <View key={idx} style={{ height: 80, justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>
+                                {idx < 9 ? `0${idx}` : idx}
+                            </Text>
+                        </View>
+                        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                        <View>
+                            <Text style={[styles.cardText, { fontSize: 16 }]}>
+                                {`${standing.user_stats.user.first_name} ${standing.user_stats.user.last_name}`}
+                            </Text>
+                            <Text style={{ color: '#888' }}>{standing.won_games}-{standing.lost_games}</Text>
+                        </View>
 
-                    <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                        <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>30</Text>
+                        <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
+                            <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>{standing.rating}</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
-
-            <View key={1} style={{ height: 80, justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>01</Text>
-                    </View>
-                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                    <View>
-                        <Text style={[styles.cardText, { fontSize: 16 }]}>Chris Wright</Text>
-                        <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
-
-                    <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                        <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>30</Text>
-                    </View>
-                </View>
-            </View>
-
-            <View key={2} style={{ height: 80, justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>01</Text>
-                    </View>
-                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                    <View>
-                        <Text style={[styles.cardText, { fontSize: 16 }]}>Chris Wright</Text>
-                        <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
-
-                    <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                        <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>30</Text>
-                    </View>
-                </View>
-            </View>
-
-            <View key={3} style={{ height: 80, justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>01</Text>
-                    </View>
-                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                    <View>
-                        <Text style={[styles.cardText, { fontSize: 16 }]}>Chris Wright</Text>
-                        <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
-
-                    <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                        <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>30</Text>
-                    </View>
-                </View>
-            </View>
-
-            <View key={4} style={{ height: 80, justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>01</Text>
-                    </View>
-                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                    <View>
-                        <Text style={[styles.cardText, { fontSize: 16 }]}>Chris Wright</Text>
-                        <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
-
-                    <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                        <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>30</Text>
-                    </View>
-                </View>
-            </View>
+            )}
         </View>
     )
 }
@@ -180,15 +118,20 @@ export default class GameTabs extends React.Component {
     };
 
 
-
-    _renderScene = SceneMap({
-        first: FirstRoute,
-        second: SecondRoute,
-        third: ThirdRoute,
-        fourth: FourthRoute,
-    });
-
-
+    _renderScene = ({ route }) => {
+        switch (route.key) {
+          case 'first':
+            return <FirstRoute standingsList={this.props.standings.fifa} />;
+          case 'second':
+                return <SecondRoute standingsList={this.props.standings.madden} />;
+          case 'third':
+                return <ThirdRoute standingsList={this.props.standings.nba} />;
+          case 'fourth':
+                return <FourthRoute standingsList={this.props.standings.nhl} />;
+          default:
+            return null;
+        }
+    };
 
     render() {
         return (

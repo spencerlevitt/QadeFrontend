@@ -41,10 +41,10 @@ DEV
 class HomeScreen extends React.Component {
 
   componentDidMount() {
-    const { userDetails, stats, standings, actions } = this.props;
+    const { userDetails, loggedInUser, csrfToken, stats, standings, actions } = this.props;
     
-    if (!userDetails.profile) {
-      actions.loadUserDetails(this.props.csrfToken).catch(error => {
+    if (!userDetails.profile && loggedInUser.user.email) {
+      actions.loadUserDetails(csrfToken).catch(error => {
         alert('Loading user failed' + error);
       });
     }
@@ -55,11 +55,8 @@ class HomeScreen extends React.Component {
     //   });
     // }
 
-    // if (standings.length === 0) {
-    //   actions.loadStandings().catch(error => {
-    //     alert('Loading standings failed' + error);
-    //   });
-    // }
+    // Load all game standings: fifa, nba, nhl, madden 
+    actions.loadStandings(csrfToken);
   }
 
   render() {
@@ -163,7 +160,7 @@ class HomeScreen extends React.Component {
             </View>
 
 
-            <GameTabs />
+            <GameTabs standings={this.props.standings} />
 
 
           </View>
@@ -186,7 +183,7 @@ HomeScreen.propTypes = {
   actions: PropTypes.object.isRequired,
   userDetails: PropTypes.object.isRequired,
   // stats: PropTypes.object.isRequired,
-  // standings: PropTypes.object.isRequired,
+  standings: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
 };
 
@@ -197,7 +194,7 @@ function mapStateToProps(state) {
     loggedInUser: state.auth.loggedInUser,
     loggedIn: state.auth.loggedIn,
     // stats: state.stats,
-    // standings: state.standings,
+    standings: state.standings,
     loading: state.apiCallsInProgress > 0
   };
 }
@@ -207,7 +204,7 @@ function mapDispatchToProps(dispatch) {
     actions: {
       loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
       // loadStats: bindActionCreators(statsActions.loadStats, dispatch),
-      // loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
+      loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
     }
   };
 }

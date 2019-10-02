@@ -3,11 +3,19 @@ import { environment } from '../environments/environment.dev';
 import Axios from 'axios';
 const baseUrl = environment.API_URL;
 
-// TODO: for now this function will
-// get all the standings later it will retrieve
-// the logged in user standings
-export function getStandings() {
-  return Axios.get(`${baseUrl}/standings`)
-    .then(handleResponse)
+export function getStandings(game = 'all', csrfToken) {
+  if (game === 'all') {
+    const games = ['nba', 'fifa', 'madden', 'nhl'];
+    return games.map((g) => getStandingsAPICall(g, csrfToken));
+  } else {
+    return getStandingsAPICall(game, csrfToken);
+  } 
+}
+
+function getStandingsAPICall(game, csrfToken) {
+  return Axios.get(`${baseUrl}${game}/`, {}, {
+    headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
+  })
+    .then(response => handleResponse(response, 'game', game))
     .catch(error => handleError(error.response));
 }
