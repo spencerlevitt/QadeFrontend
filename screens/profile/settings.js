@@ -68,7 +68,7 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => NavigationService.navigate("ToS")}>
+                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => NavigationService.navigate("Privacy")}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>
@@ -81,7 +81,7 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => NavigationService.navigate("Privacy")}>
+                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => NavigationService.navigate("ToS")}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>

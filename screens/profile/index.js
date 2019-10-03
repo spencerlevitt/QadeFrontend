@@ -103,7 +103,7 @@ export default class ProfileTabs extends React.Component {
     return (
       <View style={{ flex: 1, backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
         <View style={{ backgroundColor: '#faf7f7'}}>
-        <TouchableOpacity onPress={() => NavigationService.navigate("Settings")} style={{ paddingLeft: 5, paddingTop: 5, alignItems: 'flex-start'}}>
+        <TouchableOpacity onPress={() => NavigationService.navigate("Profile")} style={{ paddingLeft: 5, paddingTop: 5, alignItems: 'flex-start'}}>
           <EvilIcons name={'arrow-left'} size={35} color={'#888'} />
         </TouchableOpacity>
         </View>

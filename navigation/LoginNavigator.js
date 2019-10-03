@@ -6,6 +6,7 @@ import Login2 from '../screens/login/index-2'
 import Login3 from '../screens/login/index-3'
 import Login4 from '../screens/login/index-4'
 import Login5 from '../screens/login/index-5'
+import ToS from '../screens/login/tos'
 
 export default createAppContainer(
   createSwitchNavigator({
@@ -16,6 +17,8 @@ export default createAppContainer(
     Login2,
     Login3,
     Login4,
-    Login5
+    Login5,
+    ToS
   })
 );
+

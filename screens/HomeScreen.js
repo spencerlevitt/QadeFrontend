@@ -65,6 +65,7 @@ export default class HomeScreen extends React.Component {
 
                 </View>
                 <TouchableOpacity
+                  style={{width: 40, height: 40}}
                   onPress={() => {
                     this.setModalVisible(!this.state.modalVisible);
                   }}>
@@ -186,7 +187,7 @@ export default class HomeScreen extends React.Component {
                 outputRange: [-40, 0],
               }),
             }}>
-              <TextInput style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15 }} placeholder={'Search Names'}>
+              <TextInput style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15, fontSize: 18 }} placeholder={'Search Names'}>
 
               </TextInput>
             </Animated.View>

@@ -60,8 +60,8 @@ export default function Recent() {
                 </View>
               </View>
 
-              <View style={{ width: 40 }}>
-                <Text style={{ textAlign: 'center', fontSize: 10 }}>
+              <View style={{ width: 40, marginTop: 5 }}>
+                <Text style={{ textAlign: 'center', fontSize: 12 }}>
                   beat
                 </Text>
               </View>
@@ -130,8 +130,8 @@ export default function Recent() {
                 </View>
               </View>
 
-              <View style={{ width: 40 }}>
-                <Text style={{ textAlign: 'center', fontSize: 10 }}>
+              <View style={{ width: 40, marginTop: 5 }}>
+                <Text style={{ textAlign: 'center', fontSize: 12 }}>
                   beat
                 </Text>
               </View>

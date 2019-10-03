@@ -9,7 +9,7 @@ import {
     View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit'
-
+import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as shape from 'd3-shape'
 import * as scale from 'd3-scale'
@@ -32,11 +32,11 @@ export default class Chart extends React.Component {
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>+$5.00 Today</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                         <Text style={{ color: 'rgba(0, 255, 255, 1)', fontSize: 32 }}>•</Text>
                         <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Money</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: 15 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginLeft: 15 }}>
                         <Text style={{ color: 'rgba(58, 143, 255, 1)', fontSize: 32 }}>•</Text>
                         <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Win %</Text>
                     </View>
@@ -98,9 +98,18 @@ export default class Chart extends React.Component {
                             backgroundColor: 'transparent'
                         }}
                     />
-
+                    <LinearGradient
+                        colors={['transparent','rgba(255,255,255,1)']}
+                        style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            height: 160,
+                        }}
+                    />
                 </View>
-                <View style={{ flex: 1,flexDirection: 'row' }}>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity style={{ borderRadius: 50, backgroundColor: this.state.index == 0 ? '#d1e7ff' : '#fff' }} onPress={() => { this.dateChange(0) }}>
                             <Text style={{ fontSize: 12, fontWeight: 'bold', color: this.state.index == 0 ? '#042066' : '#2e7ef4', paddingLeft: 5, paddingRight: 5 }}>

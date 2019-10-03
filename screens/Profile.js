@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   Image,
+  Picker,
   TouchableOpacity,
   TextInput,
   View,
@@ -14,6 +15,9 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default class Profile extends React.Component {
+  state = {
+    game: 'nba2k'
+  }
   render() {
     return (
       <ScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]}>
@@ -37,18 +41,14 @@ export default class Profile extends React.Component {
             </Text>
 
             <View style={{ flexDirection: 'row', marginTop: 20 }}>
-              <View style={{ flex: 0.3, paddingHorizontal: 10 }}>
-                <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Requests", { friends: true })}>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>121 Friends</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flex: 0.3  }}>
+
+              <View style={{ flex: 0.5 }}>
                 <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }} onPress={() => this.props.navigation.navigate("Requests", { friends: false })}>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>Friend Requests</Text>
-                  <Text style={{color: 'red', marginTop: -4}}>•</Text>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>121 Friends</Text>
+                  <Text style={{ color: 'red', marginTop: -4 }}>•</Text>
                 </TouchableOpacity>
               </View>
-              <View style={{ flex: 0.4, paddingHorizontal: 10  }}>
+              <View style={{ flex: 0.5, paddingHorizontal: 10 }}>
                 <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Transfer")}>
                   <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>Money Transfer</Text>
                 </TouchableOpacity>
@@ -58,10 +58,10 @@ export default class Profile extends React.Component {
             {/* Remove before prod */}
 
             <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
-                <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Loading")}>
-                  <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center' }}>Loading Example</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Loading")}>
+                <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center' }}>Loading Example</Text>
+              </TouchableOpacity>
+            </View>
 
             {/* */}
 
@@ -84,10 +84,27 @@ export default class Profile extends React.Component {
                 <Text style={{ fontSize: 18 }}>Stat Center</Text>
               </View>
               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
+                <View style={{ borderRadius: 20, borderWidth: 1, borderColor: '#3A8FFF30', overflow: 'hidden' }}>
+                  <View style={{position: 'absolute', top: 0, bottom: 0, right: 0, justifyContent: 'center'}}>
+                    <EvilIcons name={'chevron-down'} size={30} color={'#333'} />
+                  </View>
+                  <Picker
+                    selectedValue={this.state.game}
+                    style={{ height: 25, width: 100, backgroundColor: '#3A8FFF30', borderRadius: 20, flexDirection: 'row', alignItems: 'center' }}
+                    onValueChange={(itemValue, itemIndex) => this.setState({ game: itemValue })}>
+                    <Picker.Item label="NBA 2K" value="nba2k"><EvilIcons name={'chevron-down'} size={20} color={'#333'} /></Picker.Item>
+                    <Picker.Item label="NHL" value="nhl" />
+                    <Picker.Item label="FIFA" value="fifa" />
+                    <Picker.Item label="MADDEN" value="madden" />
+                  </Picker>
+                </View>
+
+                {/*
                 <TouchableOpacity style={{ height: 25, backgroundColor: '#3A8FFF30', borderRadius: 20, flexDirection: 'row', alignItems: 'center' }}>
                   <Text style={{ paddingLeft: 10, paddingRight: 5 }}>NBA 2K</Text>
                   <EvilIcons name={'chevron-down'} size={20} color={'#333'} />
                 </TouchableOpacity>
+                */}
               </View>
             </View>
             <View style={{ margin: 30 }}>

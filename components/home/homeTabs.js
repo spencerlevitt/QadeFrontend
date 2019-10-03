@@ -12,6 +12,7 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import Swiper from 'react-native-deck-swiper';
 import Animated from 'react-native-reanimated';
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+import NavigationService from '../../navigation/NavigationService'
 import Chart from './chart'
 
 //empty render (no matches)
@@ -109,10 +110,12 @@ class Tabs extends React.Component {
 
 
                                             <View style={{ alignItems: 'flex-end' }}>
+                                                <TouchableOpacity onPress={() => NavigationService.navigate('Submit')}>
                                                 <View style={{ alignItems: 'center' }}>
                                                     <AntDesign name={'download'} size={15} color={'#888'} />
                                                     <Text style={{ color: '#888', fontSize: 8 }}>Submit Score</Text>
                                                 </View>
+                                                </TouchableOpacity>
 
                                             </View>
                                         </View>
@@ -120,10 +123,12 @@ class Tabs extends React.Component {
                                 )
                             }}
                             onSwiped={(index) => { if (index == 5) { this.setState({ index: 0 }) } else { this.setState({ index: this.state.index + 1 }) } }}
-                            onSwipedAll={() => { this.setState({ complete: true }) }}
+                            onSwipedAll={() => { this.setState({ index: 0 }) }}
                             cardIndex={0}
+                            stackSeparation={0}
+                            infinite={true}
                             backgroundColor={'#ffffff00'}
-                            stackSize={2}
+                            stackSize={3}
                         //infinite={true}
                         >
                         </Swiper>
