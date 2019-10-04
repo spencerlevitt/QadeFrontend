@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
   },
   getStartedText: {
     fontSize: 10,
+    marginBottom: 5,
     textTransform: 'uppercase',
     color: '#333',
     fontWeight: 'bold',

@@ -27,7 +27,7 @@ export default function Settings() {
                 <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: '#333', fontSize: 20, textAlign: 'center' }}>
                         Settings
-                        </Text>
+                    </Text>
                 </View>
 
                 <View style={{ flex: 0.2 }}>
@@ -94,7 +94,7 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Profile")}>
+                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => NavigationService.navigate("Profile")}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>
@@ -120,7 +120,7 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Profile")}>
+                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => NavigationService.navigate("Onb")}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>

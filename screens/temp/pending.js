@@ -59,7 +59,7 @@ export default class Pending extends React.Component {
                     <View>
 
 
-                        {/* On Game Accepted */}
+                        {/* On Game Accepted 
                         <View key={0} style={{ height: 80, justifyContent: 'center', paddingLeft: 20 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
@@ -71,10 +71,12 @@ export default class Pending extends React.Component {
                                 </View>
 
                                 <View style={{ flex: 0.5 }}>
-                                    <Text style={{ color: '#888', fontSize: 12, paddingLeft: 5, paddingRight: 5 }}>Don't quit the match before</Text>
+                                    <Text style={{ color: '#888', fontSize: 12, paddingLeft: 5, paddingRight: 5, textAlign: 'center' }}>Don't quit the match before submitting your results!</Text>
                                 </View>
                             </View>
                         </View>
+
+                        */}
 
                         {this.items()}
 
@@ -153,7 +155,7 @@ export default class Pending extends React.Component {
                             </View>
 
                             <View style={{ flex: 0.5 }}>
-                                <Text style={{ color: '#888', fontSize: 12, paddingLeft: 5, paddingRight: 5 }}>Don't quit the match before</Text>
+                                <Text style={{ color: '#888', fontSize: 12, paddingLeft: 5, paddingRight: 5 , textAlign: 'center' }}>Don't quit the match before submitting your results!</Text>
                             </View>
                         </View>
                     </View>

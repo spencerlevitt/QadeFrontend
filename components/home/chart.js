@@ -32,12 +32,16 @@ export default class Chart extends React.Component {
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>+$5.00 Today</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <Text style={{ color: 'rgba(0, 255, 255, 1)', fontSize: 32 }}>•</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{height: 8, width: 8, borderRadius: 20, backgroundColor: 'rgba(0, 255, 255, 1)', marginRight: 3}}>
+
+                        </View>
                         <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Money</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginLeft: 15 }}>
-                        <Text style={{ color: 'rgba(58, 143, 255, 1)', fontSize: 32 }}>•</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: 15 }}>
+                        <View style={{height: 8, width: 8, borderRadius: 20, backgroundColor: 'rgba(58, 143, 255, 1)', marginRight: 3}}>
+
+                        </View>
                         <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Win %</Text>
                     </View>
                 </View>
@@ -75,8 +79,8 @@ export default class Chart extends React.Component {
                         width={Dimensions.get('window').width + 160} // from react-native
                         height={150}
                         chartConfig={{
-                            backgroundColor: "transparent",
-                            backgroundGradientFrom: '#ffffff00',
+                            backgroundColor: "#ffffff00",
+                            backgroundGradientFrom: '#fff',
                             backgroundGradientTo: '#fff',
                             strokeWidth: 1,
                             decimalPlaces: 2, // optional, defaults to 2dp
@@ -99,7 +103,7 @@ export default class Chart extends React.Component {
                         }}
                     />
                     <LinearGradient
-                        colors={['transparent','rgba(255,255,255,1)']}
+                        colors={['rgba(255,255,255,0)','rgba(255,255,255,1)']}
                         style={{
                             position: 'absolute',
                             left: 0,

@@ -36,6 +36,8 @@ import GameRules from '../screens/profile/rules'
 import CameraPro from '../screens/profile/CameraPro'
 import CameraProPre from '../screens/profile/CameraProPre'
 
+import Onb from '../screens/profile/onb'
+
 //Test items
 import Loading from '../screens/temp/loading'
 
@@ -125,7 +127,8 @@ const ProfileStack = createStackNavigator(
     GameRules,
     Loading,
     CameraPro,
-    CameraProPre
+    CameraProPre,
+    Onb
   },
   config
 );

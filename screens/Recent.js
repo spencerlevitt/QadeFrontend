@@ -49,26 +49,26 @@ export default function Recent() {
 
             <View style={{ flex: 1, flexDirection: 'row' }}>
 
-              <View style={{ flex: 0.25, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1/3, flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
+                  <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333', textAlign: 'right' }]}>Chris Wright</Text>
                   <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888' }}>10-5</Text>
+                      <Text style={{ color: '#888', textAlign: 'right' }}>10-5</Text>
                     </View>
                   </View>
                 </View>
               </View>
 
-              <View style={{ width: 40, marginTop: 5 }}>
+              <View style={{ width: 40 }}>
                 <Text style={{ textAlign: 'center', fontSize: 12 }}>
                   beat
                 </Text>
               </View>
 
-              <View style={{ flex: 0.3, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1/3, flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
+                  <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
                   <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1 }}>
                       <Text style={{ color: '#888' }}>10-5</Text>
@@ -77,7 +77,7 @@ export default function Recent() {
                 </View>
               </View>
 
-              <View style={{ flex: 0.45 }}>
+              <View style={{ flex: 1/3 }}>
                 <Text style={{ textAlign: 'right', fontSize: 12 }}>
                   21m | FIFA
                 </Text>
