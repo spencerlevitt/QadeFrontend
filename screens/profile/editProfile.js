@@ -135,10 +135,6 @@ export default class EditProfile extends React.Component {
                             </TextInput>
                         </View>
 
-
-
-
-
                     </View>
 
                 </View>

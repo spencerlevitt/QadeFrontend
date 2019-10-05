@@ -4,10 +4,14 @@ import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View, Text, AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
 import AppNavigator from './navigation/AppNavigator';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import configureStore from './redux/configureStore.dev';
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-let onboard = true
+let onboard = true;
+const { store, persistor } = configureStore();
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -21,14 +25,18 @@ export default function App(props) {
       />
     );
   } else {
-    if(onboard != false){
+    if (onboard != false) {
       return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
-        </View>
+        <ReduxProvider store={store}>
+          <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+            <View style={styles.container}>
+              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+              <AppNavigator />
+            </View>
+          </PersistGate>
+        </ReduxProvider>
       );
-    }else{
+    } else {
       return (
         <View style={styles.container}>
           {/* Implmentation onboard if before login */}
@@ -75,7 +83,7 @@ async function loadResourcesAsync() {
       'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
     }),
     onboard = AsyncStorage.getItem("onboard")
-    
+
   ]);
 }
 

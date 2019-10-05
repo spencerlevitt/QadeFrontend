@@ -1,11 +1,11 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
-import Login from '../screens/login/index'
-import Login2 from '../screens/login/index-2'
-import Login3 from '../screens/login/index-3'
-import Login4 from '../screens/login/index-4'
-import Login5 from '../screens/login/index-5'
+import Landing from '../screens/login/Landing'
+import Login from '../screens/login/Login'
+import SignUp from '../screens/login/SignUp'
+import ForgotPassword from '../screens/login/ForgotPassword'
+import SignupEmailConfirmation from '../screens/login/SignupEmailConfirmation'
 import ToS from '../screens/login/tos'
 
 export default createAppContainer(
@@ -13,12 +13,11 @@ export default createAppContainer(
     // You could add another route here for authentication.
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
     //Onboard,
+    Landing,
     Login,
-    Login2,
-    Login3,
-    Login4,
-    Login5,
+    SignUp,
+    ForgotPassword,
+    SignupEmailConfirmation,
     ToS
   })
 );
-

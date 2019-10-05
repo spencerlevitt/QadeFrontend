@@ -24,11 +24,11 @@ export default class ToS extends React.Component {
         const { day } = this.props.navigation.state.params;
         const { year } = this.props.navigation.state.params;
 
-        const { first } = this.props.navigation.state.params;
-        const { last } = this.props.navigation.state.params;
+        const { first_name } = this.props.navigation.state.params;
+        const { last_name } = this.props.navigation.state.params;
         const { email } = this.props.navigation.state.params;
-        const { pw } = this.props.navigation.state.params;
-        const { pw2 } = this.props.navigation.state.params;
+        const { password } = this.props.navigation.state.params;
+        const { confirmPassword } = this.props.navigation.state.params;
 
         this.state = {
             toggle,
@@ -38,11 +38,11 @@ export default class ToS extends React.Component {
             day,
             year,
 
-            first,
-            last,
+            first_name,
+            last_name,
             email,
-            pw,
-            pw2,
+            password,
+            confirmPassword,
         }
     }
 
@@ -61,25 +61,22 @@ export default class ToS extends React.Component {
                             Privacy Policy
                     </Text>
                     </View>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Login3", {
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("SignUp", {
                         toggle: this.state.toggle,
                         console: this.state.console,
 
                         month: this.state.month,
                         day: this.state.day,
                         year: this.state.year,
-
-                        first: this.state.first,
-                        last: this.state.last,
+                        
+                        first_name: this.state.first_name,
+                        last_name: this.state.last_name,
                         email: this.state.email,
-                        pw: this.state.pw,
-                        pw2: this.state.pw2,
+                        password: this.state.password,
+                        confirmPassword: this.state.confirmPassword,
                     })} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
                         <EvilIcons name={'close-o'} size={50} color={'#888'} />
                     </TouchableOpacity>
-
-
-
                 </View>
 
                 <ScrollView >
@@ -88,12 +85,10 @@ export default class ToS extends React.Component {
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
                     </Text>
                     </View>
                 </ScrollView>
             </View>
-
         );
     }
 }

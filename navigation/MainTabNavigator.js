@@ -9,38 +9,34 @@ import Recent from '../screens/Recent';
 import Profile from '../screens/Profile';
 import Game from '../screens/Game';
 
-import NavigationService from './NavigationService'
+import NavigationService from './NavigationService';
 
-import Submit from '../screens/game/submit'
-import Confirm from '../screens/game/confirm'
-import Camera from '../screens/game/Camera'
-import CameraPre from '../screens/game/CameraPre'
-import Await from '../screens/game/Await'
-import ScoreConfirm from '../screens/game/ScoreConfirm'
-import ScoreA from '../screens/game/ScoreA'
-import ScoreB from '../screens/game/ScoreB'
+import Submit from '../screens/game/submit';
+import Confirm from '../screens/game/confirm';
+import Camera from '../screens/game/Camera';
+import CameraPre from '../screens/game/CameraPre';
+import Await from '../screens/game/Await';
+import ScoreConfirm from '../screens/game/ScoreConfirm';
+import ScoreA from '../screens/game/ScoreA';
+import ScoreB from '../screens/game/ScoreB';
 
-import Challenge from '../screens/challenge'
-import Transfer from '../screens/transfer'
+import Challenge from '../screens/challenge';
+import Transfer from '../screens/transfer';
 
-import Requests from '../screens/profile/index'
-import Matches from '../screens/profile/matches'
-import Match from '../screens/profile/match'
-import Settings from '../screens/profile/settings'
-import EditProfile from '../screens/profile/editProfile'
-import Support from '../screens/profile/support'
-import ToS from '../screens/profile/tos'
-import Privacy from '../screens/profile/privacy'
-import GameRules from '../screens/profile/rules'
-
-import CameraPro from '../screens/profile/CameraPro'
-import CameraProPre from '../screens/profile/CameraProPre'
-
-import Onb from '../screens/profile/onb'
-
+import Requests from '../screens/profile/index';
+import Matches from '../screens/profile/matches';
+import Match from '../screens/profile/match';
+import Settings from '../screens/profile/settings';
+import EditProfile from '../screens/profile/editProfile';
+import Support from '../screens/profile/support';
+import ToS from '../screens/profile/tos';
+import Privacy from '../screens/profile/privacy';
+import GameRules from '../screens/profile/rules';
+import CameraPro from '../screens/profile/CameraPro';
+import CameraProPre from '../screens/profile/CameraProPre';
+import Onb from '../screens/profile/onb';
 //Test items
-import Loading from '../screens/temp/loading'
-
+import Loading from '../screens/temp/loading';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -143,12 +139,13 @@ ProfileStack.navigationOptions = ({ navigation }) => ({
 
 ProfileStack.path = '';
 
-const tabNavigator = createBottomTabNavigator({
+export const tabNavigator = createBottomTabNavigator({
   HomeStack,
   GameStack,
   RecentStack,
   ProfileStack,
 }, {
+  initialRouteName: 'HomeStack',
   tabBarOptions: {
     showLabel: false,
   }

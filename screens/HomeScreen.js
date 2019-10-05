@@ -16,6 +16,12 @@ import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIc
 
 import HomeTabs from '../components/home/homeTabs'
 import GameTabs from '../components/home/gameTabs'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as userActions from '../redux/actions/userActions';
+import * as statsActions from '../redux/actions/statsActions';
+import * as standingsActions from '../redux/actions/standingsActions';
 import { TextInput } from 'react-native-gesture-handler';
 
 /*
@@ -36,7 +42,26 @@ DEV
 
 */
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
+
+  componentDidMount() {
+    const { userDetails, loggedInUser, csrfToken, stats, standings, actions } = this.props;
+    
+    if (!userDetails.profile && loggedInUser.user.email) {
+      actions.loadUserDetails(csrfToken).catch(error => {
+        alert('Loading user failed' + error);
+      });
+    }
+
+    // if (stats.length === 0) {
+    //   actions.loadStats().catch(error => {
+    //     alert('Loading stats failed' + error);
+    //   });
+    // }
+
+    // Load all game standings: fifa, nba, nhl, madden 
+    actions.loadStandings(csrfToken);
+  }
 
   state = {
     menuPos: new Animated.Value(0),
@@ -73,12 +98,8 @@ export default class HomeScreen extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={{ padding: 50, paddingTop: 0 }}>
-
-
                 <Text style={{ color: '#333', textAlign: 'center', fontSize: 18 }}>How are standings calculated?</Text>
-
                 <Text style={{ marginTop: 20, color: '#333', textAlign: 'center' }}>We use a simple formula using wins and losses to rank you among your friends. We make sure to take into account the number of games each user has played.</Text>
-
               </View>
             </View>
           </View>
@@ -91,7 +112,7 @@ export default class HomeScreen extends React.Component {
               Current Balance
             </Text>
             <Text style={styles.welcomeBalance}>
-              $32.55
+            ${!this.props.loading && this.props.userDetails ? this.props.userDetails.profile.balance : '0'}
             </Text>
           </View>
 
@@ -141,17 +162,23 @@ export default class HomeScreen extends React.Component {
 
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>22-10</Text>
+                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
+                      {!this.props.loading && this.props.userDetails ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
+                    </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>68.8%</Text>
+                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
+                      {!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.win_percent : '0'}%
+                    </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win %</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>$24.33</Text>
+                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
+                      ${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.net_gain : '0.00'}
+                    </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Net Gain</Text>
                   </View>
 
@@ -193,7 +220,7 @@ export default class HomeScreen extends React.Component {
             </Animated.View>
 
 
-            <GameTabs />
+            <GameTabs standings={this.props.standings} />
 
 
           </View>
@@ -224,6 +251,41 @@ export default class HomeScreen extends React.Component {
 HomeScreen.navigationOptions = {
   header: null,
 };
+
+HomeScreen.propTypes = {
+  loggedInUser: PropTypes.object.isRequired,
+  loggedIn: PropTypes.bool.isRequired,
+  csrfToken: PropTypes.string.isRequired,
+  actions: PropTypes.object.isRequired,
+  userDetails: PropTypes.object.isRequired,
+  // stats: PropTypes.object.isRequired,
+  standings: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state) {
+  return {
+    userDetails: state.userDetails,
+    csrfToken: state.auth.csrfToken,
+    loggedInUser: state.auth.loggedInUser,
+    loggedIn: state.auth.loggedIn,
+    // stats: state.stats,
+    standings: state.standings,
+    loading: state.apiCallsInProgress > 0
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
+      // loadStats: bindActionCreators(statsActions.loadStats, dispatch),
+      loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {
