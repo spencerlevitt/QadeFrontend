@@ -56,7 +56,6 @@ class Login extends React.Component {
                     this.props.csrfToken
                 );
                 
-                console.log('eee',response);
                 if (response && !response.csrfTokenData) {
                     if (response.loggedInUser && response.loggedInUser.status === HttpStatus.OK && this.props.loggedIn) {
                         this.props.navigation.navigate('Main');
