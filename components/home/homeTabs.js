@@ -12,7 +12,11 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import Swiper from 'react-native-deck-swiper';
 import Animated from 'react-native-reanimated';
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
-import Chart from './chart'
+import Chart from './chart';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as userActions from '../../redux/actions/userActions';
 
 //empty render (no matches)
 const Empty = () => (
@@ -39,11 +43,13 @@ const Empty = () => (
     </View>
 )
 
-const Tabs = () => (
+const Tabs = (props) => (
     <View style={{ height: 200, padding: 10 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
-            <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>3-1 Today</Text>
+            <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
+                {props.userDetails.statistics.won_games_today}-{props.userDetails.statistics.lost_games_today} Today
+            </Text>
         </View>
 
         <View style={{ position: 'absolute', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
@@ -111,12 +117,12 @@ const Tabs = () => (
             stackSeparation={5}
         >
         </Swiper>
-        
+
     </View>
 )
 
-const SecondRoute = () => (
-    <Tabs />
+const SecondRoute = (props) => (
+    <Tabs userDetails={props.userDetails} />
 );
 const FirstRoute = () => (
     <View>
@@ -124,7 +130,7 @@ const FirstRoute = () => (
     </View>
 );
 
-export default class GameTabs extends React.Component {
+class GameTabs extends React.Component {
 
     state = {
         index: 0,
@@ -185,10 +191,16 @@ export default class GameTabs extends React.Component {
 
 
 
-    _renderScene = SceneMap({
-        first: FirstRoute,
-        second: SecondRoute,
-    });
+    _renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'first':
+                return <FirstRoute />;
+            case 'second':
+                return <SecondRoute userDetails={this.props.userDetails} />;
+            default:
+                return null;
+        }
+    };
 
 
 
@@ -204,6 +216,28 @@ export default class GameTabs extends React.Component {
     }
 
 }
+
+GameTabs.propTypes = {
+    userDetails: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state) {
+    return {
+        userDetails: state.userDetails,
+        loading: state.apiCallsInProgress > 0
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: {
+            loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
+        }
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameTabs);
 
 const styles = StyleSheet.create({
     container: {

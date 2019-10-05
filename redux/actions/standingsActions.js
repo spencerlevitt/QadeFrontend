@@ -3,7 +3,7 @@ import * as standingsApi from '../../api/standingsApi';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
 import HttpStatus from 'http-status-codes';
 
-export function loadingStandingsStart() {
+export function loadStandingsStart() {
   return { type: types.LOAD_STANDINGS_START };
 }
 
@@ -18,9 +18,9 @@ export function loadStandingsError(loadStandingsError) {
 export function loadStandings(csrfToken) {
   return function (dispatch) {
     dispatch(beginApiCall());
-    dispatch(loadingStandingsStart());
+    dispatch(loadStandingsStart());
     const games = ['nba', 'fifa', 'madden', 'nhl'];
-    const standings = games.map((game) => {
+    const standings = games.map(game => {
       standingsApi
         .getStandings(game, csrfToken)
         .then(standings => {

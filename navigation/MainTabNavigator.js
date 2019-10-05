@@ -135,7 +135,7 @@ export const tabNavigator = createBottomTabNavigator({
   RecentStack,
   ProfileStack,
 }, {
-  initialRouteName: 'ProfileStack',
+  initialRouteName: 'HomeStack',
   tabBarOptions: {
     showLabel: false,
   }
