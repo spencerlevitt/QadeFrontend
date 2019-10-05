@@ -2,7 +2,6 @@ import React from 'react';
 import {
     Text,
     View,
-    ScrollView,
     TouchableOpacity
 } from 'react-native';
 import Constants from 'expo-constants';
@@ -12,6 +11,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../../redux/actions/authActions';
 import HttpStatus from 'http-status-codes';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 class SignUp extends React.Component {
 
@@ -19,11 +19,13 @@ class SignUp extends React.Component {
         super(props)
     }
 
-    state = {}
+    state = {
+        scroll: {},
+    }
 
     signUp = async (signUpData) => {
         const { actions } = this.props;
-        
+
         // Transform data to suitable payload for Axios API call
         this.state = {
             ...signUpData,
@@ -35,7 +37,7 @@ class SignUp extends React.Component {
                 zip: '',
                 // photo: '',   TODO: Create upload image for photo
                 bio: '',
-                console: 2  // TODO: Confirm if PS4 should be default
+                console: signUpData.console2
             }
         };
 
@@ -44,33 +46,52 @@ class SignUp extends React.Component {
 
             if (response && response.signedUpUser.status === HttpStatus.CREATED) {
                 this.props.navigation.navigate('SignupEmailConfirmation');
-            } else if (this.props.hasError) {
+            } else if (this.props.hasError) {    
                 alert(`Sign Up failed: ${this.props.errorMessage.message}`);
             }
         } catch (error) {
-            console.log('Error:', error);
+            console.log('SignUp Form Error:', error);
             alert(error);
         }
     };
 
+    _scrollToInput(reactNode: any, scroll) {
+        // Add a 'scroll' ref to your ScrollView
+        if(!this.scroll) {
+            this.scroll = scroll;
+        }
+        
+        this.scroll.props.scrollToFocusedInput(reactNode)
+    }
+
     render() {
         return (
-            <ScrollView style={{ flex: 1, backgroundColor: '#fff', paddingTop: Constants.statusBarHeight }}>
+            <KeyboardAwareScrollView style={{ flex: 1, backgroundColor: '#fff', paddingTop: Constants.statusBarHeight }}
+                innerRef={ref => {
+                    this.scroll = ref;
+                    this.setState({ scroll: this.scroll });
+                }}>
                 <View style={{ height: 60, justifyContent: 'flex-end', alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, textAlign: 'center', color: '#333' }}>
                         Sign Up
                     </Text>
                 </View>
-                
-                <SignUpForm onSubmit={this.signUp} />
 
-                <TouchableOpacity
-                    style={{marginBottom: 40,}}
-                    onPress={() => this.props.navigation.navigate('Login')}>
-                    <Text style={{ textAlign: 'center' }}>Have an account? <Text style={{ color: '#3A8FFF' }}>Click here</Text></Text>
-                </TouchableOpacity>
+                <View>
+                    <SignUpForm
+                        navigation={this.props.navigation}
+                        onSubmit={this.signUp}
+                        _scrollToInput={this._scrollToInput}
+                        scroll={this.state.scroll} />
 
-            </ScrollView>
+                    <TouchableOpacity
+                        style={{ marginBottom: 40, }}
+                        onPress={() => this.props.navigation.navigate('Login')}>
+                        <Text style={{ textAlign: 'center' }}>Have an account? <Text style={{ color: '#3A8FFF' }}>Click here</Text></Text>
+                    </TouchableOpacity>
+                </View>
+
+            </KeyboardAwareScrollView>
         )
     }
 }
@@ -87,9 +108,9 @@ SignUp.propTypes = {
     csrfToken: PropTypes.string.isRequired,
     errorMessage: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-  };
-  
-  const mapStateToProps = (state) => {
+};
+
+const mapStateToProps = (state) => {
     return {
         loggedInUser: state.auth.loggedInUser,
         loggedIn: state.auth.loggedIn,
@@ -98,13 +119,12 @@ SignUp.propTypes = {
         errorMessage: state.auth.errorMessage,
         loading: state.auth.apiCallsInProgress > 0
     };
-  };
-  
-  const mapDispatchToProps = (dispatch) => ({
+};
+
+const mapDispatchToProps = (dispatch) => ({
     actions: {
         signupUser: bindActionCreators(authActions.signupUser, dispatch)
     }
-  });
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
-  
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

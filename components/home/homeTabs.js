@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../../redux/actions/userActions';
+import NavigationService from '../../navigation/NavigationService'
 
 //empty render (no matches)
 const Empty = () => (
@@ -43,83 +44,105 @@ const Empty = () => (
     </View>
 )
 
-const Tabs = (props) => (
-    <View style={{ height: 200, padding: 10 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
-            <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
-                {props.userDetails.statistics.won_games_today}-{props.userDetails.statistics.lost_games_today} Today
-            </Text>
-        </View>
 
-        <View style={{ position: 'absolute', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
-            <View style={{ width: '30%', flexDirection: 'row' }}>
-                <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: '#6a8dff' }} />
+class Tabs extends React.Component {
+    
+    state = {
+        index: 0,
+        complete: false
+    }
+    
+    render() {
+        return (
 
-                <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: '#888' }} />
+            <View style={{ height: 200, padding: 10 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
+                    <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
+                        {this.props.userDetails.statistics.won_games_today}-{this.props.userDetails.statistics.lost_games_today} Today
+                    </Text>
+                </View>
 
-                <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: '#888' }} />
-
-                <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: '#888' }} />
-
-                <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: '#888' }} />
-
-            </View>
-        </View>
-
-        <Swiper
-            cards={['Nick Morton', 'Brandon Hue', 'Yoseph Msa', 'Elon Musk', 'Porter Proeo', 'Vesic Qeo', 'Rei Ayanami']}
-            renderCard={(card) => {
-                return (
-                    <View style={styles.card}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#eee', paddingBottom: 5 }}>
-                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                            <Text style={styles.cardText}>{card}</Text>
-                            <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                                <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>
-                                    <Text style={{ color: '#fff', fontSize: 10 }}>9 hrs left</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={styles.cardSubText}>Against {card}:</Text>
-                            <View style={{ flex: 0.3, alignItems: 'center' }}>
-
-                                <Text style={{ color: '#333', fontSize: 20, fontWeight: 'bold' }}>4-1</Text>
-                                <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
-
-                            </View>
-
-                            <View style={{ flex: 0.3, alignItems: 'center' }}>
-
-                                <Text style={{ color: '#333', fontSize: 20, fontWeight: 'bold' }}>0.80</Text>
-                                <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win's</Text>
-
-                            </View>
-
-                            <View style={{ flex: 0.4, alignItems: 'flex-end' }}>
-                                <View style={{ alignItems: 'center' }}>
-                                    <AntDesign name={'download'} size={15} color={'#888'} />
-                                    <Text style={{ color: '#888', fontSize: 8 }}>Submit Score</Text>
-                                </View>
-
-                            </View>
-                        </View>
+                <View style={{ position: 'absolute', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
+                    <View style={{ width: '30%', flexDirection: 'row' }}>
+                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 0 ? '#6a8dff' : '#888' }} />
+                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 1 ? '#6a8dff' : '#888' }} />
+                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 2 ? '#6a8dff' : '#888' }} />
+                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 3 ? '#6a8dff' : '#888' }} />
+                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 4 ? '#6a8dff' : '#888' }} />
                     </View>
-                )
-            }}
-            onSwiped={(cardIndex) => { console.log(cardIndex) }}
-            onSwipedAll={() => { console.log('onSwipedAll') }}
-            cardIndex={0}
-            backgroundColor={'#ffffff00'}
-            stackSize={3}
-            infinite={true}
-            stackSeparation={5}
-        >
-        </Swiper>
+                </View>
 
-    </View>
-)
+                {
+                    this.state.complete == false ? (
+                        <Swiper
+                            cards={['Nick Morton', 'Brandon Hue', 'Yoseph Msa', 'Elon Musk', 'Porter Proeo']}
+                            renderCard={(card) => {
+                                return (
+                                    <View style={styles.card}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
+                                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                            <Text style={styles.cardText}>{card}</Text>
+                                            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                                <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>
+                                                    <Text style={{ color: '#fff', fontSize: 10 }}>9 hrs left</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <View>
+                                                <Text style={styles.cardSubText}>FIFA $5.00</Text>
+                                                <Text style={styles.cardSubText2}>Against {card.split(' ')[1]}:</Text>
+                                            </View>
+
+                                            <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 10, flexDirection: 'row' }}>
+                                                <View style={{ flex: 0.5, alignItems: 'center' }}>
+
+                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>4-1</Text>
+                                                    <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
+
+                                                </View>
+
+                                                <View style={{ flex: 0.5, alignItems: 'center' }}>
+
+                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>0.80</Text>
+                                                    <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win's</Text>
+
+                                                </View>
+                                            </View>
+
+
+                                            <View style={{ alignItems: 'flex-end' }}>
+                                                <TouchableOpacity onPress={() => NavigationService.navigate('Submit')}>
+                                                <View style={{ alignItems: 'center' }}>
+                                                    <AntDesign name={'download'} size={15} color={'#888'} />
+                                                    <Text style={{ color: '#888', fontSize: 8 }}>Submit Score</Text>
+                                                </View>
+                                                </TouchableOpacity>
+
+                                            </View>
+                                        </View>
+                                    </View>
+                                )
+                            }}
+                            onSwiped={(index) => { if (index == 5) { this.setState({ index: 0 }) } else { this.setState({ index: this.state.index + 1 }) } }}
+                            onSwipedAll={() => { this.setState({ index: 0 }) }}
+                            cardIndex={0}
+                            stackSeparation={0}
+                            infinite={true}
+                            backgroundColor={'#ffffff00'}
+                            stackSize={3}
+                        //infinite={true}
+                        >
+                        </Swiper>
+                    ) : (
+                            <Empty />
+                        )
+                }
+            </View>
+        )
+    }
+}
 
 const SecondRoute = (props) => (
     <Tabs userDetails={props.userDetails} />
@@ -130,18 +153,18 @@ const FirstRoute = () => (
     </View>
 );
 
+
 class GameTabs extends React.Component {
 
     state = {
         index: 0,
         routes: [
-            { key: 'first', title: 'Progress' },
             { key: 'second', title: "Today's Matches" },
+            { key: 'first', title: 'Progress' },
         ],
     };
 
     _handleIndexChange = index => this.setState({ index });
-
 
     _renderTabBar = props => {
         const inputRange = props.navigationState.routes.map((x, i) => i);
@@ -202,8 +225,6 @@ class GameTabs extends React.Component {
         }
     };
 
-
-
     render() {
         return (
             <TabView
@@ -214,7 +235,6 @@ class GameTabs extends React.Component {
             />
         )
     }
-
 }
 
 GameTabs.propTypes = {
@@ -331,7 +351,7 @@ const styles = StyleSheet.create({
     },
     tabBar: {
         flexDirection: 'row',
-        width: '60%'
+        width: '80%'
     },
     tabBarCenter: {
         alignItems: 'center'
@@ -355,12 +375,19 @@ const styles = StyleSheet.create({
     },
     cardText: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 17,
         color: '#333'
     },
     cardSubText: {
-        fontWeight: 'bold',
-        fontSize: 10,
+        fontSize: 8,
+        textAlign: 'center',
+        color: '#888',
+        textTransform: 'uppercase'
+    },
+    cardSubText2: {
+        marginTop: 5,
+        fontSize: 8,
+        textAlign: 'center',
         color: '#888',
         textTransform: 'uppercase'
     }

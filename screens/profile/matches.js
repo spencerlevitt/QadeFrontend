@@ -70,7 +70,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 
@@ -142,7 +142,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 
@@ -214,7 +214,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 
@@ -286,7 +286,7 @@ export default function Matches() {
 
                             <View style={{ flex: 0.25 }}>
                                 <Text style={{ textAlign: 'center', fontSize: 10 }}>
-                                    21m | FIFA 19
+                                    21m | FIFA
                                 </Text>
                             </View>
 

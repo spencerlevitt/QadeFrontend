@@ -3,6 +3,9 @@ import {
     Text,
     TouchableOpacity,
     View,
+    KeyboardAvoidingView,
+    ScrollView,
+    Linking
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -23,7 +26,7 @@ export default class SignupEmailConfirmation extends React.Component {
                     <Text style={{ fontSize: 14, textAlign: 'center', color: '#333' }}>Remember to check your spam!</Text>
 
                     <View style={{ flex: 0.3, width: '100%', justifyContent: 'center' }}>
-                        <TouchableOpacity style={{ height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}  onPress={() => this.props.navigation.navigate("Login")}>
+                        <TouchableOpacity style={{ height: 60, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}  onPress={() => Linking.openURL(`mailto:qadeapp@gmail.com`)}>
                             <Text style={{ color: '#888', fontSize: 10 }}>If you still didn't receive an email <Text style={{color: '#3A8FFF'}}>Contact Us</Text></Text>
                         </TouchableOpacity>
                     </View>

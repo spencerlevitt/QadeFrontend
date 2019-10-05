@@ -1,56 +1,84 @@
 import React from 'react';
-import ValidationComponent from 'react-native-form-validator';
 import {
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 
-export default class SignupForm extends ValidationComponent {
+export default class SignupForm extends React.Component {
   constructor(props) {
     super(props);
     this.dobArray = ['', '', ''];
+
+    tandc = this.props.navigation.getParam('tandc', false);
+    console2 = this.props.navigation.getParam('console', 1);
+
+    month = this.props.navigation.getParam('month', '');
+    day = this.props.navigation.getParam('day', '');
+    year = this.props.navigation.getParam('year', '');
+
+    first_name = this.props.navigation.getParam('first_name', '');
+    last_name = this.props.navigation.getParam('last_name', '');
+    email = this.props.navigation.getParam('email', '');
+    password = this.props.navigation.getParam('password', '');
+    confirmPassword = this.props.navigation.getParam('confirmPassword', '');
+    
     this.state = {
-      first_name: '',
-      last_name: '',
-      email: '',
+      first_name,
+      last_name,
+      console2,
+      email,
       dob: new Date(),
-      day: '',
-      month: '',
-      year: '',
-      password: '',
-      confirmPassword: '',
+      day,
+      month,
+      year,
+      password,
+      confirmPassword,
       tandc: false,
-    }
+    };
   }
 
-  onSubmit = () => {
-    // validate the form
-    this.validate({
-      first_name: { minlength: 3, maxlength: 200, required: true },
-      last_name: { minlength: 3, maxlength: 200, required: true },
-      email: { email: true, required: true },
-      dob: { date: 'YYYY-MM-DD', required: true },
-      day: { maxlength: 2, numbers: true, required: true },
-      month: { maxlength: 2, numbers: true, required: true },
-      year: { minlength: 3, maxlength: 4, numbers: true, required: true },
-      password: { minlength: 7, maxlength: 200, required: true },
-      confirmPassword: { minlength: 7, maxlength: 200, required: true },
-      tandc: { required: true },
-    });
-    
-    const errorMessages = this.getErrorMessages();
-    if (errorMessages !== '') {
-      alert(errorMessages);
-    } else if (this.state.password !== this.state.confirmPassword) {
-      alert('Passwords do not match!');
-    } else {
-      // submit form data to parent component
-      this.props.onSubmit(this.state);
-    }
+  validateEmail = (email) => {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
   };
+
+  onSubmit = () => {
+    var date = new Date()
+    if (this.state.tandc === false) {
+        Alert.alert("Please accept the terms and conditions")
+    } else if (this.state.month == '') {
+        Alert.alert("Please enter your birth month")
+    } else if (this.state.day == '') {
+        Alert.alert("Please enter your birth date")
+    } else if (this.state.year == '') {
+        Alert.alert("Please enter your birth year")
+    } else if (this.state.first_name == '') {
+        Alert.alert("Please enter your first name")
+    } else if (this.state.last_name == '') {
+        Alert.alert("Please enter your last name")
+    } else if (this.state.email == '') {
+        Alert.alert("Please enter your email")
+    } else if (!this.validateEmail(this.state.email)) {
+        Alert.alert("Please enter a valid email")
+    } else if (this.state.password == '') {
+        Alert.alert("Please enter your password")
+    } else if (this.state.confirmPassword == '') {
+        Alert.alert("Please confirm your password")
+    } else if (this.state.password != this.state.confirmPassword) {
+        Alert.alert("Please make sure your passwords match")
+    } else if ((date.getFullYear() - parseInt(this.state.year)) < 18) {
+        Alert.alert("You must be at least 18 to sign up")
+    } else if ((date.getFullYear() - parseInt(this.state.year)) > 90) {
+        Alert.alert("Please enter a real birth year")
+    } else {
+        // submit form data to parent component
+        this.props.onSubmit(this.state);
+    }
+  }
 
   onChangeInput = (e, type) => {
     this.setState({ [type]: e });
@@ -78,9 +106,10 @@ export default class SignupForm extends ValidationComponent {
     this.setState({
       dob,
     });
-  }
+  };
 
   render() {
+    var date = new Date();
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, padding: 40, paddingBottom: 0 }}>
@@ -92,6 +121,11 @@ export default class SignupForm extends ValidationComponent {
               style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
               placeholder={'First Name'}
               placeholderTextColor={'#666'}
+              value={this.state.first_name}
+              onFocus={(event: Event) => {
+                // `bind` the function if you're using ES6 classes
+                this.props._scrollToInput((event.target), this.props.scroll)
+              }}
               onChangeText={e => this.onChangeInput(e, 'first_name')}>
             </TextInput>
           </View>
@@ -104,6 +138,11 @@ export default class SignupForm extends ValidationComponent {
               style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
               placeholder={'Last Name'}
               placeholderTextColor={'#666'}
+              value={this.state.last_name}
+              onFocus={(event: Event) => {
+                // `bind` the function if you're using ES6 classes
+                this.props._scrollToInput((event.target), this.props.scroll)
+              }}
               onChangeText={e => this.onChangeInput(e, 'last_name')}>
             </TextInput>
           </View>
@@ -116,6 +155,12 @@ export default class SignupForm extends ValidationComponent {
               style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
               placeholder={'Email Address'}
               placeholderTextColor={'#666'}
+              value={this.state.email}
+              onFocus={(event: Event) => {
+                // `bind` the function if you're using ES6 classes
+                this.props._scrollToInput((event.target), this.props.scroll)
+              }}
+              keyboardType={'email-address'}
               onChangeText={e => this.onChangeInput(e, 'email')}>
             </TextInput>
           </View>
@@ -134,7 +179,19 @@ export default class SignupForm extends ValidationComponent {
                   style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
                   placeholderTextColor={'#666'}
                   maxLength={2}
-                  onChangeText={e => this.onChangeDate(e, 'month')}
+                  value={this.state.month}
+                  onFocus={(event: Event) => {
+                    // `bind` the function if you're using ES6 classes
+                    this.props._scrollToInput((event.target), this.props.scroll)
+                  }}
+                  keyboardType={'number-pad'}
+                  onChangeText={(val) => {
+                    if (parseInt(val) > 12) {
+                      this.setState({ month: ''})
+                    } else {
+                      this.onChangeDate(val, 'month')
+                    }
+                  }}
                   onBlur={e => this.onChangeDate(e, 'month')}>
                 </TextInput>
               </View>
@@ -147,7 +204,19 @@ export default class SignupForm extends ValidationComponent {
                   style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
                   placeholderTextColor={'#666'}
                   maxLength={2}
-                  onChangeText={e => this.onChangeDate(e, 'day')}
+                  value={this.state.day}
+                  onFocus={(event: Event) => {
+                    // `bind` the function if you're using ES6 classes
+                    this.props._scrollToInput((event.target), this.props.scroll)
+                  }}
+                  keyboardType={'number-pad'}
+                  onChangeText={(val) => {
+                    if (parseInt(val) > 31) {
+                      this.setState({ day: ''})
+                    } else {
+                      this.onChangeDate(val, 'day')
+                    }
+                  }}
                   onBlur={e => this.onChangeDate(e, 'day')}>
                 </TextInput>
               </View>
@@ -160,11 +229,44 @@ export default class SignupForm extends ValidationComponent {
                   style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
                   placeholderTextColor={'#666'}
                   maxLength={4}
-                  onChangeText={e => this.onChangeDate(e, 'year')}
+                  value={this.state.year}
+                  onFocus={(event: Event) => {
+                    // `bind` the function if you're using ES6 classes
+                    this.props._scrollToInput((event.target), this.props.scroll)
+                  }}
+                  keyboardType={'number-pad'}
+                  onChangeText={(val) => {
+                    if (parseInt(val) > date.getFullYear()) {
+                      this.setState({ year: ''}) 
+                    } else {
+                      this.onChangeDate(val, 'year')
+                    }
+                  }}
                   onBlur={e => this.onChangeDate(e, 'year')}>
                 </TextInput>
               </View>
             </View>
+          </View>
+
+          <View style={{ marginLeft: 10, }}>
+              <Text style={{ fontSize: 8, color: '#888', fontSize: 10, }}>
+                  Console
+                  </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+              <TouchableOpacity style={{ flex: 1 / 3, margin: 5, borderRadius: 5, borderWidth: 2, backgroundColor: this.state.console2 == 1 ? '#69C0FF' : '#fff', borderColor: this.state.console2 == 1 ? '#69C0FF' : '#eee', alignItems: 'center', justifyContent: 'center' }}
+                onPress={() => this.setState({ console2: 1 })}>
+                  <Text style={{ fontSize: 10, color: this.state.console2 == 1 ? '#fff' : '#69C0FF', paddingVertical: 6 }}>Xbox One</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1 / 3, margin: 5, borderRadius: 5, borderWidth: 2, backgroundColor: this.state.console2 == 2 ? '#69C0FF' : '#fff', borderColor: this.state.console2 == 2 ? '#69C0FF' : '#eee', alignItems: 'center', justifyContent: 'center' }}
+                onPress={() => this.setState({ console2: 2 })}>
+                  <Text style={{ fontSize: 10, color: this.state.console2 == 2 ? '#fff' : '#69C0FF', paddingVertical: 6 }}>Playstation 4</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1 / 3, margin: 5, borderRadius: 5, borderWidth: 2, backgroundColor: this.state.console2 == 0 ? '#69C0FF' : '#fff', borderColor: this.state.console2 == 0 ? '#69C0FF' : '#eee', alignItems: 'center', justifyContent: 'center' }}
+                onPress={() => this.setState({ console2: 0 })}>
+                  <Text style={{ fontSize: 10, color: this.state.console2 == 0 ? '#fff' : '#69C0FF', paddingVertical: 6 }}>None</Text>
+              </TouchableOpacity>
           </View>
 
           <View style={{ marginBottom: 15 }}>
@@ -175,6 +277,11 @@ export default class SignupForm extends ValidationComponent {
               style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
               secureTextEntry
               placeholderTextColor={'#666'}
+              value={this.state.password}
+              onFocus={(event: Event) => {
+                // `bind` the function if you're using ES6 classes
+                this.props._scrollToInput((event.target), this.props.scroll)
+              }}
               onChangeText={e => this.onChangeInput(e, 'password')}>
             </TextInput>
           </View>
@@ -187,6 +294,11 @@ export default class SignupForm extends ValidationComponent {
               style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }}
               secureTextEntry
               placeholderTextColor={'#666'}
+              value={this.state.confirmPassword}
+              onFocus={(event: Event) => {
+                // `bind` the function if you're using ES6 classes
+                this.props._scrollToInput((event.target), this.props.scroll)
+              }}
               onChangeText={e => this.onChangeInput(e, 'confirmPassword')}>
             </TextInput>
           </View>
@@ -203,7 +315,20 @@ export default class SignupForm extends ValidationComponent {
                 name={'check'} style={{ height: 10, width: 10 }}
                 color={this.state.tandc == true ? '#888' : '#fff'} />
             </View>
-            <Text style={{ marginLeft: 7, textAlign: 'center', fontSize: 10, color: '#888' }}>I agree to the terms and conditions</Text>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate("ToS", {
+              tandc: this.state.tandc,
+              console2: this.state.console2,
+              month: this.state.month,
+              day: this.state.day,
+              year: this.state.year,
+              first_name: this.state.first_name,
+              last_name: this.state.last_name,
+              email: this.state.email,
+              password: this.state.password,
+              confirmPassword: this.state.confirmPassword,
+            })}>
+              <Text style={{ marginLeft: 7, textAlign: 'center', fontSize: 10, color: '#888' }}>I agree to the terms and conditions</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
 
           <View style={{ width: '100%' }}>

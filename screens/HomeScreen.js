@@ -6,7 +6,10 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Easing,
+  Animated,
   View,
+  Modal
 } from 'react-native';
 import Constants from 'expo-constants';
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -19,6 +22,7 @@ import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
 import * as statsActions from '../redux/actions/statsActions';
 import * as standingsActions from '../redux/actions/standingsActions';
+import { TextInput } from 'react-native-gesture-handler';
 
 /*
 DEV
@@ -59,9 +63,48 @@ class HomeScreen extends React.Component {
     actions.loadStandings(csrfToken);
   }
 
+  state = {
+    menuPos: new Animated.Value(0),
+    modalVisible: false,
+  };
+
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
+
   render() {
     return (
       <View style={[styles.container, { paddingTop: Constants.statusBarHeight }]}>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{ padding: 50, flex: 1, backgroundColor: '#00000050', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: '100%', backgroundColor: '#fff', borderRadius: 5, alignItems: 'center' }}>
+              <View style={{ flexDirection: 'row', height: 40, padding: 15 }}>
+                <View style={{ flex: 1 }}>
+
+                </View>
+                <TouchableOpacity
+                  style={{width: 40, height: 40}}
+                  onPress={() => {
+                    this.setModalVisible(!this.state.modalVisible);
+                  }}>
+                  <EvilIcons name={'close-o'} size={40} color={'#888'} />
+                </TouchableOpacity>
+              </View>
+              <View style={{ padding: 50, paddingTop: 0 }}>
+                <Text style={{ color: '#333', textAlign: 'center', fontSize: 18 }}>How are standings calculated?</Text>
+                <Text style={{ marginTop: 20, color: '#333', textAlign: 'center' }}>We use a simple formula using wins and losses to rank you among your friends. We make sure to take into account the number of games each user has played.</Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <View style={[styles.welcomeContainer]}>
 
           <View style={styles.welcomeContainerHeader}>
@@ -82,14 +125,14 @@ class HomeScreen extends React.Component {
               <Text style={styles.welcomeButtonText}>Transfer</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center' }}>
-              <TouchableOpacity onPress={this.changeLayout} style={styles.welcomeButton}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate("Game", {accept: true})} style={styles.welcomeButton}>
                 <AntDesign name={'download'} size={25} color={'#7ed3ff'} />
               </TouchableOpacity>
               <Text style={styles.welcomeButtonText}>Submit</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center' }}>
               <TouchableOpacity onPress={() => this.props.navigation.navigate("Challenge")} style={styles.welcomeButton}>
-                <Image style={{height: 25, width: 25}} tintColor="#7ed3ff" source={require('../assets/images/gloves.png')} />
+                <Image style={{ height: 25, width: 25 }} tintColor="#7ed3ff" source={require('../assets/images/gloves.png')} />
               </TouchableOpacity>
               <Text style={styles.welcomeButtonText}>Challenge</Text>
             </View>
@@ -112,28 +155,28 @@ class HomeScreen extends React.Component {
             <View style={{
               margin: 10, backgroundColor: '#fff', borderRadius: 15,
             }}>
-              <TouchableOpacity style={{ flex: 1, padding: 20 }}>
+              <TouchableOpacity style={{ flex: 1, padding: 20, paddingTop: 30, paddingBottom: 30 }} onPress={() => this.props.navigation.navigate("Profile")}>
                 <View style={styles.getStartedContainer}>
                   <Text style={[styles.getStartedText, { color: '#333' }]}>Stat Center</Text>
                 </View>
 
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
+                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
                       {!this.props.loading && this.props.userDetails ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
+                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
                       {!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.win_percent : '0'}%
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win %</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
-                    <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold' }}>
+                    <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
                       ${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.net_gain : '0.00'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Net Gain</Text>
@@ -151,13 +194,30 @@ class HomeScreen extends React.Component {
 
           {/* Standings */}
           <View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20 }}>
+            <View style={{ flexDirection: 'row', zIndex: 1, alignItems: 'center', padding: 20, backgroundColor: '#fff' }}>
               <Text style={{ color: '#333', fontWeight: 'bold', fontSize: 20, marginRight: 10 }}>Standings</Text>
-              <MaterialCommunityIcons name={'information'} size={20} color={'#333'} />
+              <TouchableOpacity onPress={() => {
+                this.setModalVisible(true);
+              }}>
+                <MaterialCommunityIcons name={'information'} size={20} color={'#333'} />
+              </TouchableOpacity>
               <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                <Feather name={'search'} size={20} color={'#333'} />
+                <TouchableOpacity onPress={() => { this.menuToggle() }}>
+                  <Feather name={'search'} size={20} color={'#333'} />
+                </TouchableOpacity>
               </View>
             </View>
+            <Animated.View style={{
+              height: 40, zIndex: 0, paddingLeft: 50, paddingRight: 50,
+              marginTop: this.state.menuPos.interpolate({
+                inputRange: [0, 1],
+                outputRange: [-40, 0],
+              }),
+            }}>
+              <TextInput style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15, fontSize: 18 }} placeholder={'Search Names'}>
+
+              </TextInput>
+            </Animated.View>
 
 
             <GameTabs standings={this.props.standings} />
@@ -169,6 +229,22 @@ class HomeScreen extends React.Component {
       </View>
     );
   }
+
+  menuToggle = () => {
+    if (this.state.menuPos.__getValue() == 1) {
+      Animated.timing(this.state.menuPos, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.easing,
+      }).start();
+    } else {
+      Animated.timing(this.state.menuPos, {
+        toValue: 1,
+        duration: 300,
+        easing: Easing.easing,
+      }).start();
+    }
+  };
 }
 
 
@@ -218,7 +294,7 @@ const styles = StyleSheet.create({
   },
   alignCenter: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   developmentModeText: {
     marginBottom: 20,
@@ -234,7 +310,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     paddingLeft: 20,
-    paddingRight: 20,
     marginTop: 10,
     marginBottom: 20,
   },
@@ -298,7 +373,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   getStartedText: {
-    fontSize: 12,
+    fontSize: 10,
+    marginBottom: 5,
     textTransform: 'uppercase',
     color: '#333',
     fontWeight: 'bold',

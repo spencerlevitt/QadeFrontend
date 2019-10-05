@@ -6,6 +6,7 @@ import Login from '../screens/login/Login'
 import SignUp from '../screens/login/SignUp'
 import ForgotPassword from '../screens/login/ForgotPassword'
 import SignupEmailConfirmation from '../screens/login/SignupEmailConfirmation'
+import ToS from '../screens/login/tos'
 
 export default createAppContainer(
   createSwitchNavigator({
@@ -16,6 +17,7 @@ export default createAppContainer(
     Login,
     SignUp,
     ForgotPassword,
-    SignupEmailConfirmation
+    SignupEmailConfirmation,
+    ToS
   })
 );

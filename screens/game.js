@@ -17,13 +17,18 @@ export default class ProfileScreen extends React.Component {
 
   //This state handles the routing for the tabView
   //Index is which tab and the routes define the key and title
-  state = {
-    index: 0,
-    routes: [
-      { key: 'first', title: 'Pending' },
-      { key: 'second', title: "Accepted" },
-    ],
-  };
+  constructor(props){
+    super(props)
+    const accept = this.props.navigation.getParam("accept")
+    this.state = {
+      index: accept == true ? 1 : 0,
+      routes: [
+        { key: 'first', title: 'Pending' },
+        { key: 'second', title: "Accepted" },
+      ],
+    }
+  }
+  
 
   //Used to change Tab View
   _handleIndexChange = index => this.setState({ index });

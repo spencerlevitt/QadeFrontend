@@ -23,6 +23,12 @@ export async function handleResponse(response, responseCategory = null, category
 export function handleError(error) {
   // eslint-disable-next-line no-console
   console.log('Error (APIUtil): ', error);
+
+  // If error is undefined the backend service is most
+  // likely offline and needs to be re-booted / troubleshooted
+  if (error === undefined) {
+    throw(new Error('Ooops! Something went wrong. Please try again after some minutes.'))
+  }
   
   // Return the forbidden error to the action
   // so a request to get a CSRF token can be made

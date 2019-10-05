@@ -53,8 +53,27 @@ async function checkOnboard() {
 async function loadResourcesAsync() {
   await Promise.all([
     Asset.loadAsync([
-      require('./assets/images/robot-dev.png'),
-      require('./assets/images/robot-prod.png'),
+      require('./assets/images/camera.png'),
+      require('./assets/images/drone.png'),
+      require('./assets/images/friends.png'),
+      require('./assets/images/fun.png'),
+      require('./assets/images/game.png'),
+      require('./assets/images/gameSS.png'),
+      require('./assets/images/gloves.png'),
+      require('./assets/images/login.png'),
+      require('./assets/images/online.png'),
+      require('./assets/images/savings.png'),
+      require('./assets/images/segment.png'),
+      require('./assets/images/shield.png'),
+      require('./assets/images/winners.png'),
+      require('./assets/images/game/fifa-header.png'),
+      require('./assets/images/game/fifa-ss.png'),
+      require('./assets/images/game/nba-header.png'),
+      require('./assets/images/game/nba-ss.png'),
+      require('./assets/images/game/nfl-header.png'),
+      require('./assets/images/game/nfl-ss.png'),
+      require('./assets/images/game/nhl-header.jpg'),
+      require('./assets/images/game/nhl-ss.png'),
     ]),
     Font.loadAsync({
       // This is the font that we are using for our tab bar

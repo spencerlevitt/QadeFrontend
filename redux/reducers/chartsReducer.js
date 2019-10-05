@@ -1,7 +1,7 @@
 import * as types from '../actions/actionTypes';
 import initialState from './initialState';
 
-export default function standingsReducer(state = initialState.chartsData, action) {
+export default function chartsReducer(state = initialState.chartsData, action) {
   switch (action.type) {
     case types.LOAD_CHARTS_DATA_START:
       return {

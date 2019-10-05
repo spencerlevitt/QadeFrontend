@@ -35,6 +35,13 @@ export default function Recent() {
         <Text style={{ marginLeft: 20, color: '#333', fontSize: 24 }}>
           Recent Matches
         </Text>
+
+
+
+
+
+
+
         <View style={{ marginTop: 40, flexDirection: 'row' }}>
           <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5, marginRight: 15 }} />
           <View style={{ flex: 1, paddingBottom: 15, borderBottomColor: '#eee', borderBottomWidth: 1 }}>
@@ -42,26 +49,26 @@ export default function Recent() {
 
             <View style={{ flex: 1, flexDirection: 'row' }}>
 
-              <View style={{ flex: 0.3, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1/3, flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
+                  <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333', textAlign: 'right' }]}>Chris Wright</Text>
                   <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888' }}>10-5</Text>
+                      <Text style={{ color: '#888', textAlign: 'right' }}>10-5</Text>
                     </View>
                   </View>
                 </View>
               </View>
 
-              <View style={{ flex: 0.15 }}>
-                <Text style={{ textAlign: 'center' }}>
+              <View style={{ width: 40 }}>
+                <Text style={{ textAlign: 'center', fontSize: 12 }}>
                   beat
                 </Text>
               </View>
 
-              <View style={{ flex: 0.3, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1/3, flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
+                  <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
                   <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1 }}>
                       <Text style={{ color: '#888' }}>10-5</Text>
@@ -70,9 +77,9 @@ export default function Recent() {
                 </View>
               </View>
 
-              <View style={{ flex: 0.25 }}>
-                <Text style={{ textAlign: 'center', fontSize: 12 }}>
-                  21m | FIFA 19
+              <View style={{ flex: 1/3 }}>
+                <Text style={{ textAlign: 'right', fontSize: 12 }}>
+                  21m | FIFA
                 </Text>
               </View>
 
@@ -98,6 +105,13 @@ export default function Recent() {
           </View>
         </View>
 
+
+
+
+
+
+
+
         <View style={{ marginTop: 40, flexDirection: 'row' }}>
           <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5, marginRight: 15 }} />
           <View style={{ flex: 1, paddingBottom: 15, borderBottomColor: '#eee', borderBottomWidth: 1 }}>
@@ -105,7 +119,7 @@ export default function Recent() {
 
             <View style={{ flex: 1, flexDirection: 'row' }}>
 
-              <View style={{ flex: 0.3, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 0.25, flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
                   <View style={{ flexDirection: 'row' }}>
@@ -116,8 +130,8 @@ export default function Recent() {
                 </View>
               </View>
 
-              <View style={{ flex: 0.15 }}>
-                <Text style={{ textAlign: 'center' }}>
+              <View style={{ width: 40, marginTop: 5 }}>
+                <Text style={{ textAlign: 'center', fontSize: 12 }}>
                   beat
                 </Text>
               </View>
@@ -133,9 +147,9 @@ export default function Recent() {
                 </View>
               </View>
 
-              <View style={{ flex: 0.25 }}>
-                <Text style={{ textAlign: 'center', fontSize: 12 }}>
-                  21m | FIFA 19
+              <View style={{ flex: 0.45 }}>
+                <Text style={{ textAlign: 'right', fontSize: 12 }}>
+                  21m | FIFA
                 </Text>
               </View>
 
@@ -160,6 +174,12 @@ export default function Recent() {
             </View>
           </View>
         </View>
+
+
+
+
+
+
       </ScrollView>
     </View>
 

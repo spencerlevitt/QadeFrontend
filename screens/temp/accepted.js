@@ -14,18 +14,21 @@ export default class Accepted extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            true: true
+        }
     }
 
     render() {
-        if (true) {
+        if (true == this.state.true) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', padding: 30 }}>
                     <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no accepted matches. Challenge somebody to get started!</Text>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => NavigationService.navigate('Challenge')} style={{
                             marginTop: 20,
-                            height: 80,
-                            width: 80,
+                            height:60,
+                            width: 60,
                             borderRadius: 80,
                             borderWidth: 5,
                             borderColor: '#eee',
@@ -39,7 +42,7 @@ export default class Accepted extends React.Component {
                             justifyContent: 'center',
                             marginBottom: 5
                         }}>
-                            <Image style={{ height: 40, width: 40 }} tintColor="#7ed3ff" source={require('../../assets/images/gloves.png')} />
+                            <Image style={{ height: 30, width: 30 }} tintColor="#7ed3ff" source={require('../../assets/images/gloves.png')} />
                         </TouchableOpacity>
                         <Text style={{
                             color: '#888',
