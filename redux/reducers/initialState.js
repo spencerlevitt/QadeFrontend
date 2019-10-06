@@ -40,5 +40,9 @@ export default {
     madden: [],
     nhl: []
   },
+  todaysMatches: {
+    isFetchingTodaysMatches: false,
+    data: []
+  },
   userDetails: {}
 }

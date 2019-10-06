@@ -72,7 +72,6 @@ export default class GameTabs extends React.Component {
 
     _handleIndexChange = index => this.setState({ index });
 
-
     _renderTabBar = props => {
         const inputRange = props.navigationState.routes.map((x, i) => i);
         return (
