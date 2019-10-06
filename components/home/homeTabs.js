@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../../redux/actions/userActions';
+import * as todaysMatchesActions from '../../redux/actions/todaysMatchesActions';
 import NavigationService from '../../navigation/NavigationService'
 
 //empty render (no matches)
@@ -46,12 +47,11 @@ const Empty = () => (
 
 
 class Tabs extends React.Component {
-    
     state = {
         index: 0,
         complete: false
     }
-    
+
     render() {
         return (
 
@@ -59,7 +59,9 @@ class Tabs extends React.Component {
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
-                        {this.props.userDetails.statistics.won_games_today}-{this.props.userDetails.statistics.lost_games_today} Today
+                        {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics
+                            ? `${this.props.userDetails.statistics.won_games_today}-${this.props.userDetails.statistics.lost_games_today}`
+                            : '0-0'} Today
                     </Text>
                 </View>
 
@@ -74,38 +76,38 @@ class Tabs extends React.Component {
                 </View>
 
                 {
-                    this.state.complete == false ? (
+                    !this.props.todaysMatches.isFetchingTodaysMatches && this.props.todaysMatches.data ? (
                         <Swiper
-                            cards={['Nick Morton', 'Brandon Hue', 'Yoseph Msa', 'Elon Musk', 'Porter Proeo']}
+                            cards={!this.props.todaysMatches.isFetchingTodaysMatches ? this.props.todaysMatches.data : []}
                             renderCard={(card) => {
                                 return (
                                     <View style={styles.card}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
                                             <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                                            <Text style={styles.cardText}>{card}</Text>
+                                            <Text style={styles.cardText}>{`${card.first_name} ${card.last_name}`}</Text>
                                             <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                                 <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>
-                                                    <Text style={{ color: '#fff', fontSize: 10 }}>9 hrs left</Text>
+                                                    <Text style={{ color: '#fff', fontSize: 10 }}>{card.time_left} hrs left</Text>
                                                 </View>
                                             </View>
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <View>
-                                                <Text style={styles.cardSubText}>FIFA $5.00</Text>
-                                                <Text style={styles.cardSubText2}>Against {card.split(' ')[1]}:</Text>
+                                                <Text style={styles.cardSubText}>{card.game} ${card.wager}</Text>
+                                                <Text style={styles.cardSubText2}>Against {card.last_name}:</Text>
                                             </View>
 
                                             <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 10, flexDirection: 'row' }}>
                                                 <View style={{ flex: 0.5, alignItems: 'center' }}>
 
-                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>4-1</Text>
+                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>{`${card.won_games}-${card.lost_games}`}</Text>
                                                     <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
 
                                                 </View>
 
                                                 <View style={{ flex: 0.5, alignItems: 'center' }}>
 
-                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>0.80</Text>
+                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>{card.win_percent}%</Text>
                                                     <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win's</Text>
 
                                                 </View>
@@ -114,10 +116,10 @@ class Tabs extends React.Component {
 
                                             <View style={{ alignItems: 'flex-end' }}>
                                                 <TouchableOpacity onPress={() => NavigationService.navigate('Submit')}>
-                                                <View style={{ alignItems: 'center' }}>
-                                                    <AntDesign name={'download'} size={15} color={'#888'} />
-                                                    <Text style={{ color: '#888', fontSize: 8 }}>Submit Score</Text>
-                                                </View>
+                                                    <View style={{ alignItems: 'center' }}>
+                                                        <AntDesign name={'download'} size={15} color={'#888'} />
+                                                        <Text style={{ color: '#888', fontSize: 8 }}>Submit Score</Text>
+                                                    </View>
                                                 </TouchableOpacity>
 
                                             </View>
@@ -145,7 +147,9 @@ class Tabs extends React.Component {
 }
 
 const SecondRoute = (props) => (
-    <Tabs userDetails={props.userDetails} />
+    <Tabs
+        userDetails={props.userDetails}
+        todaysMatches={props.todaysMatches} />
 );
 const FirstRoute = () => (
     <View>
@@ -158,11 +162,26 @@ class GameTabs extends React.Component {
 
     state = {
         index: 0,
+        tabKey: 0,
         routes: [
             { key: 'second', title: "Today's Matches" },
             { key: 'first', title: 'Progress' },
         ],
     };
+
+    componentDidMount() {
+        const { actions, csrfToken, loggedInUser, todaysMatches } = this.props;
+
+        if (!todaysMatches.data.length) {
+            actions.loadTodaysMatches(loggedInUser.user.pk, csrfToken).then(todayMatches => {
+                if (todayMatches.data && todayMatches.data.length) {
+                    this.setState({ tabKey: this.state.tabKey + 1 });
+                }
+            }).catch(error => {
+                alert('Loading todays matches failed' + error);
+            });
+        }
+    }
 
     _handleIndexChange = index => this.setState({ index });
 
@@ -219,7 +238,9 @@ class GameTabs extends React.Component {
             case 'first':
                 return <FirstRoute />;
             case 'second':
-                return <SecondRoute userDetails={this.props.userDetails} />;
+                return <SecondRoute
+                    userDetails={this.props.userDetails}
+                    todaysMatches={this.props.todaysMatches} />;
             default:
                 return null;
         }
@@ -232,26 +253,34 @@ class GameTabs extends React.Component {
                 renderScene={this._renderScene}
                 renderTabBar={this._renderTabBar}
                 onIndexChange={this._handleIndexChange}
+                key={this.state.tabKey}
             />
         )
     }
 }
 
 GameTabs.propTypes = {
-    userDetails: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
+    loggedInUser: PropTypes.object.isRequired,
+    todaysMatches: PropTypes.object.isRequired,
+    userDetails: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
     return {
-        userDetails: state.userDetails,
-        loading: state.apiCallsInProgress > 0
+        csrfToken: state.auth.csrfToken,
+        loading: state.apiCallsInProgress > 0,
+        loggedInUser: state.auth.loggedInUser,
+        todaysMatches: state.todaysMatches,
+        userDetails: state.userDetails
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         actions: {
+            loadTodaysMatches: bindActionCreators(todaysMatchesActions.loadTodaysMatches, dispatch),
             loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
         }
     };

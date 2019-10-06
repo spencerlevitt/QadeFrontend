@@ -71,7 +71,7 @@ class SignUp extends React.Component {
                     this.scroll = ref;
                     this.setState({ scroll: this.scroll });
                 }}>
-                <View style={{ height: 60, justifyContent: 'flex-end', alignItems: 'center' }}>
+                <View style={{ height: 40, justifyContent: 'flex-end', alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, textAlign: 'center', color: '#333' }}>
                         Sign Up
                     </Text>
