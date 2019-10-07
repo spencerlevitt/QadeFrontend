@@ -73,6 +73,7 @@ export default class ProfileTabs extends React.Component {
             return (
               <TouchableOpacity
                 style={styles.tabItem}
+                key={i}
                 onPress={() => this.setState({ index: i })}>
                 <Animated.View style={[styles.realTabItem, { borderBottomWidth: 2, borderBottomColor: color }]}>
                   <Animated.Text style={{ color: '#333', fontSize: 20 }}>{route.title}</Animated.Text>
