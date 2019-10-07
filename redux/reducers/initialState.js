@@ -26,6 +26,12 @@ export default {
       }
     }
   },
+  friendRequests: {
+    pendingFriends: [],
+    acceptedFriends: [],
+    rejectedFriends: [],
+    isFetchingFriendRequests: false
+  },
   errorMessage: {},
   hasError: false,
   isFetching: false,
