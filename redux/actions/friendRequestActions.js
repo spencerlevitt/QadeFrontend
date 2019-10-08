@@ -1,4 +1,5 @@
 import * as types from '../actions/actionTypes';
+import * as friendsApi from '../../api/friendsApi';
 import * as friendRequestsApi from '../../api/friendRequestsApi';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
 import HttpStatus from 'http-status-codes';
@@ -34,6 +35,41 @@ export function loadFriendRequests(userId, userEmail, csrfToken) {
       }).catch(error => {
         dispatch(apiCallError(error));
         dispatch(loadFriendRequestsError(error));
+        throw error;
+      });
+  }
+}
+
+export function loadAcceptedFriendsStart() {
+  return { type: types.LOAD_ACCEPTED_FRIENDS_START };
+}
+
+export function loadAcceptedFriendsSuccess(acceptedFriends) {
+  return { type: types.LOAD_ACCEPTED_FRIENDS_SUCCESS, acceptedFriends };
+}
+
+export function loadAcceptedFriendsError(loadAcceptedFriendsError) {
+  return { type: types.LOAD_ACCEPTED_FRIENDS_ERROR, loadAcceptedFriendsError };
+}
+
+export function loadAcceptedFriends(csrfToken) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(loadAcceptedFriendsStart());
+    return friendsApi
+      .getAcceptedFriends(csrfToken)
+      .then(acceptedFriends => {
+        if (acceptedFriends.status !== HttpStatus.OK) {
+          const error = new Error(acceptedFriends.statusMessage);
+          dispatch(apiCallError(error));
+          dispatch(loadAcceptedFriendsError(error));
+        }
+
+        // attach the loggedIn email to ID sender/receiver
+        return dispatch(loadAcceptedFriendsSuccess(acceptedFriends));
+      }).catch(error => {
+        dispatch(apiCallError(error));
+        dispatch(loadAcceptedFriendsError(error));
         throw error;
       });
   }

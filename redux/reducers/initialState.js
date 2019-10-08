@@ -30,7 +30,9 @@ export default {
     pendingFriends: [],
     acceptedFriends: [],
     rejectedFriends: [],
-    isFetchingFriendRequests: false
+    isFetchingFriendRequests: false,
+    isFetchingAcceptedFriends: false,
+    isFetchingRejectedFriends: false,
   },
   errorMessage: {},
   hasError: false,
