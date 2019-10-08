@@ -7,6 +7,7 @@ import todaysMatches from './todaysMatchesReducer';
 import chartsData from './chartsReducer';
 import friendRequests from './friendRequestsReducer';
 import apiCallsInProgress from './apiStatusReducer';
+import { toastReducer as toast } from 'react-native-redux-toast';
 
 const rootReducer = combineReducers({
   apiCallsInProgress,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   friendRequests,
   stats,
   standings,
+  toast,
   todaysMatches,
   userDetails
 });
