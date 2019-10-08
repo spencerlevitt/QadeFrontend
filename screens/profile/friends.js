@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as friendRequestActions from '../../redux/actions/friendRequestActions';
+import { withPolling } from "../../redux/polling/withPolling";
 
 class Friends extends React.Component {
 
@@ -136,4 +137,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
   
-export default connect(mapStateToProps, mapDispatchToProps)(Friends);
+export default withPolling(friendRequestActions.loadAcceptedFriends)(connect(mapStateToProps, mapDispatchToProps)(Friends));
