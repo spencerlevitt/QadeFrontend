@@ -25,7 +25,7 @@
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
     "react-native-chart-kit": "^3.3.1",
-    "react-native-deck-swiper": "1.5.25",
+    "react-native-deck-swiper": "^1.6.7",
     "react-native-gesture-handler": "~1.0.14",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-line-chart": "^1.0.4",
