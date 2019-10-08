@@ -76,7 +76,7 @@ class Tabs extends React.Component {
                 </View>
 
                 {
-                    !this.props.todaysMatches.isFetchingTodaysMatches && this.props.todaysMatches.data ? (
+                    !this.props.todaysMatches.isFetchingTodaysMatches && this.props.todaysMatches.data.length ? (
                         <Swiper
                             cards={!this.props.todaysMatches.isFetchingTodaysMatches ? this.props.todaysMatches.data : []}
                             renderCard={(card) => {
