@@ -139,7 +139,7 @@ ProfileStack.navigationOptions = ({ navigation }) => ({
 
 ProfileStack.path = '';
 
-export const tabNavigator = createBottomTabNavigator({
+const tabNavigator = createBottomTabNavigator({
   HomeStack,
   GameStack,
   RecentStack,
@@ -159,9 +159,7 @@ export default class Item extends React.Component {
   render() {
     return (
       <AppContainer
-        ref={navigatorRef => {
-          NavigationService.setTopLevelNavigator(navigatorRef);
-        }}
+        ref={navigatorRef => NavigationService.setTopLevelNavigator(navigatorRef)}
       />
     )
   }

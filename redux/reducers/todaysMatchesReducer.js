@@ -2,7 +2,7 @@ import * as types from '../actions/actionTypes';
 import initialState from './initialState';
 import moment from 'moment';
 
-export default function todaysMatchesReducer(state = initialState.todaysMatches, action) {
+export default function todaysMatchesReducer(state = initialState.gameRequests, action) {
   switch (action.type) {
     case types.LOAD_TODAYS_MATCHES_START:
       return {
@@ -37,7 +37,8 @@ export default function todaysMatchesReducer(state = initialState.todaysMatches,
       }).filter(match => match !== null);
 
       return {
-        data: todaysMatches,
+        ...state,
+        todaysMatches,
         isFetchingTodaysMatches: false
       };
 

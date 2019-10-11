@@ -34,6 +34,18 @@ export default {
     isFetchingAcceptedFriends: false,
     isFetchingRejectedFriends: false,
   },
+  gameRequests: {
+    acceptedGameRequests: [],
+    pendingGameRequests: [],
+    todaysMatches: [],
+    isFetchingAcceptedGameRequests: false,
+    isFetchingPendingGameRequests: false,
+    isFetchingTodaysMatches: false,
+    isAcceptingGameRequest: false,
+    isRejectingGameRequest: false,
+    isSenderCancelingGameRequest: false,
+    isReceiverCancelingGameRequest: false,
+  },
   errorMessage: {},
   hasError: false,
   isFetching: false,
@@ -47,10 +59,6 @@ export default {
     fifa: [],
     madden: [],
     nhl: []
-  },
-  todaysMatches: {
-    isFetchingTodaysMatches: false,
-    data: []
   },
   userDetails: {}
 }

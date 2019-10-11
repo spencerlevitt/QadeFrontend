@@ -76,9 +76,9 @@ class Tabs extends React.Component {
                 </View>
 
                 {
-                    !this.props.todaysMatches.isFetchingTodaysMatches && this.props.todaysMatches.data.length ? (
+                    !this.props.isFetchingTodaysMatches && this.props.todaysMatches.length ? (
                         <Swiper
-                            cards={!this.props.todaysMatches.isFetchingTodaysMatches ? this.props.todaysMatches.data : []}
+                            cards={!this.props.isFetchingTodaysMatches ? this.props.todaysMatches : []}
                             renderCard={(card) => {
                                 return (
                                     <View style={styles.card}>
@@ -172,7 +172,7 @@ class GameTabs extends React.Component {
     componentDidMount() {
         const { actions, csrfToken, loggedInUser, todaysMatches } = this.props;
 
-        if (!todaysMatches.data.length) {
+        if (!todaysMatches.length) {
             actions.loadTodaysMatches(loggedInUser.user.pk, csrfToken).then(todayMatches => {
                 if (todayMatches.data && todayMatches.data.length) {
                     this.setState({ tabKey: this.state.tabKey + 1 });
@@ -263,7 +263,8 @@ GameTabs.propTypes = {
     csrfToken: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     loggedInUser: PropTypes.object.isRequired,
-    todaysMatches: PropTypes.object.isRequired,
+    todaysMatches: PropTypes.array.isRequired,
+    isFetchingTodaysMatches: PropTypes.bool.isRequired,
     userDetails: PropTypes.object.isRequired
 };
 
@@ -272,7 +273,8 @@ function mapStateToProps(state) {
         csrfToken: state.auth.csrfToken,
         loading: state.apiCallsInProgress > 0,
         loggedInUser: state.auth.loggedInUser,
-        todaysMatches: state.todaysMatches,
+        todaysMatches: state.gameRequests.todaysMatches,
+        isFetchingTodaysMatches: state.gameRequests.isFetchingTodaysMatches,
         userDetails: state.userDetails
     };
 }
