@@ -137,7 +137,7 @@ export function rejectGameRequest(requestId, csrfToken) {
         return dispatch(rejectGameRequestSuccess(rejectedGameRequest));
       }).catch(error => {
         dispatch(apiCallError(error));
-        dispatch(acceptGameRequestError(error));
+        dispatch(rejectGameRequestError(error));
         throw error;
       });
   }

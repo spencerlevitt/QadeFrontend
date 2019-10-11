@@ -36,6 +36,7 @@ export default {
   },
   gameRequests: {
     acceptedGameRequests: [],
+    rejectedGameRequests: [],
     pendingGameRequests: [],
     todaysMatches: [],
     isFetchingAcceptedGameRequests: false,

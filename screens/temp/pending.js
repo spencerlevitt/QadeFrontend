@@ -43,8 +43,8 @@ class Pending extends React.Component {
                 // is rejected by sender
                 this.setState({ [idx]: 1 });
                 setTimeout(() => {
-                    this.setState({ [idx]: 0 });
-                }, 50000);
+                    this.setState({ [idx]: 2 });
+                }, 15000);
             }
         } catch (error) {
             if (this.props.hasError) {
@@ -54,11 +54,18 @@ class Pending extends React.Component {
         }
     };
 
-    rejectGameRequest = (idx, pendingGame) => {
+    rejectGameRequest = async (idx, pendingGame) => {
         const { csrfToken  } = this.props;
-        const { id, receiverId, senderId } = pendingGame;
-        this.setState({ [idx]: 2 });
-        this.props.actions.rejectGameRequest(id, receiverId, senderId, csrfToken);
+        const { id } = pendingGame;
+        
+        try {
+            const response = await this.props.actions.rejectGameRequest(id, csrfToken);
+        } catch (error) {
+            if (this.props.hasError) {
+                alert(`Reject game request failed: ${this.props.errorMessage.message}`);
+            }
+            console.log(error);
+        }
     };
 
     render() {
@@ -215,7 +222,7 @@ function mapDispatchToProps(dispatch) {
       actions: {
         loadPendingGameRequests: bindActionCreators(gameRequestsActions.loadPendingGameRequests, dispatch),
         acceptGameRequest: bindActionCreators(gameRequestsActions.acceptGameRequest, dispatch),
-        rejectGameRequest: bindActionCreators(gameRequestsActions.acceptGameRequest, dispatch)
+        rejectGameRequest: bindActionCreators(gameRequestsActions.rejectGameRequest, dispatch)
       }
     };
 }

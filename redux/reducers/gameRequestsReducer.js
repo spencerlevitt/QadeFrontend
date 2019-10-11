@@ -132,16 +132,8 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
       receiverId = urlArray[urlArray.length - 2];
       urlArray = acceptedRequest.sender.profile.url.split('/');
       senderId = urlArray[urlArray.length - 2];
+      time_left =  acceptedRequest.time_left_to_submit;
 
-      // pendingGameRequests = state.pendingGameRequests.map(gameRequest => {
-      //   if (gameRequest.id === id) {
-      //     return null;
-      //   } else {
-      //     return gameRequest;
-      //   }
-      // }).filter(gameRequest => gameRequest !== null);
-
-      
       acceptedRequest = {
         id,
         first_name: acceptedRequest.sender.first_name,
@@ -152,7 +144,10 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
         status: acceptedRequest.status,
         win_percent: acceptedRequest.sender.statistics.win_percent,
         won_games: acceptedRequest.sender.statistics.won_games,
+        wager: acceptedRequest.wager,
+        game: acceptedRequest.game,
         lost_games: acceptedRequest.sender.statistics.lost_games,
+        time_left
       };
 
       return {
@@ -190,9 +185,9 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
       }).filter(gameRequest => gameRequest !== null);
 
       rejectedRequest = {
-        first_name: rejectedRequest.user.first_name,
-        last_name: rejectedRequest.user.last_name,
-        photo_url: rejectedRequest.user.profile.photo_url,
+        first_name: rejectedRequest.sender.first_name,
+        last_name: rejectedRequest.sender.last_name,
+        photo_url: rejectedRequest.sender.profile.photo_url,
         status: rejectedRequest.status
       };
 
