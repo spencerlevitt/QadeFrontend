@@ -1,5 +1,5 @@
 import * as types from '../actions/actionTypes';
-import * as todaysMatchesApi from '../../api/todaysMatchesApi';
+import * as gameRequestsApi from '../../api/gameRequestsApi';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
 import HttpStatus from 'http-status-codes';
 
@@ -19,8 +19,8 @@ export function loadTodaysMatches(userId, csrfToken) {
   return function (dispatch) {
     dispatch(beginApiCall());
     dispatch(loadTodaysMatchesStart());
-    return todaysMatchesApi
-      .getTodaysMatches(csrfToken)
+    return gameRequestsApi
+      .getAcceptedGameRequests(csrfToken)
       .then(todaysMatches => {
         if (todaysMatches.status !== HttpStatus.OK) {
           const error = new Error(todaysMatches.statusMessage);
