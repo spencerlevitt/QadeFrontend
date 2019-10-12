@@ -8,24 +8,82 @@ import {
     View,
     Dimensions
 } from 'react-native';
-import Constants from 'expo-constants';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScrollView } from 'react-native-gesture-handler';
+import { EvilIcons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as gameCardsActions from '../../redux/actions/gameCardsActions';
 
 //console.disableYellowBox = true
 
-export default class CameraPre extends React.Component {
+class CameraPre extends React.Component {
+
+    getLocation = () => {
+        return '41.8339042,-88.0121586';    // TODO navigation library fix
+    };
+
+    geImageType (file) {
+		let extension = 'jpeg', _;
+
+		try {
+			[ _, extension ] = file.match(/\.(\w+)$/);
+		}
+		catch {
+			extension = 'jpeg';
+		}
+
+		return `image/${extension}`;
+	}
+
+    createFormData = (photo) => {
+        const data = new FormData();
+
+        data.append('image', {
+            name: 'image',
+            type: this.geImageType(photo.uri),
+            uri:
+                Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', '')
+        });
+
+        data.append('request_id', this.props.navigation.getParam('game').id);
+        data.append('user_id', this.props.loggedInUser.user.pk);
+        data.append('user_location', this.getLocation());
+        data.append('is_user_won', this.props.navigation.getParam('isUserWon'));
+        
+        return data;
+    }
+
+    onSubmitGameScore = async () => {
+        const game = this.props.navigation.getParam('game').game;
+        const photoData = this.props.navigation.getParam('photoData');
+        const { csrfToken } = this.props;
+        console.log('>>> game', game);
+        console.log('>>> photodata', photoData);
+        const payload = this.createFormData(photoData);
+        console.log('>>> payload', payload);
+
+        try {
+            const response = await this.props.actions.submitGameCard(game, csrfToken, payload);
+
+            console.log('response', response);
+
+            if (response) {
+                if (this.props.hasError) {
+                    alert(`Submitting game score failed: ${this.props.errorMessage.message}`);
+                } else {
+                    this.props.navgiation.navigate('Waiting');
+                }                
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
     render() {
 
         const { navigation } = this.props;
         const uri = navigation.getParam('photoData');
-
-        
 
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -41,7 +99,7 @@ export default class CameraPre extends React.Component {
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                 {/* Handle the photo data verification process */}
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Await")}>
+                                <TouchableOpacity onPress={() => this.onSubmitGameScore()}>
                                     <EvilIcons name={'check'} size={60} color={'#5eb97e'} />
                                 </TouchableOpacity>
                             </View>
@@ -55,6 +113,33 @@ export default class CameraPre extends React.Component {
 CameraPre.navigationOptions = {
     header: null,
 };
+
+CameraPre.propTypes = {
+    loggedInUser: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired,
+    actions: PropTypes.object.isRequired,
+    isSubmittingGameCards: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
+};
+  
+function mapStateToProps(state) {
+    return {
+      isSubmittingGameCards: state.gameCards.isSubmittingGameCards,
+      csrfToken: state.auth.csrfToken,
+      loggedInUser: state.auth.loggedInUser,
+      loading: state.apiCallsInProgress > 0
+    };
+}
+  
+function mapDispatchToProps(dispatch) {
+    return {
+      actions: {
+        submitGameCard: bindActionCreators(gameCardsActions.submitGameCard, dispatch),
+      }
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CameraPre);
 
 const styles = StyleSheet.create({
     container: {

@@ -101,7 +101,7 @@ class Accepted extends React.Component {
 
                                         <TouchableOpacity
                                             style={{ flex: 0.28, alignItems: 'center' }}
-                                            onPress={() => NavigationService.navigate('Submit', {'Game': acceptedGame.game})}>
+                                            onPress={() => NavigationService.navigate('Confirm', {'game': acceptedGame})}>
                                             <View style={{ flex: 1, alignItems: 'center' }}>
                                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                                     <AntDesign name={'download'} size={18} color={'#74c3ff'} />
