@@ -21,6 +21,7 @@ import ScoreA from '../screens/game/ScoreA';
 import ScoreB from '../screens/game/ScoreB';
 
 import Challenge from '../screens/challenge';
+import ChallengeConfirmation from '../screens/challenge/ChallengeConfirmation';
 import Transfer from '../screens/transfer';
 
 import Requests from '../screens/profile/index';
@@ -47,6 +48,7 @@ const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
     Challenge,
+    ChallengeConfirmation,
     Transfer
   },
   config
