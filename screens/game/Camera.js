@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -87,7 +87,7 @@ export default class CameraScreen extends React.Component {
                                         padding: 20
                                     }}
                                     onPress={this._pickImage}>
-                                    <EvilIcons name={'gallery'} size={70} color={'#eee'} />
+                                    <FontAwesome name={'picture-o'} size={70} color={'#eee'} />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity

@@ -92,7 +92,7 @@ export default class CameraScreen extends React.Component {
                                         padding: 20
                                     }}
                                     onPress={this._pickImage}>
-                                    <EvilIcons name={'gallery'} size={70} color={'#eee'} />
+                                    <FontAwesome name={'picture-o'} size={70} color={'#eee'} />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
