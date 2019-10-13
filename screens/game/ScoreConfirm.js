@@ -21,7 +21,7 @@ export default class Submit extends React.Component {
     render() {
 
         const { navigation } = this.props;
-        const gameID = navigation.getParam('Game');
+        const gameID = navigation.getParam('game');
 
         return (
             <View style={{ flex: 1 }}>

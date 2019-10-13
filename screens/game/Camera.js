@@ -29,7 +29,7 @@ export default class CameraScreen extends React.Component {
                 <View style={{ flex: 1 }}>
                     <Camera style={{ flex: 1 }} type={this.state.type} ref={camera => this.camera = camera}>
                         <View style={{ flex: 1 }}>
-                        
+
 
                             <View
                                 style={{
@@ -66,7 +66,7 @@ export default class CameraScreen extends React.Component {
                                         padding: 20
                                     }}
                                     onPress={() => this.handleShortCapture()}>
-                                
+
                                     <View style={{ borderRadius: 70, height: 70, width: 70, borderWidth: 2, borderColor: '#eee', justifyContent: 'center', alignItems: 'center' }}>
                                         <View style={{ borderRadius: 50, height: 50, width: 50, backgroundColor: '#3A8FFF' }}>
 
@@ -74,10 +74,9 @@ export default class CameraScreen extends React.Component {
                                     </View>
                                 </TouchableOpacity>
                             </View>
-                            <Image source={{uri: this.state.photoData}} />
-                            
+                            <Image source={{ uri: this.state.photoData }} />
                         </View>
-                        
+
                     </Camera>
                 </View>
             );
@@ -85,9 +84,11 @@ export default class CameraScreen extends React.Component {
     }
 
     handleShortCapture = async () => {
+        const game = this.props.navigation.getParam('game');
+        const isUserWon = this.props.navigation.getParam('isUserWon');
         const photoData = await this.camera.takePictureAsync();
-        this.setState({ capturing: false, captures: photoData })
-        this.props.navigation.navigate('CameraPre', {photoData})
+        this.setState({ capturing: false, captures: photoData });
+        this.props.navigation.navigate('CameraPre', { game, isUserWon, photoData });
     };
 }
 
