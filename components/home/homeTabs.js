@@ -124,8 +124,8 @@ class Tabs extends React.Component {
                                 </View>
                             )
                         }}
-                            onSwiped={(index) => { if (index == 5) { this.setState({ index: 0 }) } else { this.setState({ index: this.state.index + 1 }) } }}
-                            onSwipedAll={() => { this.setState({ index: 0 }) }}
+                            onSwiped={(index) => { if (this.state.index == 4) { this.setState({ index: 0 }), console.warn(this.state.index) } else { this.setState({ index: this.state.index + 1 }), console.warn(this.state.index) } }}
+                            //onSwipedAll={() => { this.setState({ index: 0 }) }}
                             cardIndex={0}
                             infinite={true}
                             backgroundColor={'#ffffff00'}
