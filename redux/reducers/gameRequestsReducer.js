@@ -1,6 +1,5 @@
 import * as types from '../actions/actionTypes';
 import initialState from './initialState';
-import moment from 'moment';
 
 export default function gameRequestsReducer(state = initialState.gameRequests, action) {
   switch (action.type) {
@@ -15,7 +14,6 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
       // matches: first_name, last_name, wager, game, 
       // win-loss record, win_percent, time_left (valid matches are < 24 hours)
       let loggedInUserId = action.pendingGameRequests.loggedInUserId;
-      let currentDateTime = new moment();
       let pendingGameRequests = action.pendingGameRequests.data.map(pendingGame => {
         let senderId = pendingGame.sender.statistics.id;
         let time_left =  pendingGame.time_left_to_accept;
@@ -61,6 +59,60 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
         errorMessage: loadPendingGameRequestsError
       };
 
+    case types.SUBMIT_GAME_REQUEST_START:
+      return {
+        ...state,
+        isSubmittingGameRequest: true,
+      };
+
+    case types.SUBMIT_GAME_REQUEST_SUCCESS:
+      // Extract only the needed info for today's
+      // matches: first_name, last_name, wager, game, 
+      // win-loss record, win_percent, time_left (valid matches are < 24 hours)
+      loggedInUserId = action.submittedGameRequest.loggedInUserId;
+      let submittedGame = action.submittedGameRequest.data;
+      let submittedGameRequest = {};
+      let senderId = submittedGame.sender.statistics.id;
+      let time_left =  submittedGame.time_left_to_accept;
+      
+      // Split URL to get game request id and receiver id
+      let urlArray = submittedGame.url.split('/');
+      let id = urlArray[urlArray.length - 2];
+      urlArray = submittedGame.receiver.profile.url.split('/');
+      receiverId = urlArray[urlArray.length - 2];
+
+      if (time_left) {
+        submittedGameRequest = {
+          id,
+          receiverId,
+          senderId,
+          first_name: senderId === loggedInUserId ? submittedGame.sender.first_name : submittedGame.receiver.first_name,
+          last_name: senderId === loggedInUserId ? submittedGame.sender.last_name : submittedGame.receiver.last_name,
+          photo_url: senderId === loggedInUserId ? submittedGame.sender.profile.photo_url : submittedGame.receiver.profile.photo_url,
+          won_games: senderId === loggedInUserId ? submittedGame.sender.statistics.won_games : submittedGame.receiver.statistics.won_games,
+          lost_games: senderId === loggedInUserId ? submittedGame.sender.statistics.lost_games : submittedGame.receiver.statistics.lost_games,
+          win_percent: senderId === loggedInUserId ? submittedGame.sender.statistics.win_percent : submittedGame.receiver.statistics.win_percent,
+          wager: submittedGame.wager,
+          game: submittedGame.game,
+          time_left
+        }
+      }
+
+      return {
+        ...state,
+        submittedGameRequest,
+        isSubmittingGameRequest: false
+      };
+
+    case types.SUBMIT_GAME_REQUEST_ERROR:
+      const { submitGameRequestError } = action;
+      return {
+        ...state,
+        isSubmittingGameRequest: false,
+        hasError: true,
+        errorMessage: submitGameRequestError
+      };
+
     case types.LOAD_ACCEPTED_GAME_REQUESTS_START:
       return {
         ...state,
@@ -72,7 +124,6 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
       // matches: first_name, last_name, wager, game, 
       // win-loss record, win_percent, time_left (valid matches are < 24 hours)
       loggedInUserId = action.acceptedGameRequests.loggedInUserId;
-      currentDateTime = new moment();
       const acceptedGameRequests = action.acceptedGameRequests.data.map(acceptedGame => {
         let senderId = acceptedGame.sender.statistics.id;
         let time_left =  acceptedGame.time_left_to_submit;

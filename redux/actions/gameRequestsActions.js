@@ -39,6 +39,42 @@ export function loadPendingGameRequests(userId, csrfToken) {
   }
 }
 
+export function submitGameRequestStart() {
+  return { type: types.SUBMIT_GAME_REQUEST_START };
+}
+
+export function submitGameRequestSuccess(submittedGameRequest) {
+  return { type: types.SUBMIT_GAME_REQUEST_SUCCESS, submittedGameRequest };
+}
+
+export function submitGameRequestError(submitGameRequestError) {
+  return { type: types.SUBMIT_GAME_REQUEST_ERROR, submitGameRequestError };
+}
+
+export function submitGameRequest(csrfToken, payload) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(submitGameRequestStart());
+    return gameRequestsApi
+      .submitGameRequest(csrfToken, payload)
+      .then(submittedGameRequest => {
+        if (submittedGameRequest.status !== HttpStatus.OK) {
+          const error = new Error(submittedGameRequest.statusMessage);
+          dispatch(apiCallError(error));
+          dispatch(submitGameRequestError(error));
+        }
+
+        // attach the loggedIn user_id to ID sender/receiver
+        submittedGameRequest.loggedInUserId = payload.sender_id;
+        return dispatch(submitGameRequestSuccess(submittedGameRequest));
+      }).catch(error => {
+        dispatch(apiCallError(error));
+        dispatch(submitGameRequestError(error));
+        throw error;
+      });
+  }
+}
+
 export function loadAcceptedGameRequestsStart() {
   return { type: types.LOAD_ACCEPTED_GAME_REQUESTS_START };
 }

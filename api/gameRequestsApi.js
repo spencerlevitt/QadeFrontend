@@ -11,6 +11,14 @@ export function getPendingGameRequests(csrfToken) {
     .catch(error => handleError(error.response));
 }
 
+export function submitGameRequest(csrfToken, payload) {
+  return Axios.post(`${baseUrl}game_requests/`, payload, {
+    headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
+  })
+    .then(response => handleResponse(response))
+    .catch(error => handleError(error.response));
+}
+
 export function acceptGameRequest(requestId, location, csrfToken) {
   return Axios.patch(`${baseUrl}game_requests/${requestId}/`, {
     status: 2,
