@@ -12,7 +12,7 @@ export default function gameCardsReducer(state = initialState.gameCards, action)
     case types.SUBMIT_GAME_CARD_SUCCESS:
       return {
         ...state,
-        // gameCard,
+        cards: state.cards.concat(action.submittedGameCard.data),
         isSubmittingGameCards: false
       };
 

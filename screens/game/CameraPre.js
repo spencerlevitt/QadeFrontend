@@ -22,7 +22,7 @@ class CameraPre extends React.Component {
         return '41.8339042,-88.0121586';    // TODO navigation library fix
     };
 
-    geImageType (file) {
+    geImageType (file, extOnly = false) {
 		let extension = 'jpeg', _;
 
 		try {
@@ -32,6 +32,9 @@ class CameraPre extends React.Component {
 			extension = 'jpeg';
 		}
 
+        if (extOnly) {
+            return extension;
+        }
 		return `image/${extension}`;
 	}
 
@@ -39,7 +42,8 @@ class CameraPre extends React.Component {
         const data = new FormData();
 
         data.append('image', {
-            name: 'image',
+            name: `image.${this.geImageType(photo.uri, true)}`,
+            filename: `image.${this.geImageType(photo.uri, true)}`,
             type: this.geImageType(photo.uri),
             uri:
                 Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', '')
@@ -57,10 +61,7 @@ class CameraPre extends React.Component {
         const game = this.props.navigation.getParam('game').game;
         const photoData = this.props.navigation.getParam('photoData');
         const { csrfToken } = this.props;
-        console.log('>>> game', game);
-        console.log('>>> photodata', photoData);
         const payload = this.createFormData(photoData);
-        console.log('>>> payload', payload);
 
         try {
             const response = await this.props.actions.submitGameCard(game, csrfToken, payload);
@@ -71,7 +72,7 @@ class CameraPre extends React.Component {
                 if (this.props.hasError) {
                     alert(`Submitting game score failed: ${this.props.errorMessage.message}`);
                 } else {
-                    this.props.navgiation.navigate('Waiting');
+                    this.props.navigation.navigate('Await');
                 }                
             }
         } catch (error) {
@@ -92,15 +93,18 @@ class CameraPre extends React.Component {
                         <Text style={{ fontSize: 22, color: '#333', marginBottom: 20 }}>Looking good?</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                                    <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
-                                </TouchableOpacity>
-
+                                {
+                                    !this.props.isSubmittingGameCards
+                                    ?   <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                                            <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
+                                        </TouchableOpacity>
+                                    :   <></>
+                                }
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                 {/* Handle the photo data verification process */}
                                 <TouchableOpacity onPress={() => this.onSubmitGameScore()}>
-                                    <EvilIcons name={'check'} size={60} color={'#5eb97e'} />
+                                    <EvilIcons name={this.props.isSubmittingGameCards ? 'spinner-2' : 'check'} size={60} color={'#5eb97e'} />
                                 </TouchableOpacity>
                             </View>
                         </View>
