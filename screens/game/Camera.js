@@ -35,8 +35,11 @@ export default class CameraScreen extends React.Component {
             allowsEditing: false,
             aspect: [4, 3],
           });
-        this.setState({ capturing: false, captures: photoData })
-        this.props.navigation.navigate('CameraPre', { photoData })
+          
+          if(photoData.cancelled != true){
+            this.setState({ capturing: false, captures: photoData })
+            this.props.navigation.navigate('CameraPre', { photoData })
+          }
     }    
 
     render() {
