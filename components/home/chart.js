@@ -22,7 +22,7 @@ class Chart extends React.Component {
 
     state = {
         period: 7,
-        empty: false,
+        empty: true,
         randomData: [11, 20, 40, 20, 50, 10],
         randomData2: [61, 40, 10, 30, 40, 80],
     }
@@ -53,7 +53,7 @@ class Chart extends React.Component {
     }
 
     buttons = () => {
-        if (this.state.empty == false) {
+        if (!this.state.empty == false) {
             return (
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

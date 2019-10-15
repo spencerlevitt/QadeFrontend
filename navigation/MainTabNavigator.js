@@ -7,7 +7,7 @@ import TabBarIcon2 from '../components/TabBarIcon2';
 import HomeScreen from '../screens/HomeScreen';
 import Recent from '../screens/Recent';
 import Profile from '../screens/Profile';
-import Game from '../screens/game';
+import Game from '../screens/Game';
 
 import NavigationService from './NavigationService';
 
