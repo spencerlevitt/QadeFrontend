@@ -15,7 +15,7 @@ import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { ScrollView } from 'react-native-gesture-handler';
 
-//console.disableYellowBox = true
+//console.disableYellowBox = true   
 
 export default class Submit extends React.Component {
 
@@ -23,28 +23,31 @@ export default class Submit extends React.Component {
     render() {
 
         const { navigation } = this.props;
-        const gameID = navigation.getParam('Game');
+
+        const game = navigation.getParam('game');
+        const gameID = navigation.getParam('game').game;
+        const isUserWon = navigation.getParam('isUserWon');
 
         let gamePic
         let gameSS
 
         switch(gameID){
-            case 0 : {
+            case 'NBA' : {
                 gamePic = require('../../assets/images/game/nba-header.png')
                 gameSS = require('../../assets/images/game/nba-ss.png')
             }
             break;
-            case 1 : {
+            case 'NFL' : {
                 gamePic = require('../../assets/images/game/nfl-header.png')
                 gameSS = require('../../assets/images/game/nfl-ss.png')
             }
             break;
-            case 2 : {
+            case 'FIF' : {
                 gamePic = require('../../assets/images/game/fifa-header.png')
                 gameSS = require('../../assets/images/game/fifa-ss.png')
             }
             break;
-            case 3 : {
+            case 'NHL' : {
                 gamePic = require('../../assets/images/game/nhl-header.jpg')
                 gameSS = require('../../assets/images/game/nhl-ss.png')
             }
@@ -74,16 +77,14 @@ export default class Submit extends React.Component {
                         </View>
                     </View>
                     <View style={{ flex: 0.2, padding: 30 }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Camera")} style={{ flex: 1 }}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Camera", { game, isUserWon })} style={{ flex: 1 }}>
                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
 
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
                                     <Text style={{ fontSize: 22, color: '#333', textAlign: 'right' }}>
                                         Take Picture
                                 </Text>
-
                                     <EvilIcons name={'arrow-right'} size={50} color={'#333'} />
-
                                 </View>
                             </View>
                         </TouchableOpacity>

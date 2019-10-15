@@ -8,24 +8,83 @@ import {
     View,
     Dimensions
 } from 'react-native';
-import Constants from 'expo-constants';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScrollView } from 'react-native-gesture-handler';
+import { EvilIcons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as gameCardsActions from '../../redux/actions/gameCardsActions';
 
 //console.disableYellowBox = true
 
-export default class CameraPre extends React.Component {
+class CameraPre extends React.Component {
+
+    getLocation = () => {
+        return '41.8339042,-88.0121586';    // TODO navigation library fix
+    };
+
+    geImageType (file, extOnly = false) {
+		let extension = 'jpeg', _;
+
+		try {
+			[ _, extension ] = file.match(/\.(\w+)$/);
+		}
+		catch {
+			extension = 'jpeg';
+		}
+
+        if (extOnly) {
+            return extension;
+        }
+		return `image/${extension}`;
+	}
+
+    createFormData = (photo) => {
+        const data = new FormData();
+
+        data.append('image', {
+            name: `image.${this.geImageType(photo.uri, true)}`,
+            filename: `image.${this.geImageType(photo.uri, true)}`,
+            type: this.geImageType(photo.uri),
+            uri:
+                Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', '')
+        });
+
+        data.append('request_id', this.props.navigation.getParam('game').id);
+        data.append('user_id', this.props.loggedInUser.user.pk);
+        data.append('user_location', this.getLocation());
+        data.append('is_user_won', this.props.navigation.getParam('isUserWon'));
+        
+        return data;
+    }
+
+    onSubmitGameScore = async () => {
+        const game = this.props.navigation.getParam('game').game;
+        const photoData = this.props.navigation.getParam('photoData');
+        const { csrfToken } = this.props;
+        const payload = this.createFormData(photoData);
+
+        try {
+            const response = await this.props.actions.submitGameCard(game, csrfToken, payload);
+
+            console.log('response', response);
+
+            if (response) {
+                if (this.props.hasError) {
+                    alert(`Submitting game score failed: ${this.props.errorMessage.message}`);
+                } else {
+                    this.props.navigation.navigate('Await');
+                }                
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
     render() {
 
         const { navigation } = this.props;
         const uri = navigation.getParam('photoData');
-
-        
 
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -34,15 +93,18 @@ export default class CameraPre extends React.Component {
                         <Text style={{ fontSize: 22, color: '#333', marginBottom: 20 }}>Looking good?</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                                    <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
-                                </TouchableOpacity>
-
+                                {
+                                    !this.props.isSubmittingGameCards
+                                    ?   <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                                            <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
+                                        </TouchableOpacity>
+                                    :   <></>
+                                }
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                 {/* Handle the photo data verification process */}
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Await")}>
-                                    <EvilIcons name={'check'} size={60} color={'#5eb97e'} />
+                                <TouchableOpacity onPress={() => this.onSubmitGameScore()}>
+                                    <EvilIcons name={this.props.isSubmittingGameCards ? 'spinner-2' : 'check'} size={60} color={'#5eb97e'} />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -55,6 +117,33 @@ export default class CameraPre extends React.Component {
 CameraPre.navigationOptions = {
     header: null,
 };
+
+CameraPre.propTypes = {
+    loggedInUser: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired,
+    actions: PropTypes.object.isRequired,
+    isSubmittingGameCards: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
+};
+  
+function mapStateToProps(state) {
+    return {
+      isSubmittingGameCards: state.gameCards.isSubmittingGameCards,
+      csrfToken: state.auth.csrfToken,
+      loggedInUser: state.auth.loggedInUser,
+      loading: state.apiCallsInProgress > 0
+    };
+}
+  
+function mapDispatchToProps(dispatch) {
+    return {
+      actions: {
+        submitGameCard: bindActionCreators(gameCardsActions.submitGameCard, dispatch),
+      }
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CameraPre);
 
 const styles = StyleSheet.create({
     container: {

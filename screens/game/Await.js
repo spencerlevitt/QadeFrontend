@@ -30,8 +30,8 @@ export default class AwaitScreen extends React.Component {
                     <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ color: '#333', fontSize: 20 }}>Score Confirmation</Text>
                     </View>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ScoreConfirm')} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
-                        <EvilIcons name={'check'} size={50} color={'#888'} />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
+                        <EvilIcons name={'close'} size={50} color={'#888'} />
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 1, padding: 50, paddingTop: 100, alignItems: 'center' }}>

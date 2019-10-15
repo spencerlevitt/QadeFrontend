@@ -36,6 +36,10 @@ export default {
     isFetchingRejectedFriends: false,
     isFetchingSearchedFriends: false,
   },
+  gameCards: {
+    cards: [],
+    isSubmittingGameCards: false
+  },
   gameRequests: {
     acceptedGameRequests: [],
     rejectedGameRequests: [],

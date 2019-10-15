@@ -43,7 +43,7 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
 
         return null;
       }).filter(match => match !== null);
-
+ 
       return {
         ...state,
         pendingGameRequests,
