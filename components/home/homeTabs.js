@@ -23,7 +23,7 @@ import NavigationService from '../../navigation/NavigationService'
 const Empty = () => (
     <View style={{ flexDirection: 'row', flex: 1 }}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
-            <View style={{ flex: 1, borderBottomColor: '#51c2ff', borderBottomWidth: 1 }}>
+            <View style={{ flex: 1 }}>
 
             </View>
             <View style={{ flex: 1 }}>
@@ -34,7 +34,7 @@ const Empty = () => (
             <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#333', textAlign: 'center', textTransform: 'uppercase' }}>no scheduled matches</Text>
         </View>
         <View style={{ flex: 1 }}>
-            <View style={{ flex: 1, borderBottomColor: '#51c2ff', borderBottomWidth: 1 }}>
+            <View style={{ flex: 1 }}>
 
             </View>
             <View style={{ flex: 1 }}>
@@ -63,7 +63,7 @@ class Tabs extends React.Component {
                     </Text>
                 </View>
 
-                <View style={{ position: 'absolute', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
+                <View style={{ position: 'absolute', display: this.state.complete == false ? 'flex' : 'none', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
                     <View style={{ width: '30%', flexDirection: 'row' }}>
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 0 ? '#6a8dff' : '#888' }} />
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 1 ? '#6a8dff' : '#888' }} />
@@ -75,64 +75,65 @@ class Tabs extends React.Component {
 
                 {
                     this.state.complete == false ? (
-
-
                         <Swiper
-                        cards={['Nick Morton', 'Brandon Hue', 'Yoseph Msa', 'Elon Musk', 'Porter Proeo']}
-                        renderCard={(card) => {
-                            return (
-                                <View style={styles.card}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
-                                        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                                        <Text style={styles.cardText}>{card}</Text>
-                                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                                            <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>
-                                                <Text style={{ color: '#fff', fontSize: 10 }}>9 hrs left</Text>
+                            cards={['Nick Morton', 'Brandon Hue', 'Yoseph Msa', 'Elon Musk', 'Porter Proeo']}
+                            renderCard={(card) => {
+                                return (
+                                    <View style={styles.card}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
+                                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                            <Text style={styles.cardText}>{card}</Text>
+                                            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                                <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>
+                                                    <Text style={{ color: '#fff', fontSize: 10 }}>9 hrs left</Text>
+                                                </View>
                                             </View>
                                         </View>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <View>
-                                            <Text style={styles.cardSubText}>FIFA $5.00</Text>
-                                            <Text style={styles.cardSubText2}>Against {card.split(' ')[1]}:</Text>
-                                        </View>
-
-                                        <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 10, flexDirection: 'row' }}>
-                                            <View style={{ flex: 0.5, alignItems: 'center' }}>
-
-                                                <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>4-1</Text>
-                                                <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
-
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <View>
+                                                <Text style={styles.cardSubText}>FIFA $5.00</Text>
+                                                <Text style={styles.cardSubText2}>Against {card.split(' ')[1]}:</Text>
                                             </View>
 
-                                            <View style={{ flex: 0.5, alignItems: 'center' }}>
+                                            <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 10, flexDirection: 'row' }}>
+                                                <View style={{ flex: 0.5, alignItems: 'center' }}>
 
-                                                <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>0.80</Text>
-                                                <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win's</Text>
+                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>4-1</Text>
+                                                    <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
 
+                                                </View>
+
+                                                <View style={{ flex: 0.5, alignItems: 'center' }}>
+
+                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>0.80</Text>
+                                                    <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win's</Text>
+
+                                                </View>
                                             </View>
-                                        </View>
 
 
-                                        <View style={{ alignItems: 'flex-end' }}>
-                                            <TouchableOpacity onPress={() => NavigationService.navigate('Submit')}>
+                                            <View style={{ alignItems: 'flex-end' }}>
+                                                <TouchableOpacity onPress={() => NavigationService.navigate('Submit')}>
                                                 <View style={{ alignItems: 'center' }}>
                                                     <AntDesign name={'download'} size={15} color={'#888'} />
                                                     <Text style={{ color: '#888', fontSize: 8 }}>Submit Score</Text>
                                                 </View>
-                                            </TouchableOpacity>
+                                                </TouchableOpacity>
 
+                                            </View>
                                         </View>
                                     </View>
-                                </View>
-                            )
-                        }}
-                            onSwiped={(index) => { if (this.state.index == 4) { this.setState({ index: 0 }), console.warn(this.state.index) } else { this.setState({ index: this.state.index + 1 }), console.warn(this.state.index) } }}
-                            //onSwipedAll={() => { this.setState({ index: 0 }) }}
+                                )
+                            }}
+                            onSwiped={(index) => { if (index == 5) { this.setState({ index: 0 }) } else { this.setState({ index: this.state.index + 1 }) } }}
+                            onSwipedAll={() => { this.setState({ index: 0 }) }}
                             cardIndex={0}
+                            stackSeparation={0}
                             infinite={true}
                             backgroundColor={'#ffffff00'}
-                            stackSize={3}>
+                            stackSize={3}
+                        //infinite={true}
+                        >
                         </Swiper>
                     ) : (
                             <Empty />
