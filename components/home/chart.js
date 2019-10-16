@@ -34,9 +34,9 @@ class Chart extends React.Component {
     componentDidMount() {
         const { chartsData, loggedInUser, csrfToken, actions } = this.props;
         if (loggedInUser.user.pk) {
-            if (!chartsData || !chartsData.data[1].money.length || !chartsData.data[1].win_percent.length) {
+            // if (!chartsData || !chartsData.data[1].money.length || !chartsData.data[1].win_percent.length) {
                 actions.loadChartsData(loggedInUser.user.pk, this.state.period, csrfToken);
-            }
+            // }
         } else {
             alert('Your session has ended please login!');
         }
@@ -53,7 +53,7 @@ class Chart extends React.Component {
     }
 
     buttons = () => {
-        if (!this.state.empty == false) {
+        if (this.state.empty == false) {
             return (
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
