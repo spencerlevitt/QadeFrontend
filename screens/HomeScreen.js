@@ -23,6 +23,7 @@ import * as userActions from '../redux/actions/userActions';
 import * as statsActions from '../redux/actions/statsActions';
 import * as standingsActions from '../redux/actions/standingsActions';
 import { TextInput } from 'react-native-gesture-handler';
+import { withPolling } from "../redux/polling/withPolling";
 
 /*
 DEV
@@ -285,7 +286,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default withPolling(standingsActions.loadStandings, 100000)(connect(mapStateToProps, mapDispatchToProps)(HomeScreen));
 
 const styles = StyleSheet.create({
   container: {

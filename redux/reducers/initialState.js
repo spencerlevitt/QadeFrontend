@@ -36,6 +36,14 @@ export default {
     isFetchingRejectedFriends: false,
     isFetchingSearchedFriends: false,
   },
+  finishedGames: {
+    isFetchingScoreConfirmations: false,
+    isAcceptingScoreConfirmations: false,
+    isSubmittingScoreDispute: false,
+    scoreConfirmations: [],
+    scoreAccepted: [],
+    scoreDisputes: []
+  },
   gameCards: {
     cards: [],
     isSubmittingGameCards: false
