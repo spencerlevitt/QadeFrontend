@@ -111,6 +111,7 @@ apply from: 'expo.gradle'
 apply from: "../../node_modules/react-native-unimodules/gradle.groovy"
 
 dependencies {
+    implementation project(':tipsi-stripe')
     implementation project(':yoti-react-native')
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 

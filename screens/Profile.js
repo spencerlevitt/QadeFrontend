@@ -14,14 +14,55 @@ import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-material-dropdown';
+import Yoti from 'yoti-react-native';
+import stripe from 'tipsi-stripe';
 
 export default class Profile extends React.Component {
   state = {
     game: 'nba2k'
   }
+  paystripe = async () => {
+      const token = await stripe.paymentRequestWithCardForm({
+      // Only iOS support this options
+      smsAutofillDisabled: true,
+      requiredBillingAddressFields: 'full',
+      prefilledInformation: {
+        billingAddress: {
+          name: 'testingpg',
+          line1: 'testingpg1',
+          line2: '3',
+          city: 'asldkfj',
+          state: 'asldkfj',
+          country: 'US',
+          postalCode: '31217',
+          email: 'pavel.galagan@gmail.com',
+        },
+      },
+    })
+  }
+
 
 
   render() {
+        stripe.setOptions({
+          publishableKey: 'pk_test_Bgd9yX8VjAAhnIbvTXe0XsNX',
+          merchantId: 'myTestMERCHANT_ID', // Optional
+          androidPayMode: 'test', // Android only
+        })
+
+      	const yoticonfig = {
+		sdkId: "my-sdk-id-from-yoti-hub",
+		scenarioId: "my-scenario-id-from-yoti-hub",
+		onInitSuccess: () => { window.alert("Initialised successfully") },
+		onInitError: () => { window.alert("Initialisation failed") },
+		android: {
+          callbackAction: "com.myapp.YOTI_CALLBACK",
+          callbackBackendAction: "com.myapp.BACKEND_CALLBACK"
+		},
+		ios: {
+			callbackBackendUrl: "https://some.domain/login"
+		}
+	}
     const data = [{
       value: 'NBA 2K',
     }, {
@@ -68,6 +109,15 @@ export default class Profile extends React.Component {
             </View>
 
             {/* Remove before prod */}
+            <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
+                <Yoti {...yoticonfig} />
+            </View>
+
+            <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
+              <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.paystripe()}>
+                <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center' }}>Pay with Stripe</Text>
+              </TouchableOpacity>
+            </View>
 
             <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
               <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Loading")}>
