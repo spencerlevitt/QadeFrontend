@@ -66,9 +66,7 @@ class CameraPre extends React.Component {
         try {
             const response = await this.props.actions.submitGameCard(game, csrfToken, payload);
 
-            console.log('response', response);
-
-            if (response) {
+            if (response && response.submittedGameCard) {
                 if (this.props.hasError) {
                     alert(`Submitting game score failed: ${this.props.errorMessage.message}`);
                 } else {
@@ -91,23 +89,23 @@ class CameraPre extends React.Component {
                 <Image style={{height: Dimensions.get('window').height / 2, width: Dimensions.get('window').width / 2}} source={uri}/>
                 <View style={{ flex: 0.35, justifyContent: 'flex-end', alignItems: 'center', paddingLeft: 100, paddingRight: 100 }}>
                         <Text style={{ fontSize: 22, color: '#333', marginBottom: 20 }}>Looking good?</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                {
-                                    !this.props.isSubmittingGameCards
-                                    ?   <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                        {
+                            !this.props.isSubmittingGameCards
+                            ?   <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                                             <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
                                         </TouchableOpacity>
-                                    :   <></>
-                                }
-                            </View>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                {/* Handle the photo data verification process */}
-                                <TouchableOpacity onPress={() => this.onSubmitGameScore()}>
-                                    <EvilIcons name={this.props.isSubmittingGameCards ? 'spinner-2' : 'check'} size={60} color={'#5eb97e'} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                        {/* Handle the photo data verification process */}
+                                        <TouchableOpacity onPress={() => this.onSubmitGameScore()}>
+                                            <EvilIcons name={'check'} size={60} color={'#5eb97e'} />
+                                        </TouchableOpacity>    
+                                    </View>
+                                </View>
+                            :   <Text style={{ fontSize: 16, color: '#333', marginBottom: 20 }}>Submitting score...</Text>
+                        }
                     </View>
             </View>
         );

@@ -8,20 +8,99 @@ import {
     View,
 } from 'react-native';
 import Constants from 'expo-constants';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScrollView } from 'react-native-gesture-handler';
+import { EvilIcons } from '@expo/vector-icons';
+import { RFPercentage } from "react-native-responsive-fontsize";
+import * as scoreConfirmationActions from "../../redux/actions/scoreConfirmationActions";
+import * as scoreDisputeActions from "../../redux/actions/scoreDisputeActions";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 
 //console.disableYellowBox = true
 
-export default class Submit extends React.Component {
+class Submit extends React.Component {
+
+    getLocation = () => {
+        return '41.8339042,-88.0121586';    // TODO navigation library fix
+    };
+
+    confirmScore = async (scoreConfirmation) => {
+        const loggedInUser = this.props.navigation.getParam('loggedInUser');
+        const csrfToken = this.props.navigation.getParam('csrfToken');
+
+        try {
+            const response = await this.props.actions.acceptScoreConfirmation(scoreConfirmation.id, loggedInUser.user.email, this.getLocation(), this.getLocation(), csrfToken);   
+
+            console.log('score confirm response', response);
+            
+            if (response) {
+                this.props.navigation.navigate("ScoreA");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    disputeScore = async (scoreConfirmation) => {
+        const loggedInUser = this.props.navigation.getParam('loggedInUser');
+        const csrfToken = this.props.navigation.getParam('csrfToken');
+        const payload = {
+            user_id: loggedInUser.user.pk,
+            game_id: scoreConfirmation.id,
+            comment: "",
+            // image: scoreConfirmation.game_image_url,
+        };
+
+        try {
+            const response = await this.props.actions.disputeScoreConfirmation(payload, loggedInUser.user.email, csrfToken);
+            
+            if (response) {
+                this.props.navigation.navigate("ScoreB");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     render() {
 
         const { navigation } = this.props;
-        const gameID = navigation.getParam('game');
+        const loggedInUser = navigation.getParam('loggedInUser');
+        let scoreConfirmation = navigation.getParam('scoreConfirmation');
+        let game_image_url = ""; 
+        switch (scoreConfirmation.game_played) {
+            case "FIFA":
+                game_image_url = scoreConfirmation.FIFA19MatchData.image_url;
+                break;
+
+            case "MAD":
+                game_image_url = scoreConfirmation.Madden19MatchData.image_url;
+                break;
+
+            case "NBA":
+                game_image_url = scoreConfirmation.NBA19MatchData.image_url;
+                break;
+
+            case "NHL":
+                game_image_url = scoreConfirmation.NHL19MatchData.image_url;
+                break;
+            
+            default:
+                break;
+            }
+
+        const win_or_loss = scoreConfirmation.winner.email === loggedInUser.user.email ? 'Won' : 'Lost';
+        scoreConfirmation = {
+            id: scoreConfirmation.id,
+            opp_first_name: win_or_loss === 'Won' ? scoreConfirmation.loser.first_name : scoreConfirmation.winner.first_name,
+            opp_last_name: win_or_loss === 'Won' ? scoreConfirmation.loser.last_name : scoreConfirmation.winner.last_name,
+            opp_photo_url: win_or_loss === 'Won' ? scoreConfirmation.loser.photo_url : scoreConfirmation.winner.photo_url,
+            wager_amount: scoreConfirmation.wager_amount, 
+            status: scoreConfirmation.status,
+            game_played: scoreConfirmation.game_played,
+            game_image_url,
+            win_or_loss
+        };
 
         return (
             <View style={{ flex: 1 }}>
@@ -39,13 +118,15 @@ export default class Submit extends React.Component {
 
                             <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
                             <View style={{ flex: 1 }}>
-                                <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
+                                <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>
+                                    {scoreConfirmation.opp_first_name ? `${scoreConfirmation.opp_first_name} ${scoreConfirmation.opp_last_name}` : ''}
+                                </Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ color: '#888' }}>NBA</Text>
+                                        <Text style={{ color: '#888' }}>{scoreConfirmation.game_played ? scoreConfirmation.game_played : ''}</Text>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ color: '#888' }}>$5.00</Text>
+                                        <Text style={{ color: '#888' }}>${scoreConfirmation.wager_amount ? scoreConfirmation.wager_amount : '0.00'}</Text>
                                     </View>
                                 </View>
 
@@ -55,17 +136,19 @@ export default class Submit extends React.Component {
                         </View>
                     </View>
                     <View style={{ flex: 0.35, justifyContent: 'flex-end', alignItems: 'center', paddingLeft: 50, paddingRight: 50 }}>
-                        <Text style={{ fontSize: 18, color: '#333', marginBottom: 20 }}>Matt's Submission: You Lost</Text>
+                        <Text style={{ fontSize: 18, color: '#333', marginBottom: 20 }}>
+                            {scoreConfirmation.opp_last_name ? `${scoreConfirmation.opp_last_name}'s` : 'Unknown User\'s'} Submission: You {win_or_loss}
+                        </Text>
                         <Text style={{ fontSize: 18, color: '#333', marginBottom: 20 }}>Is this correct?</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ScoreB")}>
+                                <TouchableOpacity onPress={() => this.disputeScore(scoreConfirmation)}>
                                     <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
                                 </TouchableOpacity>
 
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ScoreA")}>
+                                <TouchableOpacity onPress={() => this.confirmScore(scoreConfirmation)}>
                                     <EvilIcons name={'check'} size={60} color={'#5eb97e'} />
                                 </TouchableOpacity>
                             </View>
@@ -92,6 +175,30 @@ export default class Submit extends React.Component {
 Submit.navigationOptions = {
     header: null,
 };
+
+Submit.propTypes = {
+    loggedInUser: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired,
+    actions: PropTypes.object.isRequired,
+};
+  
+function mapStateToProps(state) {
+    return {
+      csrfToken: state.auth.csrfToken,
+      loggedInUser: state.auth.loggedInUser,
+    };
+}
+  
+function mapDispatchToProps(dispatch) {
+    return {
+      actions: {
+        acceptScoreConfirmation: bindActionCreators(scoreConfirmationActions.acceptScoreConfirmation, dispatch),
+        disputeScoreConfirmation: bindActionCreators(scoreDisputeActions.disputeScoreConfirmation, dispatch)
+      }
+    };
+}
+  
+export default connect(mapStateToProps, mapDispatchToProps)(Submit);
 
 const styles = StyleSheet.create({
     container: {
