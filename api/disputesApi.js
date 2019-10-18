@@ -4,7 +4,7 @@ import Axios from 'axios';
 const baseUrl = environment.API_URL;
 
 export function submitDispute(csrfToken, payload) {
-  return Axios.post(`${baseUrl}finished_games/?user=${userId}`, payload, {
+  return Axios.post(`${baseUrl}disputes/`, payload, {
       headers: {
         'X-CSRFToken': csrfToken || ''
       }

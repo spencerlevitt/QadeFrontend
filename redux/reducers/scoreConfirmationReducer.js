@@ -17,6 +17,28 @@ export default function scoreConfirmationReducer(state = initialState.finishedGa
         if (scoreConfirmation.status === 0
             && (scoreConfirmation.winner.email === loggedInUserEmail || scoreConfirmation.loser.email === loggedInUserEmail)) {
           const win_or_loss = scoreConfirmation.winner.email === loggedInUserEmail ? 'won' : 'loss';
+          let game_image_url = "";
+          
+          switch (scoreConfirmation.game_played) {
+            case "FIFA":
+              game_image_url = scoreConfirmation.FIFA19MatchData.image_url;
+              break;
+
+            case "MAD":
+              game_image_url = scoreConfirmation.Madden19MatchData.image_url;
+              break;
+
+            case "NBA":
+              game_image_url = scoreConfirmation.NBA19MatchData.image_url;
+              break;
+
+            case "NHL":
+              game_image_url = scoreConfirmation.NHL19MatchData.image_url;
+              break;
+          
+            default:
+              break;
+          }
           
           return {
             id: scoreConfirmation.id,
@@ -26,14 +48,13 @@ export default function scoreConfirmationReducer(state = initialState.finishedGa
             wager_amount: scoreConfirmation.wager_amount, 
             status: scoreConfirmation.status,
             game_played: scoreConfirmation.game_played,
-            win_or_loss
+            win_or_loss,
+            game_image_url
           };
         } else {
           return null;
         }
       }).filter(scoreConfirmation => scoreConfirmation !== null);
-
-      console.log('score confirmations ', scoreConfirmations);
 
       return {
         ...state,

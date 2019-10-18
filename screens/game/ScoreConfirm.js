@@ -45,14 +45,15 @@ class Submit extends React.Component {
         const loggedInUser = this.props.navigation.getParam('loggedInUser');
         const csrfToken = this.props.navigation.getParam('csrfToken');
         const payload = {
-
+            user_id: loggedInUser.user.pk,
+            game_id: scoreConfirmation.id,
+            comment: "",
+            // image: scoreConfirmation.game_image_url,
         };
 
         try {
-            const response = await this.props.actions.disputeScoreConfirmation({}, loggedInUser.user.email, csrfToken)
-
-            console.log('dispute score response', response);
-
+            const response = await this.props.actions.disputeScoreConfirmation(payload, loggedInUser.user.email, csrfToken);
+            
             if (response) {
                 this.props.navigation.navigate("ScoreB");
             }
@@ -66,6 +67,27 @@ class Submit extends React.Component {
         const { navigation } = this.props;
         const loggedInUser = navigation.getParam('loggedInUser');
         let scoreConfirmation = navigation.getParam('scoreConfirmation');
+        let game_image_url = ""; 
+        switch (scoreConfirmation.game_played) {
+            case "FIFA":
+                game_image_url = scoreConfirmation.FIFA19MatchData.image_url;
+                break;
+
+            case "MAD":
+                game_image_url = scoreConfirmation.Madden19MatchData.image_url;
+                break;
+
+            case "NBA":
+                game_image_url = scoreConfirmation.NBA19MatchData.image_url;
+                break;
+
+            case "NHL":
+                game_image_url = scoreConfirmation.NHL19MatchData.image_url;
+                break;
+            
+            default:
+                break;
+            }
 
         const win_or_loss = scoreConfirmation.winner.email === loggedInUser.user.email ? 'Won' : 'Lost';
         scoreConfirmation = {
@@ -76,6 +98,7 @@ class Submit extends React.Component {
             wager_amount: scoreConfirmation.wager_amount, 
             status: scoreConfirmation.status,
             game_played: scoreConfirmation.game_played,
+            game_image_url,
             win_or_loss
         };
 

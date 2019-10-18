@@ -11,7 +11,7 @@ export function disputeScoreConfirmationSuccess(disputedScore) {
   return { type: types.DISPUTE_SCORE_CONFIRMATION_SUCCESS, disputedScore };
 }
 
-export function disputeScoreConfirmationsError(disputeScoreError) {
+export function disputeScoreConfirmationError(disputeScoreError) {
   return { type: types.DISPUTE_SCORE_CONFIRMATION_ERROR, disputeScoreError };
 }
 
