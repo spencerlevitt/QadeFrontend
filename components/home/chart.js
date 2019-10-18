@@ -21,7 +21,10 @@ import * as chartsActions from '../../redux/actions/chartsActions';
 class Chart extends React.Component {
 
     state = {
-        period: 7
+        period: 7,
+        empty: true,
+        randomData: [11, 20, 40, 20, 50, 10],
+        randomData2: [61, 40, 10, 30, 40, 80],
     }
 
     dateChange = (int) => {
@@ -31,96 +34,27 @@ class Chart extends React.Component {
     componentDidMount() {
         const { chartsData, loggedInUser, csrfToken, actions } = this.props;
         if (loggedInUser.user.pk) {
-            if (!chartsData || !chartsData.data[1].money.length || !chartsData.data[1].win_percent.length) {
+            // if (!chartsData || !chartsData.data[1].money.length || !chartsData.data[1].win_percent.length) {
                 actions.loadChartsData(loggedInUser.user.pk, this.state.period, csrfToken);
-            }
+            // }
         } else {
             alert('Your session has ended please login!');
         }
     }
 
-
-    render() {
-        return (
-            <View>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
-                    <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
-                        +${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.earned_today : '0.00'} Today
-                    </Text>
+    empty = () => {
+        if (this.state.empty == true) {
+            return (
+                <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center', padding: 30 }}>
+                    <Text style={{ color: '#333', fontWeight: 'bold', fontSize: 13 }}>Play your first match to start tracking progress!</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{height: 8, width: 8, borderRadius: 20, backgroundColor: 'rgba(0, 255, 255, 1)', marginRight: 3}}>
+            )
+        }
+    }
 
-                        </View>
-                        <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Money</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: 15 }}>
-                        <View style={{height: 8, width: 8, borderRadius: 20, backgroundColor: 'rgba(58, 143, 255, 1)', marginRight: 3}}>
-
-                        </View>
-                        <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Win %</Text>
-                    </View>
-                </View>
-                <View style={{
-                    flexDirection: 'row', height: 160,
-                }}>
-
-                    <LineChart
-                        data={{
-                            datasets: [{
-                                data: !this.props.chartsData.isFetchingChartsData 
-                                        && this.props.chartsData.data[this.state.period]
-                                        ? this.props.chartsData.data[this.state.period].win_percent : [],
-                                color: (opacity = 1) => `rgba(58, 143, 255, 1)`,
-                                strokeWidth: 1.5 // optional
-                            },
-                            {
-                                data: !this.props.chartsData.isFetchingChartsData 
-                                        && this.props.chartsData.data[this.state.period]
-                                        ? this.props.chartsData.data[this.state.period].money : [],
-                                color: (opacity = 1) => `rgba(0, 255, 255, 1)`,
-                                strokeWidth: 1.5 // optional
-                            }]
-                        }}
-                        width={Dimensions.get('window').width + 160} // from react-native
-                        height={150}
-                        chartConfig={{
-                            backgroundColor: "#ffffff00",
-                            backgroundGradientFrom: '#fff',
-                            backgroundGradientTo: '#fff',
-                            strokeWidth: 1,
-                            decimalPlaces: 2, // optional, defaults to 2dp
-                            color: (opacity = 1) => `rgba(0, 255, 255, 1)`
-                        }}
-                        withDots={false}
-                        withInnerLines={false}
-                        withOuterLines={false}
-                        withVerticalLabels={true}
-                        withHorizontalLabels={false}
-                        bezier
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            bottom: 0,
-                            right: 0,
-                            marginLeft: -55,
-                            backgroundColor: 'transparent'
-                        }}
-                    />
-                    <LinearGradient
-                        colors={['rgba(255,255,255,0)','rgba(255,255,255,1)']}
-                        style={{
-                            position: 'absolute',
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            height: 160,
-                        }}
-                    />
-                </View>
+    buttons = () => {
+        if (this.state.empty == false) {
+            return (
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity
@@ -168,6 +102,94 @@ class Chart extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
+            )
+        }
+    }
+
+    render() {
+        return (
+            <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
+                    <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
+                        +${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.earned_today : '0.00'} Today
+                    </Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ height: 8, width: 8, borderRadius: 20, backgroundColor: 'rgba(0, 255, 255, 1)', marginRight: 3 }}>
+
+                        </View>
+                        <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Money</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: 15 }}>
+                        <View style={{ height: 8, width: 8, borderRadius: 20, backgroundColor: 'rgba(58, 143, 255, 1)', marginRight: 3 }}>
+
+                        </View>
+                        <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Win %</Text>
+                    </View>
+                </View>
+                <View style={{
+                    flexDirection: 'row', height: 160,
+                }}>
+                    {this.empty()}
+
+                    <LineChart
+                        data={{
+                            datasets: [{
+                                data: this.state.empty == true ? !this.props.chartsData.isFetchingChartsData
+                                    && this.props.chartsData.data[this.state.period]
+                                    ? this.props.chartsData.data[this.state.period].win_percent : [] : this.state.randomData,
+                                color: (opacity = 1) => `rgba(58, 143, 255, 1)`,
+                                strokeWidth: 1.5 // optional
+                            },
+                            {
+                                data: this.state.empty == true ? !this.props.chartsData.isFetchingChartsData
+                                    && this.props.chartsData.data[this.state.period]
+                                    ? this.props.chartsData.data[this.state.period].money : [] : this.state.randomData2,
+                                color: (opacity = 1) => `rgba(0, 255, 255, 1)`,
+                                strokeWidth: 1.5 // optional
+                            }]
+                        }}
+                        width={Dimensions.get('window').width + 160} // from react-native
+                        height={150}
+                        chartConfig={{
+                            backgroundColor: "#ffffff00",
+                            backgroundGradientFrom: '#fff',
+                            backgroundGradientTo: '#fff',
+                            strokeWidth: 1,
+                            decimalPlaces: 2, // optional, defaults to 2dp
+                            color: (opacity = 1) => `rgba(0, 255, 255, 1)`
+                        }}
+                        withDots={false}
+                        withInnerLines={false}
+                        withOuterLines={false}
+                        withVerticalLabels={true}
+                        withHorizontalLabels={false}
+                        bezier
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            marginLeft: -55,
+                            backgroundColor: 'transparent'
+                        }}
+                    />
+                    <LinearGradient
+                        colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+                        style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            height: 160,
+                        }}
+                    />
+                </View>
+                {this.buttons()}
+
             </View>
 
         )

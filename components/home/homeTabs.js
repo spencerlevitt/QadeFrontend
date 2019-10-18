@@ -24,7 +24,7 @@ import NavigationService from '../../navigation/NavigationService'
 const Empty = () => (
     <View style={{ flexDirection: 'row', flex: 1 }}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
-            <View style={{ flex: 1, borderBottomColor: '#51c2ff', borderBottomWidth: 1 }}>
+            <View style={{ flex: 1 }}>
 
             </View>
             <View style={{ flex: 1 }}>
@@ -35,7 +35,7 @@ const Empty = () => (
             <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#333', textAlign: 'center', textTransform: 'uppercase' }}>no scheduled matches</Text>
         </View>
         <View style={{ flex: 1 }}>
-            <View style={{ flex: 1, borderBottomColor: '#51c2ff', borderBottomWidth: 1 }}>
+            <View style={{ flex: 1 }}>
 
             </View>
             <View style={{ flex: 1 }}>
@@ -65,7 +65,7 @@ class Tabs extends React.Component {
                     </Text>
                 </View>
 
-                <View style={{ position: 'absolute', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
+                <View style={{ position: 'absolute', display: this.state.complete == false ? 'flex' : 'none', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
                     <View style={{ width: '30%', flexDirection: 'row' }}>
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 0 ? '#6a8dff' : '#888' }} />
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 1 ? '#6a8dff' : '#888' }} />
