@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
-import { MaterialCommunityIcons, AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -33,13 +33,9 @@ export default class CameraScreen extends React.Component {
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
-            
           });
-          if(photoData.cancelled != true){
-            this.setState({ capturing: false, captures: photoData })
-            this.props.navigation.navigate('CameraProPre', { photoData })
-          }
-        
+        this.setState({ capturing: false, captures: photoData })
+        this.props.navigation.navigate('CameraProPre', { photoData })
     }    
 
 
