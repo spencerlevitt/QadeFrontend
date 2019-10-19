@@ -17,7 +17,8 @@ import * as scale from 'd3-scale'
 export default class Chart extends React.Component {
 
     state = {
-        index: 0
+        index: 0,
+        hidden: true
     }
 
     dateChange = (int) => {
@@ -48,6 +49,9 @@ export default class Chart extends React.Component {
                 <View style={{
                     flexDirection: 'row', height: 160,
                 }}>
+                    <View style={{ display: this.state.hidden == true ? 'flex' : 'none', position: 'absolute', zIndex: 1, top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 70}}>
+                        <Text style={{color: '#333', textAlign: 'center', fontSize: 16}}>Play your first match to start tracking progress!</Text>
+                    </View>
 
                     <LineChart
                         data={{
@@ -113,7 +117,7 @@ export default class Chart extends React.Component {
                         }}
                     />
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ display: this.state.hidden == true ? 'none' : 'flex', flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity style={{ borderRadius: 50, backgroundColor: this.state.index == 0 ? '#d1e7ff' : '#fff' }} onPress={() => { this.dateChange(0) }}>
                             <Text style={{ fontSize: 12, fontWeight: 'bold', color: this.state.index == 0 ? '#042066' : '#2e7ef4', paddingLeft: 5, paddingRight: 5 }}>

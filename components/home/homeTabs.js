@@ -19,7 +19,7 @@ import Chart from './chart'
 const Empty = () => (
     <View style={{ flexDirection: 'row', flex: 1 }}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
-            <View style={{ flex: 1, borderBottomColor: '#51c2ff', borderBottomWidth: 1 }}>
+            <View style={{ flex: 1, }}>
 
             </View>
             <View style={{ flex: 1 }}>
@@ -30,7 +30,7 @@ const Empty = () => (
             <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#333', textAlign: 'center', textTransform: 'uppercase' }}>no scheduled matches</Text>
         </View>
         <View style={{ flex: 1 }}>
-            <View style={{ flex: 1, borderBottomColor: '#51c2ff', borderBottomWidth: 1 }}>
+            <View style={{ flex: 1, }}>
 
             </View>
             <View style={{ flex: 1 }}>
@@ -44,7 +44,7 @@ class Tabs extends React.Component {
 
     state = {
         index: 0,
-        complete: false
+        complete: true
     }
     render() {
         return (
