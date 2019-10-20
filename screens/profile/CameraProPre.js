@@ -8,24 +8,71 @@ import {
     View,
     Dimensions
 } from 'react-native';
-import Constants from 'expo-constants';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScrollView } from 'react-native-gesture-handler';
+import { EvilIcons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as userActions from '../../redux/actions/userActions'
+
 
 //console.disableYellowBox = true
 
-export default class CameraPre extends React.Component {
+class CameraPre extends React.Component {
 
+    geImageType (file, extOnly = false) {
+		let extension = 'jpeg', _;
+
+		try {
+			[ _, extension ] = file.match(/\.(\w+)$/);
+		}
+		catch {
+			extension = 'jpeg';
+		}
+
+        if (extOnly) {
+            return extension;
+        }
+		return `image/${extension}`;
+    };
+    
+    updateProfilePhoto = async () => {
+        const { uri } = this.props.navigation.getParam('photoData');
+        const data = new FormData();
+        
+        if (uri && uri.length ) {
+            data.append('photo', {
+                name: `photo.${this.geImageType(uri, true)}`,
+                filename: `photo.${this.geImageType(uri, true)}`,
+                type: this.geImageType(uri),
+                uri:
+                    Platform.OS === 'android' ? uri : uri.replace('file://', '')
+            });
+        }
+
+        data.append('dob', this.props.userDetails.profile.dob);
+        data.append('address', this.props.userDetails.profile.address);
+        data.append('country', this.props.userDetails.profile.country);
+        data.append('city', this.props.userDetails.profile.city);
+        data.append('zip', this.props.userDetails.profile.zip);
+        data.append('bio', this.props.userDetails.profile.bio);
+        data.append('console', this.props.userDetails.profile.console);
+
+        try {
+            const response = await this.props.actions.updateProfile(this.props.userDetails.profile.id, data, this.props.csrfToken);
+
+
+            if (response && response.updatedProfile && response.updatedProfile.status === 200) {
+                this.props.navigation.navigate("Profile", { photo_uri: uri });
+            }
+        } catch (e) {
+            console.error(e);
+        };
+    };
 
     render() {
 
         const { navigation } = this.props;
         const uri = navigation.getParam('photoData');
-
-        
 
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -41,7 +88,7 @@ export default class CameraPre extends React.Component {
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                 {/* Handle the photo data verification process */}
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Profile")}>
+                                <TouchableOpacity onPress={() => this.updateProfilePhoto()}>
                                     <EvilIcons name={'check'} size={60} color={'#5eb97e'} />
                                 </TouchableOpacity>
                             </View>
@@ -55,6 +102,32 @@ export default class CameraPre extends React.Component {
 CameraPre.navigationOptions = {
     header: null,
 };
+
+CameraPre.propTypes = {
+    csrfToken: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
+    loggedInUser: PropTypes.object.isRequired,
+    userDetails: PropTypes.object.isRequired
+};
+
+function mapStateToProps(state) {
+    return {
+        csrfToken: state.auth.csrfToken,
+        loading: state.apiCallsInProgress > 0,
+        loggedInUser: state.auth.loggedInUser,
+        userDetails: state.userDetails
+    };
+  }
+  
+  function mapDispatchToProps(dispatch) {
+    return {
+        actions: {
+            updateProfile: bindActionCreators(userActions.updateProfile, dispatch),
+        }
+    };
+  }
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(CameraPre);
 
 const styles = StyleSheet.create({
     container: {

@@ -23,3 +23,11 @@ export function signup(signupData, csrfToken) {
     .then(handleResponse)
     .catch(error => handleError(error.response));
 }
+
+export function updateProfile(profileId, profileData, csrfToken) {
+  return Axios.patch(`${baseUrl}user_profile/${profileId}/`, profileData, {
+    headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
+  })
+    .then(handleResponse)
+    .catch(error => handleError(error.response));
+}

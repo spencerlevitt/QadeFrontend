@@ -7,9 +7,11 @@ export default function authReducer(
     loggedInUser: initialState.loggedInUser,
     signedUpUser: initialState.signedUpUser,
     isFetching: initialState.isFetching,
+    isUpdatingFOrLName: initialState.isUpdatingFOrLName,
     hasError: initialState.hasError,
     errorMessage: initialState.errorMessage,
-    csrfToken: initialState.csrfToken
+    csrfToken: initialState.csrfToken,
+    userDetails: initialState.userDetails
   },
   action
 ) {
@@ -114,6 +116,40 @@ export default function authReducer(
       return {
         ...initialState,
         errorMessage: csrfTokenError
+      };
+
+    case types.UPDATE_FIRST_OR_LASTNAME_START:
+      return {
+        ...state,
+        isUpdatingFOrLName: true
+      };
+
+    case types.UPDATE_FIRST_OR_LASTNAME_SUCCESS:
+      updateFOrLNameData = action.updateFOrLNameData.data;
+      
+      return {
+        ...state,
+        loggedInUser: {
+          ...state.loggedInUser,
+          user: {
+            ...state.loggedInUser.user,
+            first_name: updateFOrLNameData.first_name,
+            last_name: updateFOrLNameData.last_name
+          }
+        },
+        userDetails: {
+          ...state.userDetails,
+          first_name: updateFOrLNameData.first_name,
+          last_name: updateFOrLNameData.last_name
+        },
+        isUpdatingFOrLName: false,
+      };
+    
+    case types.UPDATE_FIRST_OR_LASTNAME_ERROR:
+      const updateFOrLNameError = action.updateFOrLNameError;
+      return {
+        ...initialState,
+        errorMessage: updateFOrLNameError
       };
     
     default:

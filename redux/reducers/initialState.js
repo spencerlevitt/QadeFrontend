@@ -66,6 +66,8 @@ export default {
   errorMessage: {},
   hasError: false,
   isFetching: false,
+  isUpdatingFOrLName: false,
+  isUpdatingProfile: false,
   loggedIn: false,
   loggedInUser: {},
   signedUpUser: {},
