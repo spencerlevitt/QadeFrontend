@@ -28,18 +28,17 @@ export default class CameraScreen extends React.Component {
         }
       }
     
-      _pickImage = async () => {
-        const photoData =await ImagePicker.launchImageLibraryAsync({
+    _pickImage = async () => {
+        const photoData = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
-            
-          });
-          if(photoData.cancelled != true){
+        });
+        
+        if(photoData.cancelled != true){
             this.setState({ capturing: false, captures: photoData })
             this.props.navigation.navigate('CameraProPre', { photoData })
-          }
-        
+        }
     }    
 
 

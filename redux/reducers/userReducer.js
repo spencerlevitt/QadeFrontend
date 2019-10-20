@@ -21,6 +21,35 @@ export default function userReducer(state = initialState.userDetails, action) {
         errorMessage: loadUserDetailsError
       };
 
+    case types.UPDATE_PROFILE_START:
+      return {
+        ...state,
+        isUpdatingProfile: true
+      };
+
+    case types.UPDATE_PROFILE_SUCCESS:
+      const updatedProfile = action.updatedProfile.data
+
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          bio: updatedProfile.bio,
+          console: updatedProfile.console,
+          photo_url: updatedProfile.photo_url,
+        },
+        isUpdatingProfile: false,
+      }
+    
+    case types.UPDATE_PROFILE_ERROR:
+      const { updateProfileError } = action;
+      return {
+        ...state,
+        isUpdatingProfile: false,
+        hasError: true,
+        errorMessage: updateProfileError
+      };
+
     default:
       return state;
   }

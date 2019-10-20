@@ -15,8 +15,6 @@ export default function disputeScoreConfirmationReducer(state = initialState.sco
       const loggedInUserEmail = action.scoreConfirmations.loggedInUserEmail;
       const scoreDisputes = action.disputedScore;
 
-      console.log('score disputes ', scoreDisputes);
-
       return {
         ...state,
         scoreDisputes,

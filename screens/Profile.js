@@ -14,14 +14,20 @@ import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-material-dropdown';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as userActions from '../redux/actions/userActions';
+import * as friendRequestActions from '../redux/actions/friendRequestActions';
+import { NavigationEvents } from "react-navigation";
 
-export default class Profile extends React.Component {
+class Profile extends React.Component {
   state = {
     game: 'nba2k'
   }
 
-
   render() {
+
     const data = [{
       value: 'NBA 2K',
     }, {
@@ -31,12 +37,23 @@ export default class Profile extends React.Component {
     }, {
       value: 'MADDEN',
     }];
+
+    const consoles = ['None', 'Xbox One', 'Playstation 4', 'XBox One & Playstation 4'];
+
     return (
       <ScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]}>
+        <NavigationEvents
+          onWillFocus={() => {
+            const updatedPhoto = this.props.navigation.getParam('photo_uri');
+            if (updatedPhoto) {
+              this.setState({ updatedPhoto });
+            }
+          }}
+        />
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1 }}></View>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 60, width: 60, borderRadius: 5 }} />
+            <Image source={{ uri: this.state.updatedPhoto ? this.state.updatedPhoto : this.props.userDetails.profile.photo_url.length ? this.props.userDetails.profile.photo_url : '../../assets/man.png' }} style={{ height: 60, width: 60, borderRadius: 5 }} />
           </View>
           <View style={{ flex: 1 }}>
             <TouchableOpacity style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-end', padding: 20 }} onPress={() => this.props.navigation.navigate("Settings")}>
@@ -45,18 +62,26 @@ export default class Profile extends React.Component {
           </View>
         </View>
         <View>
-          <Text style={{ color: '#1E3949', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>Chris Wright</Text>
-          <Text style={{ color: '#1E3949', fontSize: 12, textAlign: 'center' }}>Xbox One | San Francisco, CA <Image source={require('../assets/images/shield.png')} style={{ height: 12, width: 10 }} /></Text>
+          <Text style={{ color: '#1E3949', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
+            {!this.props.loading ? `${this.props.loggedInUser.user.first_name} ${this.props.loggedInUser.user.last_name}` : ''}
+          </Text>
+          <Text style={{ color: '#1E3949', fontSize: 12, textAlign: 'center' }}>
+            {!this.props.loading ? consoles[this.props.userDetails.profile.console] : ''} | 
+            {!this.props.loading ? ` ${this.props.userDetails.profile.city}` : ''}
+            <Image source={require('../assets/images/shield.png')} style={{ height: 12, width: 10 }} />
+          </Text>
           <View style={{ padding: 15 }}>
             <Text style={{ color: '#1E3949', fontSize: 16, textAlign: 'center' }}>
-              Hi! My name is Chris, I’m a sports gamer from San Francisco, CA. Contact me at john@mail.com
+              {!this.props.loading ? this.props.userDetails.profile.bio ? this.props.userDetails.profile.bio : 'You have not your entered bio details' : 'Loading bio details...'}
             </Text>
 
             <View style={{ flexDirection: 'row', marginTop: 20 }}>
 
               <View style={{ flex: 0.5 }}>
                 <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }} onPress={() => this.props.navigation.navigate("Requests", { friends: false })}>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>121 Friends</Text>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>
+                    {!this.props.isFetchingAcceptedFriends ? this.props.acceptedFriends.length : '0'} Friends
+                  </Text>
                   <Text style={{ color: 'red', marginTop: -4 }}>•</Text>
                 </TouchableOpacity>
               </View>
@@ -67,13 +92,13 @@ export default class Profile extends React.Component {
               </View>
             </View>
 
-            {/* Remove before prod */}
+            {/* TODO: REMOVE BEFORE PROD */}
 
-            <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
+            {/* <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
               <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate("Loading")}>
                 <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center' }}>Loading Example</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             {/* */}
 
@@ -127,17 +152,23 @@ export default class Profile extends React.Component {
             <View style={{ marginBottom: 30 }}>
               <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 0.33 }}>
-                  <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>22-10</Text>
+                  <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.loading ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
+                  </Text>
                   <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>Record</Text>
                 </View>
 
                 <View style={{ flex: 0.33 }}>
-                  <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>68.8%</Text>
+                  <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.loading ? this.props.userDetails.statistics.win_percent : '0.0'}%
+                  </Text>
                   <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>Win %</Text>
                 </View>
 
                 <View style={{ flex: 0.33 }}>
-                  <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>$24.33</Text>
+                  <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>
+                    ${!this.props.loading ? this.props.userDetails.statistics.net_gain : '0.00'}
+                  </Text>
                   <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>Net Gain</Text>
                 </View>
 
@@ -212,6 +243,37 @@ export default class Profile extends React.Component {
 Profile.navigationOptions = {
   header: null,
 };
+
+Profile.propTypes = {
+  csrfToken: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  loggedInUser: PropTypes.object.isRequired,
+  acceptedFriends: PropTypes.object.isRequired,
+  isFetchingAcceptedFriends: PropTypes.bool.isRequired,
+  userDetails: PropTypes.object.isRequired
+};
+
+function mapStateToProps(state) {
+  return {
+      csrfToken: state.auth.csrfToken,
+      loading: state.apiCallsInProgress > 0,
+      loggedInUser: state.auth.loggedInUser,
+      acceptedFriends: state.friendRequests.acceptedFriends,
+      isFetchingAcceptedFriends: state.friendRequests.isFetchingAcceptedFriends,
+      userDetails: state.userDetails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+      actions: {
+          loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
+          loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
+      }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const styles = StyleSheet.create({
   container: {
