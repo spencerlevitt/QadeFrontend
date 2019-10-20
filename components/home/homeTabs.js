@@ -27,13 +27,16 @@ class Tabs extends React.Component {
     render() {
         return (
 
-            <View style={{ height: 200, padding: 10 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ height: 170, padding: 10 }}>
+                <View style={{marginTop: -20}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }}>
                     <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>3-1 Today</Text>
                 </View>
+                </View>
+                
 
-                <View style={{ position: 'absolute', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
+                <View style={{ position: 'absolute', width: '100%', marginLeft: 10, alignItems: 'center', bottom: this.state.complete == true ? 10 : -20 }}>
                     <View style={{ width: '30%', flexDirection: 'row' }}>
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 0 ? '#6a8dff' : '#888' }} />
 
@@ -125,7 +128,7 @@ class Tabs extends React.Component {
                                                     </View>
                                                 </View>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                    <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#333', textAlign: 'center', textTransform: 'uppercase' }}>You have accepted no matches.</Text><Text style={{ fontSize: 13, fontWeight: 'bold', color: '#333', textAlign: 'center', textTransform: 'uppercase' }}>Challenge a friend to start gaming!</Text>
+                                                    <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#333', textAlign: 'center' }}>You have accepted no matches.</Text><Text style={{ fontSize: 13, fontWeight: 'bold', color: '#333', textAlign: 'center' }}>Challenge a friend to start gaming!</Text>
                                                 </View>
                                                 <View style={{ flex: 1 }}>
                                                     <View style={{ flex: 1, }}>
@@ -148,6 +151,7 @@ class Tabs extends React.Component {
                                 infinite={false}
                                 backgroundColor={'#ffffff00'}
                                 stackSize={3}>
+                                    
                             </Swiper>
                         )
                 }
