@@ -23,6 +23,7 @@ class Chart extends React.Component {
     state = {
         period: 7,
         empty: true,
+        hidden: true,
         randomData: [11, 20, 40, 20, 50, 10],
         randomData2: [61, 40, 10, 30, 40, 80],
     }
@@ -34,26 +35,24 @@ class Chart extends React.Component {
     componentDidMount() {
         const { chartsData, loggedInUser, csrfToken, actions } = this.props;
         if (loggedInUser.user.pk) {
-            // if (!chartsData || !chartsData.data[1].money.length || !chartsData.data[1].win_percent.length) {
-                actions.loadChartsData(loggedInUser.user.pk, this.state.period, csrfToken);
-            // }
+            actions.loadChartsData(loggedInUser.user.pk, this.state.period, csrfToken);
         } else {
             alert('Your session has ended please login!');
         }
     }
 
-    empty = () => {
+    loadingChart = () => {
         if (this.state.empty == true) {
             return (
                 <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center', padding: 30 }}>
-                    <Text style={{ color: '#333', fontWeight: 'bold', fontSize: 13 }}>Play your first match to start tracking progress!</Text>
+                    <Text style={{ color: '#333', fontWeight: 'bold', fontSize: 13 }}>Loading chart...</Text>
                 </View>
             )
         }
     }
 
     buttons = () => {
-        if (this.state.empty == false) {
+        if (!this.props.isFetchingScoreConfirmations && this.props.scoresAccepted.length) {
             return (
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -108,7 +107,7 @@ class Chart extends React.Component {
 
     render() {
         return (
-            <View>
+            <View key={this.props.scoresAccepted+'-view'}>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
@@ -132,19 +131,26 @@ class Chart extends React.Component {
                 <View style={{
                     flexDirection: 'row', height: 160,
                 }}>
-                    {this.empty()}
+                    <View
+                        key={this.props.scoresAccepted.length+'-empty'}
+                        style={{ 
+                        display: (!this.props.isFetchingScoreConfirmations && !this.props.scoresAccepted.length) ? 'flex' : 'none',
+                        position: 'absolute', zIndex: 1, top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 70}}>
+                        <Text style={{color: '#333', textAlign: 'center', fontSize: 16}}>Play your first match to start tracking progress!</Text>
+                    </View>
 
                     <LineChart
+                        key={this.props.scoresAccepted.length+'-line-chart'}
                         data={{
                             datasets: [{
-                                data: this.state.empty == true ? !this.props.chartsData.isFetchingChartsData
+                                data: this.props.scoresAccepted.length ? !this.props.chartsData.isFetchingChartsData
                                     && this.props.chartsData.data[this.state.period]
                                     ? this.props.chartsData.data[this.state.period].win_percent : [] : this.state.randomData,
                                 color: (opacity = 1) => `rgba(58, 143, 255, 1)`,
                                 strokeWidth: 1.5 // optional
                             },
                             {
-                                data: this.state.empty == true ? !this.props.chartsData.isFetchingChartsData
+                                data: this.props.scoresAccepted.length ? !this.props.chartsData.isFetchingChartsData
                                     && this.props.chartsData.data[this.state.period]
                                     ? this.props.chartsData.data[this.state.period].money : [] : this.state.randomData2,
                                 color: (opacity = 1) => `rgba(0, 255, 255, 1)`,
@@ -200,7 +206,9 @@ class Chart extends React.Component {
 Chart.propTypes = {
     chartsData: PropTypes.object.isRequired,
     loggedInUser: PropTypes.object.isRequired,
+    scoresAccepted: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
+    isFetchingScoreConfirmations: PropTypes.bool.isRequired,
     userDetails: PropTypes.object.isRequired
 };
 
@@ -208,6 +216,8 @@ function mapStateToProps(state) {
     return {
         chartsData: state.chartsData,
         loggedInUser: state.auth.loggedInUser,
+        scoresAccepted: state.scoreConfirmation.scoresAccepted,
+        isFetchingScoreConfirmations: state.scoreConfirmation.isFetchingScoreConfirmations,
         loading: state.apiCallsInProgress > 0,
         userDetails: state.userDetails
     };
