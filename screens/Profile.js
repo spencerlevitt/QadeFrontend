@@ -16,6 +16,7 @@ import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIc
 import { Dropdown } from 'react-native-material-dropdown';
 import Yoti from 'yoti-react-native';
 import stripe from 'tipsi-stripe';
+import { environment } from '../environments/environment.dev';
 
 export default class Profile extends React.Component {
   state = {
@@ -45,19 +46,23 @@ export default class Profile extends React.Component {
 
   render() {
         stripe.setOptions({
-          publishableKey: 'pk_test_Bgd9yX8VjAAhnIbvTXe0XsNX',
-          merchantId: 'myTestMERCHANT_ID', // Optional
+          publishableKey: environment.STRIPE_KEY,
+          merchantId: environment.STRIPE_MERCHANTID, // Optional
           androidPayMode: 'test', // Android only
         })
 
       	const yoticonfig = {
-		sdkId: "my-sdk-id-from-yoti-hub",
-		scenarioId: "my-scenario-id-from-yoti-hub",
-		onInitSuccess: () => { window.alert("Initialised successfully") },
+        onClick: (e) => {
+            console.log('Yoti buttin clicked')
+            //The yoti integration doesn't work without this handler
+        },
+		sdkId: environment.YOTI_SDKID,
+		scenarioId: environment.YOTI_SCENARIOID,
+		onInitSuccess: () => { window.alert("NEW.Initialised successfully") },
 		onInitError: () => { window.alert("Initialisation failed") },
 		android: {
-          callbackAction: "com.myapp.YOTI_CALLBACK",
-          callbackBackendAction: "com.myapp.BACKEND_CALLBACK"
+          callbackAction: "com.qade.qade.YOTI_CALLBACK",
+          callbackBackendAction: "com.qade.qade.BACKEND_CALLBACK"
 		},
 		ios: {
 			callbackBackendUrl: "https://some.domain/login"
