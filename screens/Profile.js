@@ -14,12 +14,17 @@ import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-material-dropdown';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class Profile extends React.Component {
   state = {
     game: 'nba2k'
   }
 
+  _scrollToInput(reactNode: any) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode)
+}
 
   render() {
     const data = [{
@@ -32,7 +37,9 @@ export default class Profile extends React.Component {
       value: 'MADDEN',
     }];
     return (
-      <ScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]}>
+      <KeyboardAwareScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]} innerRef={ref => {
+        this.scroll = ref
+      }}>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1 }}></View>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
@@ -95,7 +102,7 @@ export default class Profile extends React.Component {
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 18 }}>Stat Center</Text>
               </View>
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end'}}>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
                 <View style={{}}>
                   <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, justifyContent: 'center' }}>
                     <EvilIcons name={'chevron-down'} size={30} color={'#333'} />
@@ -121,7 +128,10 @@ export default class Profile extends React.Component {
               </View>
             </View>
             <View style={{ margin: 30 }}>
-              <TextInput style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
+              <TextInput  onFocus={(event: Event) => {
+                            // `bind` the function if you're using ES6 classes
+                            this._scrollToInput((event.target))
+                        }}  style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
               </TextInput>
             </View>
             <View style={{ marginBottom: 30 }}>
@@ -204,7 +214,7 @@ export default class Profile extends React.Component {
           </View>
 
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     )
   }
 }
@@ -216,6 +226,7 @@ Profile.navigationOptions = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 160,
     backgroundColor: '#fff',
   },
   shadow: {

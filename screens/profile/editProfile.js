@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        marginBottom: 160
     },
     shadow: {
         shadowColor: '#888',

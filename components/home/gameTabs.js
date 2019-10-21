@@ -10,7 +10,8 @@ import {
 import Constants from 'expo-constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
-
+import { AntDesign } from '@expo/vector-icons';
+import NavigationService from '../../navigation/NavigationService'
 //console.disableYellowBox = true
 
 const FirstRoute = () => (
@@ -31,6 +32,18 @@ const FourthRoute = () => (
 gameData = () => {
     return (
         <View>
+            <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', backgroundColor: '#ffffffe0', zIndex: 1 }}>
+            <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>Qade is more fun with friends!</Text>
+                <TouchableOpacity style={{ flexDirection: 'row', paddingHorizontal: 30, paddingVertical: 5, alignItems: 'center', justifyContent: 'center', borderColor: '#71ceff', borderRadius: 5, borderWidth: 1, marginTop: 10 }} onPress={() => {NavigationService.navigate('Recent')}}>
+                    <Text style={{ fontSize: 12, color: '#71ceff' }}>Add Friends</Text>
+                    <AntDesign
+                        name={'user'}
+                        size={12}
+                        style={{ marginLeft: 5 }}
+                        color={'#71ceff'}
+                    />
+                </TouchableOpacity>
+            </View>
             <View key={0} style={{ height: 80, justifyContent: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>

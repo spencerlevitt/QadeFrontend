@@ -23,7 +23,7 @@ export default class Accepted extends React.Component {
         if (true == this.state.true) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', padding: 30 }}>
-                    <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no accepted matches. Challenge somebody to get started!</Text>
+                    <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no accepted matches. Challenge a friend to get gaming!</Text>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => NavigationService.navigate('Challenge')} style={{
                             marginTop: 20,
