@@ -36,12 +36,12 @@ export default {
     isFetchingRejectedFriends: false,
     isFetchingSearchedFriends: false,
   },
-  finishedGames: {
+  scoreConfirmation: {
     isFetchingScoreConfirmations: false,
     isAcceptingScoreConfirmations: false,
     isSubmittingScoreDispute: false,
     scoreConfirmations: [],
-    scoreAccepted: [],
+    scoresAccepted: [],
     scoreDisputes: []
   },
   gameCards: {
@@ -53,10 +53,8 @@ export default {
     rejectedGameRequests: [],
     pendingGameRequests: [],
     submittedGameRequests: [],
-    todaysMatches: [],
     isFetchingAcceptedGameRequests: false,
     isFetchingPendingGameRequests: false,
-    isFetchingTodaysMatches: false,
     isAcceptingGameRequest: false,
     isRejectingGameRequest: false,
     isSenderCancelingGameRequest: false,
@@ -78,6 +76,10 @@ export default {
     fifa: [],
     madden: [],
     nhl: []
+  },
+  todaysMatches: {
+    matches: [],
+    isFetchingTodaysMatches: false
   },
   userDetails: {}
 }

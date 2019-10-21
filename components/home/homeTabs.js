@@ -55,7 +55,7 @@ class Tabs extends React.Component {
     render() {
         return (
 
-            <View style={{ height: 200, padding: 10 }}>
+            <View key={this.props.todaysMatches.length+'-tm-view'} style={{ height: 200, padding: 10 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
@@ -65,7 +65,7 @@ class Tabs extends React.Component {
                     </Text>
                 </View>
 
-                <View style={{ position: 'absolute', display: this.state.complete == false ? 'flex' : 'none', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
+                <View style={{ position: 'absolute', display: this.props.todaysMatches.length == false ? 'flex' : 'none', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
                     <View style={{ width: '30%', flexDirection: 'row' }}>
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 0 ? '#6a8dff' : '#888' }} />
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 1 ? '#6a8dff' : '#888' }} />
@@ -79,6 +79,7 @@ class Tabs extends React.Component {
                     !this.props.isFetchingTodaysMatches && this.props.todaysMatches.length ? (
                         <Swiper
                             cards={!this.props.isFetchingTodaysMatches ? this.props.todaysMatches : []}
+                            keyExtractor={(cardData) => `tm-${cardData.id}-${Math.random()}`}
                             renderCard={(card) => {
                                 return (
                                     <View style={styles.card}>
@@ -115,7 +116,7 @@ class Tabs extends React.Component {
 
 
                                             <View style={{ alignItems: 'flex-end' }}>
-                                                <TouchableOpacity onPress={() => NavigationService.navigate('Submit')}>
+                                                <TouchableOpacity onPress={() => NavigationService.navigate('Confirm', {'game': card})}>
                                                     <View style={{ alignItems: 'center' }}>
                                                         <AntDesign name={'download'} size={15} color={'#888'} />
                                                         <Text style={{ color: '#888', fontSize: 8 }}>Submit Score</Text>
@@ -172,15 +173,10 @@ class GameTabs extends React.Component {
     componentDidMount() {
         const { actions, csrfToken, loggedInUser, todaysMatches } = this.props;
 
-        if (!todaysMatches.length) {
-            actions.loadTodaysMatches(loggedInUser.user.pk, csrfToken).then(todayMatches => {
-                if (todayMatches.data && todayMatches.data.length) {
-                    this.setState({ tabKey: this.state.tabKey + 1 });
-                }
-            }).catch(error => {
+        actions.loadTodaysMatches(loggedInUser.user.pk, csrfToken)
+            .catch(error => {
                 alert('Loading todays matches failed' + error);
             });
-        }
     }
 
     _handleIndexChange = index => this.setState({ index });
@@ -253,7 +249,7 @@ class GameTabs extends React.Component {
                 renderScene={this._renderScene}
                 renderTabBar={this._renderTabBar}
                 onIndexChange={this._handleIndexChange}
-                key={this.state.tabKey}
+                key={this.props.todaysMatches.length+"-tabview"}
             />
         )
     }
@@ -273,8 +269,8 @@ function mapStateToProps(state) {
         csrfToken: state.auth.csrfToken,
         loading: state.apiCallsInProgress > 0,
         loggedInUser: state.auth.loggedInUser,
-        todaysMatches: state.gameRequests.todaysMatches,
-        isFetchingTodaysMatches: state.gameRequests.isFetchingTodaysMatches,
+        todaysMatches: state.todaysMatches.matches,
+        isFetchingTodaysMatches: state.todaysMatches.isFetchingTodaysMatches,
         userDetails: state.userDetails
     };
 }

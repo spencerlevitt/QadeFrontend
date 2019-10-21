@@ -10,9 +10,6 @@ export default function disputeScoreConfirmationReducer(state = initialState.sco
       };
 
     case types.DISPUTE_SCORE_CONFIRMATION_SUCCESS:
-      // Extract only the needed info for score
-      // confirmation screen
-      const loggedInUserEmail = action.scoreConfirmations.loggedInUserEmail;
       const scoreDisputes = action.disputedScore;
 
       return {
