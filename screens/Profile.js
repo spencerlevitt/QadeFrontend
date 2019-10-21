@@ -214,6 +214,9 @@ export default class Profile extends React.Component {
           </View>
 
         </View>
+      <View style={{height: 100}}>
+
+        </View>
       </KeyboardAwareScrollView>
     )
   }
@@ -226,7 +229,7 @@ Profile.navigationOptions = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 160,
+
     backgroundColor: '#fff',
   },
   shadow: {

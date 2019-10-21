@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Constants from 'expo-constants';
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import HomeTabs from '../components/home/homeTabs'
 import GameTabs from '../components/home/gameTabs'
 import { TextInput } from 'react-native-gesture-handler';
@@ -47,6 +47,12 @@ export default class HomeScreen extends React.Component {
     this.setState({ modalVisible: visible });
   }
 
+  _scrollToInput(reactNode: any) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode + 50)
+}
+
+
   render() {
     return (
       <View style={[styles.container, { paddingTop: Constants.statusBarHeight }]}>
@@ -65,7 +71,7 @@ export default class HomeScreen extends React.Component {
 
                 </View>
                 <TouchableOpacity
-                  style={{width: 40, height: 40}}
+                  style={{ width: 40, height: 40 }}
                   onPress={() => {
                     this.setModalVisible(!this.state.modalVisible);
                   }}>
@@ -104,7 +110,7 @@ export default class HomeScreen extends React.Component {
               <Text style={styles.welcomeButtonText}>Transfer</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center' }}>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate("Game", {accept: true})} style={styles.welcomeButton}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate("Game", { accept: true })} style={styles.welcomeButton}>
                 <AntDesign name={'download'} size={25} color={'#7ed3ff'} />
               </TouchableOpacity>
               <Text style={styles.welcomeButtonText}>Submit</Text>
@@ -119,7 +125,9 @@ export default class HomeScreen extends React.Component {
 
         </View>
 
-        <ScrollView
+        <KeyboardAwareScrollView innerRef={ref => {
+          this.scroll = ref
+        }}
           style={styles.container}
           scrollEventThrottle={1}
           contentContainerStyle={styles.contentContainer}
@@ -187,7 +195,10 @@ export default class HomeScreen extends React.Component {
                 outputRange: [-40, 0],
               }),
             }}>
-              <TextInput style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15, fontSize: 18 }} placeholder={'Search Names'}>
+              <TextInput onFocus={(event: Event) => {
+                            // `bind` the function if you're using ES6 classes
+                            this._scrollToInput((event.target))
+                        }} style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15, fontSize: 18 }} placeholder={'Search Names'}>
 
               </TextInput>
             </Animated.View>
@@ -198,7 +209,7 @@ export default class HomeScreen extends React.Component {
 
           </View>
 
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

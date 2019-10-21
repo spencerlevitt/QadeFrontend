@@ -128,7 +128,7 @@ class Tabs extends React.Component {
                                                     </View>
                                                 </View>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                    <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#333', textAlign: 'center' }}>You have accepted no matches.</Text><Text style={{ fontSize: 13, fontWeight: 'bold', color: '#333', textAlign: 'center' }}>Challenge a friend to start gaming!</Text>
+                                                    <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no accepted matches.</Text><Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>Challenge a friend to start gaming!</Text>
                                                 </View>
                                                 <View style={{ flex: 1 }}>
                                                     <View style={{ flex: 1, }}>

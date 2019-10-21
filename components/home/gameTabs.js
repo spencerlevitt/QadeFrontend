@@ -33,7 +33,7 @@ gameData = () => {
     return (
         <View>
             <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', backgroundColor: '#ffffffe0', zIndex: 1 }}>
-            <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>Qade is more fun with friends!</Text>
+                <Text style={{ color: '#888', fontSize: 18, marginTop: 40 }}>Qade is more fun with friends!</Text>
                 <TouchableOpacity style={{ flexDirection: 'row', paddingHorizontal: 30, paddingVertical: 5, alignItems: 'center', justifyContent: 'center', borderColor: '#71ceff', borderRadius: 5, borderWidth: 1, marginTop: 10 }} onPress={() => {NavigationService.navigate('Recent')}}>
                     <Text style={{ fontSize: 12, color: '#71ceff' }}>Add Friends</Text>
                     <AntDesign
