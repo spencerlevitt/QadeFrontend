@@ -13,8 +13,16 @@ import Constants from 'expo-constants';
 import NavigationService from '../../navigation/NavigationService';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import configureStore, { clearStorageAndPersistor } from '../../redux/configureStore.dev';
 
-export default function Settings() {
+export default function Settings(props) {
+
+    const logout = () => {
+        const { persistor } = configureStore();
+        clearStorageAndPersistor(persistor);
+        props.navigation.replace('Login');
+    };
+
     return (
         <View style={styles.container}>
 
@@ -37,7 +45,6 @@ export default function Settings() {
             </View>
 
             <ScrollView >
-
 
                 <View style={{ padding: 40 }}>
 
@@ -133,7 +140,9 @@ export default function Settings() {
                     </View>
 
                     <View style={{ marginTop: 20, marginBottom: 20 }}>
-                        <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Login")}>
+                        <TouchableOpacity
+                            style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }}
+                            onPress={() => logout()}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 22 }}>
