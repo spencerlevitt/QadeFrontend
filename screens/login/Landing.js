@@ -10,11 +10,23 @@ import {
 import { EvilIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
-
-export default class Landing extends React.Component {
-
-    constructor(props) {
-        super(props)
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+ 
+class Landing extends React.Component {
+ 
+     constructor(props) {
+         super(props)
+     }
+ 
+    componentWillMount() {
+        // TODO: could possibly get a new a token
+        // this will always direct a logged-in user 
+        // to the home screen until they log out and
+        // clear state
+        if (this.props.loggedInUser.token) {
+            this.props.navigation.navigate('Main');
+        }
     }
 
     render() {
@@ -53,3 +65,25 @@ export default class Landing extends React.Component {
 Landing.navigationOptions = {
     header: null,
 };
+
+Landing.propTypes = {
+    csrfToken: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
+    loggedInUser: PropTypes.object.isRequired
+};
+  
+function mapStateToProps(state) {
+    return {
+        csrfToken: state.auth.csrfToken,
+        loading: state.apiCallsInProgress > 0,
+        loggedInUser: state.auth.loggedInUser
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: {}
+    };
+}
+  
+export default connect(mapStateToProps, mapDispatchToProps)(Landing);

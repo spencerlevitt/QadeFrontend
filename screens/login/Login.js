@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../../redux/actions/authActions';
 import HttpStatus from 'http-status-codes';
+import * as _ from 'lodash';
 
 class Login extends React.Component {
 
@@ -58,7 +59,12 @@ class Login extends React.Component {
                 
                 if (response && !response.csrfTokenData) {
                     if (response.loggedInUser && response.loggedInUser.status === HttpStatus.OK && this.props.loggedIn) {
-                        this.props.navigation.navigate('Main');
+                        const routes = this.props.navigation.dangerouslyGetParent().state.routes;
+                        if(_.some(routes, { routeName: 'Profile' })) {
+                            this.props.navigation.navigate('Profile');
+                        } else {
+                            this.props.navigation.navigate('Main');
+                        }
                     } else if (this.props.hasError) {
                         alert(`Login failed: ${this.props.errorMessage.message}`);
                     }

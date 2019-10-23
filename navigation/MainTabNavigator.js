@@ -24,6 +24,11 @@ import Challenge from '../screens/challenge';
 import ChallengeConfirmation from '../screens/challenge/ChallengeConfirmation';
 import Transfer from '../screens/transfer';
 
+import Login from '../screens/login/Login';
+import SignUp from '../screens/login/SignUp';
+import ForgotPassword from '../screens/login/ForgotPassword';
+
+
 import Requests from '../screens/profile/index';
 import Matches from '../screens/profile/matches';
 import Match from '../screens/profile/match';
@@ -119,6 +124,9 @@ const ProfileStack = createStackNavigator(
     Match,
     Settings,
     EditProfile,
+    Login,
+    SignUp,
+    ForgotPassword,
     Support,
     ToS,
     Privacy,

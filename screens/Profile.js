@@ -20,10 +20,21 @@ import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
 import * as friendRequestActions from '../redux/actions/friendRequestActions';
 import { NavigationEvents } from "react-navigation";
+import { withPolling } from "../redux/polling/withPolling";
 
 class Profile extends React.Component {
   state = {
     game: 'nba2k'
+  }
+
+  componentDidMount() {
+    const { acceptedFriends, csrfToken, actions } = this.props;
+    
+    if (!acceptedFriends.length) {
+      actions.loadAcceptedFriends(csrfToken).catch(error => {
+          alert('Loading accepted friends failed' + error);
+      });
+    }
   }
 
   render() {
@@ -80,7 +91,7 @@ class Profile extends React.Component {
               <View style={{ flex: 0.5 }}>
                 <TouchableOpacity style={{ height: 35, width: '100%', borderRadius: 5, backgroundColor: '#2699FB', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }} onPress={() => this.props.navigation.navigate("Requests", { friends: false })}>
                   <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center', fontSize: 10 }}>
-                    {!this.props.isFetchingAcceptedFriends ? this.props.acceptedFriends.length : '0'} Friends
+                    {!this.props.isFetchingAcceptedFriends ? this.props.acceptedFriends.length : ''} Friends
                   </Text>
                   <Text style={{ color: 'red', marginTop: -4 }}>•</Text>
                 </TouchableOpacity>
@@ -248,7 +259,7 @@ Profile.propTypes = {
   csrfToken: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   loggedInUser: PropTypes.object.isRequired,
-  acceptedFriends: PropTypes.object.isRequired,
+  acceptedFriends: PropTypes.array.isRequired,
   isFetchingAcceptedFriends: PropTypes.bool.isRequired,
   userDetails: PropTypes.object.isRequired
 };
@@ -273,7 +284,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default withPolling()(connect(mapStateToProps, mapDispatchToProps)(Profile));
 
 const styles = StyleSheet.create({
   container: {
