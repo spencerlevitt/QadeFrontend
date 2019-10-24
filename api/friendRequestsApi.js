@@ -18,3 +18,13 @@ export function updateFriendRequests(requestId, status, csrfToken) {
     .then(response => handleResponse(response))
     .catch(error => handleError(error.response));
 }
+
+export function createFriendRequest(user_id, eventual_friend_id, csrfToken) {
+  return Axios.post(`${baseUrl}friend_requests/`, {
+    user_id, eventual_friend_id
+  }, {
+    headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
+  })
+    .then(handleResponse)
+    .catch(error => handleError(error.response));
+}

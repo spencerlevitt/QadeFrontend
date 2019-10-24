@@ -67,3 +67,11 @@ export function getAcceptedGameRequests(csrfToken) {
     .then(response => handleResponse(response))
     .catch(error => handleError(error.response));
 }
+
+export function getRecentGamesApi(csrfToken) {
+  return Axios.get(`${baseUrl}finished_games/?recent_matches=true`, {}, {
+    headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
+  })
+    .then(response => handleResponse(response))
+    .catch(error => handleError(error.response));
+}
