@@ -31,3 +31,11 @@ export function updateProfile(profileId, profileData, csrfToken) {
     .then(handleResponse)
     .catch(error => handleError(error.response));
 }
+
+export function gamers(key, csrfToken) {
+  return Axios.get(`${baseUrl}users/?search=${key}`, {
+    headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
+  })
+  .then(handleResponse)
+  .catch(error => handleError(error.response))
+}
