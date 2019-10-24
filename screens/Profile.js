@@ -15,6 +15,12 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-material-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade
+} from "rn-placeholder";
 
 export default class Profile extends React.Component {
   state = {
@@ -24,7 +30,7 @@ export default class Profile extends React.Component {
   _scrollToInput(reactNode: any) {
     // Add a 'scroll' ref to your ScrollView
     this.scroll.props.scrollToFocusedInput(reactNode)
-}
+  }
 
   render() {
     const data = [{
@@ -52,8 +58,17 @@ export default class Profile extends React.Component {
           </View>
         </View>
         <View>
-          <Text style={{ color: '#1E3949', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>Chris Wright</Text>
-          <Text style={{ color: '#1E3949', fontSize: 12, textAlign: 'center' }}>Xbox One | San Francisco, CA <Image source={require('../assets/images/shield.png')} style={{ height: 12, width: 10 }} /></Text>
+          <View style={{padding: 20}}>
+          <Placeholder
+            Animation={Fade}
+            Left={PlaceholderMedia}
+          >
+            <PlaceholderLine width={80} />
+            <PlaceholderLine />
+            <PlaceholderLine width={30} />
+          </Placeholder>
+          </View>
+          
           <View style={{ padding: 15 }}>
             <Text style={{ color: '#1E3949', fontSize: 16, textAlign: 'center' }}>
               Hi! My name is Chris, I’m a sports gamer from San Francisco, CA. Contact me at john@mail.com
@@ -128,10 +143,10 @@ export default class Profile extends React.Component {
               </View>
             </View>
             <View style={{ margin: 30 }}>
-              <TextInput  onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }}  style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
+              <TextInput onFocus={(event: Event) => {
+                // `bind` the function if you're using ES6 classes
+                this._scrollToInput((event.target))
+              }} style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
               </TextInput>
             </View>
             <View style={{ marginBottom: 30 }}>
@@ -214,7 +229,7 @@ export default class Profile extends React.Component {
           </View>
 
         </View>
-      <View style={{height: 100}}>
+        <View style={{ height: 100 }}>
 
         </View>
       </KeyboardAwareScrollView>

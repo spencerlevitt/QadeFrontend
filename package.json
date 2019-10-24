@@ -30,6 +30,7 @@
     "react-native-gesture-handler": "~1.0.14",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-line-chart": "^1.0.4",
+    "react-native-loading-placeholder": "^0.0.6",
     "react-native-loading-spinner-overlay": "^1.0.1",
     "react-native-material-dropdown": "^0.11.1",
     "react-native-onboarding-swiper": "Rakeda/react-native-onboarding-swiper",
@@ -44,7 +45,8 @@
     "react-navigation": "^3.11.0",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
-    "redux-logger": "^3.0.6"
+    "redux-logger": "^3.0.6",
+    "rn-placeholder": "^3.0.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^6.0.0",
