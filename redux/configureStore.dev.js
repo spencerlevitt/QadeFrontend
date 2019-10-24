@@ -37,7 +37,7 @@ export default function configureStore(initialState) {
   return { store, persistor };
 }
 
-const clearStorageAndPersistor = (persistor) => {
+export const clearStorageAndPersistor = (persistor) => {
   console.log('=====================================');
   console.log('CLEARING THE STORAGE AND PERSISTOR');
   console.log('=====================================');

@@ -21,7 +21,13 @@ import ScoreA from '../screens/game/ScoreA';
 import ScoreB from '../screens/game/ScoreB';
 
 import Challenge from '../screens/challenge';
+import ChallengeConfirmation from '../screens/challenge/ChallengeConfirmation';
 import Transfer from '../screens/transfer';
+
+import Login from '../screens/login/Login';
+import SignUp from '../screens/login/SignUp';
+import ForgotPassword from '../screens/login/ForgotPassword';
+
 
 import Requests from '../screens/profile/index';
 import Matches from '../screens/profile/matches';
@@ -38,6 +44,13 @@ import Onb from '../screens/profile/onb';
 //Test items
 import Loading from '../screens/temp/loading';
 
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { TextInput } from 'react-native-gesture-handler';
+import { withPolling } from "../redux/polling/withPolling";
+
+
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -47,6 +60,7 @@ const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
     Challenge,
+    ChallengeConfirmation,
     Transfer
   },
   config
@@ -117,6 +131,9 @@ const ProfileStack = createStackNavigator(
     Match,
     Settings,
     EditProfile,
+    Login,
+    SignUp,
+    ForgotPassword,
     Support,
     ToS,
     Privacy,
@@ -139,7 +156,7 @@ ProfileStack.navigationOptions = ({ navigation }) => ({
 
 ProfileStack.path = '';
 
-export const tabNavigator = createBottomTabNavigator({
+const tabNavigator = createBottomTabNavigator({
   HomeStack,
   GameStack,
   RecentStack,
@@ -155,14 +172,26 @@ tabNavigator.path = '';
 
 const AppContainer = createAppContainer(tabNavigator)
 
-export default class Item extends React.Component {
+class Item extends React.Component {
   render() {
     return (
       <AppContainer
-        ref={navigatorRef => {
-          NavigationService.setTopLevelNavigator(navigatorRef);
-        }}
+        ref={navigatorRef => NavigationService.setTopLevelNavigator(navigatorRef)}
       />
     )
   }
 }
+
+Item.propTypes = {};
+
+function mapStateToProps(state) {
+  return {};
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {}
+  };
+}
+
+export default withPolling()(connect(mapStateToProps, mapDispatchToProps)(Item));

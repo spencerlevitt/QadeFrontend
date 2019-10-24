@@ -45,7 +45,7 @@ class SignUp extends React.Component {
             const response = await actions.signupUser(this.state, this.props.csrfToken);
 
             if (response && response.signedUpUser.status === HttpStatus.CREATED) {
-                this.props.navigation.navigate('SignupEmailConfirmation');
+                this.props.navigation.navigate('Login');
             } else if (this.props.hasError) {    
                 alert(`Sign Up failed: ${this.props.errorMessage.message}`);
             }
@@ -71,7 +71,7 @@ class SignUp extends React.Component {
                     this.scroll = ref;
                     this.setState({ scroll: this.scroll });
                 }}>
-                <View style={{ height: 60, justifyContent: 'flex-end', alignItems: 'center' }}>
+                <View style={{ height: 40, justifyContent: 'flex-end', alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, textAlign: 'center', color: '#333' }}>
                         Sign Up
                     </Text>

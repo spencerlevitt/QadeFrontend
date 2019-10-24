@@ -36,3 +36,38 @@ export function loadUserDetails(csrfToken) {
       });
   }
 }
+
+
+export function updateProfileStart() {
+  return { type: types.UPDATE_PROFILE_START };
+}
+
+export function updateProfileSuccess(updatedProfile) {
+  return { type: types.UPDATE_PROFILE_SUCCESS, updatedProfile };
+}
+
+export function updateProfileError(updateProfileError) {
+  return { type: types.UPDATE_PROFILE_ERROR, updateProfileError };
+}
+
+export function updateProfile(profileId, payload, csrfToken) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(updateProfileStart());
+    return userApi.updateProfile(profileId, payload, csrfToken)
+      .then(updatedProfile => {
+        if (updatedProfile.status !== HttpStatus.OK) {
+          const error = new Error(updatedProfile.statusMessage);
+          dispatch(apiCallError(error));
+          dispatch(updateProfileError(error));
+        }
+
+        return dispatch(updateProfileSuccess(updatedProfile))
+      })
+      .catch((error) => {
+        dispatch(apiCallError(error));
+        dispatch(updateProfileError(error));
+        throw error;
+      });
+  }
+}

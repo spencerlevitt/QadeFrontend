@@ -21,7 +21,8 @@ export default class Submit extends React.Component {
     render() {
 
         const { navigation } = this.props;
-        const gameID = navigation.getParam('Game');
+        const game = navigation.getParam('game');
+        const gameID = navigation.getParam('game').game;
 
         return (
             <View style={{ flex: 1 }}>
@@ -42,15 +43,17 @@ export default class Submit extends React.Component {
                     <View style={{ flex: 0.1, paddingLeft: 100, paddingRight: 100 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
+                            <Image source={game.photo_url.length ? { uri: game.photo_url } : require('../../assets/man.png')} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
                             <View style={{ flex: 1 }}>
-                                <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
+                                <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>
+                                    {`${game.first_name} ${game.last_name}`}
+                                </Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ color: '#888' }}>NBA</Text>
+                                        <Text style={{ color: '#888' }}>{gameID}</Text>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ color: '#888' }}>$5.00</Text>
+                                        <Text style={{ color: '#888' }}>${game.wager}</Text>
                                     </View>
                                 </View>
 
@@ -63,13 +66,13 @@ export default class Submit extends React.Component {
                         <Text style={{ fontSize: 22, color: '#333', marginBottom: 20 }}>Did you win?</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Submit", { isUserWon: false, game })}>
                                     <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
                                 </TouchableOpacity>
 
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Submit", { Game: gameID })}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Submit", { isUserWon: true, game })}>
                                     <EvilIcons name={'check'} size={60} color={'#5eb97e'} />
                                 </TouchableOpacity>
                             </View>

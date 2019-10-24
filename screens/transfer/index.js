@@ -10,7 +10,8 @@ import {
 import { EvilIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { environment } from '../../environments/environment.dev';
 
 export default class Transfer extends React.Component {
 
@@ -119,98 +120,103 @@ export default class Transfer extends React.Component {
                             </View>
                         </View>
 
-                        <View style={{ height: 300, marginBottom: 350 }}>
-                            <Text style={{ fontSize: 18, color: '#333', marginBottom: 10, fontSize: 18 }}>Payment</Text>
-                            <View style={{ flex: 1 }}>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-
-                                    <View style={{ flex: 1, paddingRight: 10 }}>
-                                        <Text style={{ fontSize: 8 }}>First Name</Text>
-                                        <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter First Name'}></TextInput>
-                                    </View>
-
+                        { environment.SHOW_CC_BILLING_FORM
+                            ? 
+                                <View style={{ height: 300, marginBottom: 350 }}>
+                                    <Text style={{ fontSize: 18, color: '#333', marginBottom: 10, fontSize: 18 }}>Payment</Text>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ fontSize: 8 }}>Last Name</Text>
-                                        <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Last Name'}></TextInput>
-                                    </View>
+                                        <View style={{ flex: 1, flexDirection: 'row' }}>
 
+                                            <View style={{ flex: 1, paddingRight: 10 }}>
+                                                <Text style={{ fontSize: 8 }}>First Name</Text>
+                                                <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter First Name'}></TextInput>
+                                            </View>
+
+                                            <View style={{ flex: 1 }}>
+                                                <Text style={{ fontSize: 8 }}>Last Name</Text>
+                                                <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Last Name'}></TextInput>
+                                            </View>
+
+                                        </View>
+                                        <View style={{ flex: 1 }}>
+                                            <Text style={{ fontSize: 8 }}>Address</Text>
+                                            <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Address'}></TextInput>
+                                        </View>
+                                        <View style={{ flex: 1, flexDirection: 'row' }}>
+
+                                            <View style={{ flex: 0.4, paddingRight: 10 }}>
+                                                <Text style={{ fontSize: 8 }}>City</Text>
+                                                <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter City'}></TextInput>
+                                            </View>
+
+                                            <View style={{ flex: 0.3 }}>
+                                                <Text style={{ fontSize: 8 }}>ZIP Code</Text>
+                                                <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter ZIP'}></TextInput>
+                                            </View>
+
+                                            <View style={{ flex: 0.3 }}>
+                                                <Text style={{ fontSize: 8 }}>State</Text>
+                                                <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'State'}></TextInput>
+                                            </View>
+
+                                        </View>
+                                        <View style={{ flex: 1 }}>
+                                            <Text style={{ fontSize: 8 }}>Credit/Debit Card Number</Text>
+                                            <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Credit Card Number'}></TextInput>
+                                        </View>
+                                        <View style={{ flex: 1, flexDirection: 'row' }}>
+
+                                            <View style={{ flex: 0.2, paddingRight: 10 }}>
+                                                <Text style={{ fontSize: 8 }}>Expires</Text>
+                                                <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'MM/YY'}></TextInput>
+                                            </View>
+
+                                            <View style={{ flex: 0.2 }}>
+                                                <Text style={{ fontSize: 8 }}>CVV</Text>
+                                                <TextInput onFocus={(event: Event) => {
+                                    // `bind` the function if you're using ES6 classes
+                                    this._scrollToInput((event.target))
+                                }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'CVV'}></TextInput>
+                                            </View>
+                                        </View>
+                                    </View>
                                 </View>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={{ fontSize: 8 }}>Address</Text>
-                                    <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Address'}></TextInput>
-                                </View>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
+                            :   null
+                        }
 
-                                    <View style={{ flex: 0.4, paddingRight: 10 }}>
-                                        <Text style={{ fontSize: 8 }}>City</Text>
-                                        <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter City'}></TextInput>
-                                    </View>
-
-                                    <View style={{ flex: 0.3 }}>
-                                        <Text style={{ fontSize: 8 }}>ZIP Code</Text>
-                                        <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter ZIP'}></TextInput>
-                                    </View>
-
-                                    <View style={{ flex: 0.3 }}>
-                                        <Text style={{ fontSize: 8 }}>State</Text>
-                                        <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'State'}></TextInput>
-                                    </View>
-
-                                </View>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={{ fontSize: 8 }}>Credit/Debit Card Number</Text>
-                                    <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Credit Card Number'}></TextInput>
-                                </View>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-
-                                    <View style={{ flex: 0.2, paddingRight: 10 }}>
-                                        <Text style={{ fontSize: 8 }}>Expires</Text>
-                                        <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'MM/YY'}></TextInput>
-                                    </View>
-
-                                    <View style={{ flex: 0.2 }}>
-                                        <Text style={{ fontSize: 8 }}>CVV</Text>
-                                        <TextInput onFocus={(event: Event) => {
-                            // `bind` the function if you're using ES6 classes
-                            this._scrollToInput((event.target))
-                        }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'CVV'}></TextInput>
-                                    </View>
-
-                                    <View style={{ flex: 0.6, alignItems: 'flex-end' }}>
-                                    <TouchableOpacity style={{ flex: 1, maxHeight: 50, justifyContent: 'center', alignItems: 'center', marginLeft: 5, marginBottom: 5, borderRadius: 5, borderColor: '#EFEFEF', borderWidth:  1, backgroundColor: 'transparent' }}>
-                                        <Text style={{ color: '#69C0FF', fontSize: 16, paddingLeft: 25, paddingRight: 25 }}>
-                                            Submit
-                                        </Text>
-                                    </TouchableOpacity>
-                                    </View>
-
-                                </View>
-                            </View>
-                        </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, height:50, maxHeight: 100, justifyContent: 'center', alignItems: 'center', marginLeft: 5, marginBottom: 5, borderRadius: 5, borderColor: '#EFEFEF', borderWidth:  1, backgroundColor: 'transparent' }}
+                            onPress={() => {}}>
+                            <Text style={{ color: '#69C0FF', fontSize: 16, paddingLeft: 25, paddingRight: 25 }}>
+                                Submit
+                            </Text>
+                        </TouchableOpacity>
+                    </View>    
                 </View>
             </KeyboardAwareScrollView>
         )

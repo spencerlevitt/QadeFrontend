@@ -9,6 +9,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import configureStore from './redux/configureStore.dev';
 import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { Toast } from 'react-native-redux-toast';
 
 let onboard = true;
 const { store, persistor } = configureStore();
@@ -32,6 +33,7 @@ export default function App(props) {
             <View style={styles.container}>
               {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
               <AppNavigator />
+              <Toast messageStyle={{ color: 'white' }} />
             </View>
           </PersistGate>
         </ReduxProvider>

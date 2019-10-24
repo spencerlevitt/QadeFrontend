@@ -20,9 +20,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
-import * as statsActions from '../redux/actions/statsActions';
 import * as standingsActions from '../redux/actions/standingsActions';
 import { TextInput } from 'react-native-gesture-handler';
+import { withPolling } from "../redux/polling/withPolling";
 
 /*
 DEV
@@ -52,12 +52,6 @@ class HomeScreen extends React.Component {
         alert('Loading user failed' + error);
       });
     }
-
-    // if (stats.length === 0) {
-    //   actions.loadStats().catch(error => {
-    //     alert('Loading stats failed' + error);
-    //   });
-    // }
 
     // Load all game standings: fifa, nba, nhl, madden 
     actions.loadStandings(csrfToken);
@@ -258,7 +252,6 @@ HomeScreen.propTypes = {
   csrfToken: PropTypes.string.isRequired,
   actions: PropTypes.object.isRequired,
   userDetails: PropTypes.object.isRequired,
-  // stats: PropTypes.object.isRequired,
   standings: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
 };
@@ -269,7 +262,6 @@ function mapStateToProps(state) {
     csrfToken: state.auth.csrfToken,
     loggedInUser: state.auth.loggedInUser,
     loggedIn: state.auth.loggedIn,
-    // stats: state.stats,
     standings: state.standings,
     loading: state.apiCallsInProgress > 0
   };
@@ -279,13 +271,12 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
-      // loadStats: bindActionCreators(statsActions.loadStats, dispatch),
       loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
     }
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default withPolling([userActions.loadUserDetails, standingsActions.loadStandings], 100000)(connect(mapStateToProps, mapDispatchToProps)(HomeScreen));
 
 const styles = StyleSheet.create({
   container: {

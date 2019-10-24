@@ -109,6 +109,7 @@ export function signupUser (signupData, csrfToken) {
           dispatch(signupError(error));
         }
         
+        dispatch(userActions.loadUserDetails(signupData.email, csrfToken));
         return dispatch(signupSuccess(signedUpUser));
       })
       .catch((error) => {
@@ -152,6 +153,40 @@ export function loginGetCSRFTokenUser (username = null, password = null) {
       .catch((error) => {
         dispatch(apiCallError(error));
         dispatch(loginGetCSRFTokenError(error));
+      });
+    }
+}
+
+export function updateFirstOrLastNameStart() {
+  return { type: types.UPDATE_FIRST_OR_LASTNAME_START };
+}
+
+export function updateFirstOrLastNameSuccess(updateFOrLNameData) {
+  return { type: types.UPDATE_FIRST_OR_LASTNAME_SUCCESS, updateFOrLNameData };
+}
+
+export function updateFirstOrLastNameError(updateFOrLNameError) {
+  return { type: types.UPDATE_FIRST_OR_LASTNAME_ERROR, updateFOrLNameError };
+}
+
+export function updateFirstOrLastName (payload, csrfToken) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(updateFirstOrLastNameStart());
+    
+    return authApi.updateFirstOrLastName(payload, csrfToken)
+      .then((updateFOrLNameData) => {
+        if (updateFOrLNameData.status !== HttpStatus.OK) {
+          const error = new Error(updateFOrLNameData.statusMessage);
+          dispatch(apiCallError(error));
+          return dispatch(updateFirstOrLastNameError(error));
+        } else if (updateFOrLNameData.status === HttpStatus.OK) {
+          return dispatch(updateFirstOrLastNameSuccess(updateFOrLNameData));
+        }
+      })
+      .catch((error) => {
+        dispatch(apiCallError(error));
+        dispatch(updateFirstOrLastNameError(error));
       });
     }
 }

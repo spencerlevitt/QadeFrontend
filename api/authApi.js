@@ -40,3 +40,13 @@ export function getCSRFToken() {
     .then(handleResponse)
     .catch(error => handleError(error.response));
 }
+
+export function updateFirstOrLastName(nameData, csrfToken) {
+  return Axios.patch(`${baseUrl}auth/user/`, {
+    ...nameData
+  }, {
+    headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
+  })
+    .then(handleResponse)
+    .catch(error => handleError(error.response));
+}

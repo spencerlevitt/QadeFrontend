@@ -26,19 +26,60 @@ export default {
       }
     }
   },
+  friendRequests: {
+    pendingFriends: [],
+    acceptedFriends: [],
+    rejectedFriends: [],
+    searchedFriends: [],
+    isFetchingFriendRequests: false,
+    isFetchingAcceptedFriends: false,
+    isFetchingRejectedFriends: false,
+    isFetchingSearchedFriends: false,
+  },
+  scoreConfirmation: {
+    isFetchingScoreConfirmations: false,
+    isAcceptingScoreConfirmations: false,
+    isSubmittingScoreDispute: false,
+    scoreConfirmations: [],
+    scoresAccepted: [],
+    scoreDisputes: []
+  },
+  gameRequests: {
+    acceptedGameRequests: [],
+    gameCards: [],
+    rejectedGameRequests: [],
+    pendingGameRequests: [],
+    submittedGameRequests: [],
+    isFetchingAcceptedGameRequests: false,
+    isFetchingPendingGameRequests: false,
+    isAcceptingGameRequest: false,
+    isRejectingGameRequest: false,
+    isSenderCancelingGameRequest: false,
+    isSubmittingGameCards: false,
+    isReceiverCancelingGameRequest: false,
+    isSubmittingGameRequest: false,
+  },
   errorMessage: {},
   hasError: false,
   isFetching: false,
+  isUpdatingFOrLName: false,
+  isUpdatingProfile: false,
   loggedIn: false,
   loggedInUser: {},
   signedUpUser: {},
-  stats: {},
+  gameCardStats: {
+    isFetchingStats: false
+  },
   standings: {
     isFetchingStandings: false,
     nba: [],
     fifa: [],
     madden: [],
     nhl: []
+  },
+  todaysMatches: {
+    matches: [],
+    isFetchingTodaysMatches: false
   },
   userDetails: {}
 }

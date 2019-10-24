@@ -13,8 +13,7 @@ export async function handleResponse(response, responseCategory = null, category
 
     return response;
   } else if (response.status === HttpStatus.BAD_REQUEST) {
-    const error = await response.text();
-    throw new Error(error);
+    throw new Error(response);
   }
   throw new Error("Network response was not ok.");
 }
@@ -26,7 +25,7 @@ export function handleError(error) {
 
   // If error is undefined the backend service is most
   // likely offline and needs to be re-booted / troubleshooted
-  if (error === undefined) {
+  if (typeof error === 'undefined') {
     throw(new Error('Ooops! Something went wrong. Please try again after some minutes.'))
   }
   
@@ -34,9 +33,15 @@ export function handleError(error) {
   // so a request to get a CSRF token can be made
   if (error.status === HttpStatus.FORBIDDEN) {
     return error;
-  } else if (error.status === HttpStatus.BAD_REQUEST) {
-    throw (new Error('Incorrect email and password entered!'));
+  } else if (error.status !== HttpStatus.OK) {
+    if (error.data.detail && !error.data.detail.indexOf('CSRF') > -1) {
+      throw new Error(error.data.detail);
+    } else if (error.data.non_field_errors) {
+      throw new Error(error.data.non_field_errors);
+    } else if (error.data.error) {
+      throw new Error(error.data.error);
+    }
   } else {
-    throw error.data.detail;
+    throw new Error(error.data.toString());
   }
 }

@@ -141,7 +141,16 @@ export default class Login extends React.Component {
                                 <TextInput onFocus={(event: Event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
-                                }} maxLength={4} value={this.state.year} onChangeText={(val) => { if (parseInt(val) > date.getFullYear()) { this.state.year == '' } else { this.setState({ year: val }) } }} value={this.state.year} keyboardType={'number-pad'} style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} placeholderTextColor={'#666'}>
+                                }} 
+                                maxLength={4} value={this.state.year} 
+                                onChangeText={(val) => { if (parseInt(val) > date.getFullYear()) {
+                                    this.state.year == '' 
+                                    } else {
+                                        this.setState({ year: val })
+                                    } }} 
+                                value={this.state.year} keyboardType={'number-pad'} 
+                                style={{ marginTop: 5, width: '100%', fontSize: 16, height: 40, borderRadius: 5, backgroundColor: '#EFEFF4', paddingLeft: 15 }} 
+                                placeholderTextColor={'#666'}>
 
                                 </TextInput>
                             </View>
