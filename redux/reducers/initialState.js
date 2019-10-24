@@ -44,12 +44,9 @@ export default {
     scoresAccepted: [],
     scoreDisputes: []
   },
-  gameCards: {
-    cards: [],
-    isSubmittingGameCards: false
-  },
   gameRequests: {
     acceptedGameRequests: [],
+    gameCards: [],
     rejectedGameRequests: [],
     pendingGameRequests: [],
     submittedGameRequests: [],
@@ -58,6 +55,7 @@ export default {
     isAcceptingGameRequest: false,
     isRejectingGameRequest: false,
     isSenderCancelingGameRequest: false,
+    isSubmittingGameCards: false,
     isReceiverCancelingGameRequest: false,
     isSubmittingGameRequest: false,
   },
@@ -69,7 +67,9 @@ export default {
   loggedIn: false,
   loggedInUser: {},
   signedUpUser: {},
-  stats: {},
+  gameCardStats: {
+    isFetchingStats: false
+  },
   standings: {
     isFetchingStandings: false,
     nba: [],

@@ -16,34 +16,36 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
       let loggedInUserId = action.pendingGameRequests.loggedInUserId;
       let pendingGameRequests = action.pendingGameRequests.data.map(pendingGame => {
         let senderId = pendingGame.sender.statistics.id;
-        let time_left =  pendingGame.time_left_to_accept;
+        if (senderId !== loggedInUserId) {
+          let time_left =  pendingGame.time_left_to_accept;
         
-        // Split URL to get game request id and receiver id
-        let urlArray = pendingGame.url.split('/');
-        let id = urlArray[urlArray.length - 2];
-        urlArray = pendingGame.receiver.profile.url.split('/');
-        receiverId = urlArray[urlArray.length - 2];
+          // Split URL to get game request id and receiver id
+          let urlArray = pendingGame.url.split('/');
+          let id = urlArray[urlArray.length - 2];
+          urlArray = pendingGame.receiver.profile.url.split('/');
+          receiverId = urlArray[urlArray.length - 2];
 
-        if (time_left) {
-          return {
-            id,
-            receiverId,
-            senderId,
-            first_name: senderId === loggedInUserId ? pendingGame.receiver.first_name : pendingGame.sender.first_name,
-            last_name: senderId === loggedInUserId ? pendingGame.receiver.last_name : pendingGame.sender.last_name,
-            photo_url: senderId === loggedInUserId ? pendingGame.receiver.profile.photo_url : pendingGame.sender.profile.photo_url,
-            won_games: senderId === loggedInUserId ? pendingGame.receiver.statistics.won_games : pendingGame.sender.statistics.won_games,
-            lost_games: senderId === loggedInUserId ? pendingGame.receiver.statistics.lost_games : pendingGame.sender.statistics.lost_games,
-            win_percent: senderId === loggedInUserId ? pendingGame.receiver.statistics.win_percent : pendingGame.sender.statistics.win_percent,
-            wager: pendingGame.wager,
-            game: pendingGame.game,
-            time_left
+          if (time_left) {
+            return {
+              id,
+              receiverId,
+              senderId,
+              first_name: senderId === loggedInUserId ? pendingGame.receiver.first_name : pendingGame.sender.first_name,
+              last_name: senderId === loggedInUserId ? pendingGame.receiver.last_name : pendingGame.sender.last_name,
+              photo_url: senderId === loggedInUserId ? pendingGame.receiver.profile.photo_url : pendingGame.sender.profile.photo_url,
+              won_games: senderId === loggedInUserId ? pendingGame.receiver.statistics.won_games : pendingGame.sender.statistics.won_games,
+              lost_games: senderId === loggedInUserId ? pendingGame.receiver.statistics.lost_games : pendingGame.sender.statistics.lost_games,
+              win_percent: senderId === loggedInUserId ? pendingGame.receiver.statistics.win_percent : pendingGame.sender.statistics.win_percent,
+              wager: pendingGame.wager,
+              game: pendingGame.game,
+              time_left
+            }
           }
         }
 
         return null;
       }).filter(match => match !== null);
- 
+
       return {
         ...state,
         pendingGameRequests,
@@ -124,7 +126,7 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
       // matches: first_name, last_name, wager, game, 
       // win-loss record, win_percent, time_left (valid matches are < 24 hours)
       loggedInUserId = action.acceptedGameRequests.loggedInUserId;
-      const acceptedGameRequests = action.acceptedGameRequests.data.map(acceptedGame => {
+      acceptedGameRequests = action.acceptedGameRequests.data.map(acceptedGame => {
         let senderId = acceptedGame.sender.statistics.id;
         let time_left =  acceptedGame.time_left_to_submit;
 
@@ -134,7 +136,7 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
         urlArray = acceptedGame.receiver.profile.url.split('/');
         receiverId = urlArray[urlArray.length - 2];
 
-        if (time_left) {
+        if (time_left && acceptedGame.is_active) {
           return {
             id,
             receiverId,
@@ -256,6 +258,32 @@ export default function gameRequestsReducer(state = initialState.gameRequests, a
         isRejectingGameRequest: false,
         hasError: true,
         errorMessage: rejectGameRequestError
+      };
+
+    case types.SUBMIT_GAME_CARD_START:
+      return {
+        ...state,
+        isSubmittingGameCards: true,
+      };
+
+    case types.SUBMIT_GAME_CARD_SUCCESS:
+      let acceptedGameRequests = state.acceptedGameRequests
+        .filter(acceptedGame => acceptedGame.id !== action.submittedGameCard.data.id && action.submittedGameCard.data.is_active);
+      
+      return {
+        ...state,
+        gameCards: state.gameCards.concat(action.submittedGameCard.data),
+        acceptedGameRequests,
+        isSubmittingGameCards: false
+      };
+
+    case types.SUBMIT_GAME_CARD_ERROR:
+      const { submitGameCardError } = action;
+      return {
+        ...state,
+        isSubmittingGameCards: false,
+        hasError: true,
+        errorMessage: submitGameCardError
       };
 
     default:

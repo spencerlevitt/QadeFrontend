@@ -109,6 +109,7 @@ export function signupUser (signupData, csrfToken) {
           dispatch(signupError(error));
         }
         
+        dispatch(userActions.loadUserDetails(signupData.email, csrfToken));
         return dispatch(signupSuccess(signedUpUser));
       })
       .catch((error) => {

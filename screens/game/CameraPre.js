@@ -12,7 +12,7 @@ import { EvilIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import * as gameCardsActions from '../../redux/actions/gameCardsActions';
+import * as gameRequestsActions from '../../redux/actions/gameRequestsActions';
 
 //console.disableYellowBox = true
 
@@ -64,9 +64,12 @@ class CameraPre extends React.Component {
         const payload = this.createFormData(photoData);
 
         try {
-            const response = await this.props.actions.submitGameCard(game, csrfToken, payload);
+            const response = await this.props.actions.submitGameCard(game, csrfToken, payload)
+                .catch(error => {
+                    alert('Score submission failed: ' + error.message);
+                });
 
-            if (response && response.submittedGameCard) {
+            if (response && response.submittedGameCard && response.submittedGameCard.status === 201) {
                 if (this.props.hasError) {
                     alert(`Submitting game score failed: ${this.props.errorMessage.message}`);
                 } else {
@@ -126,7 +129,7 @@ CameraPre.propTypes = {
   
 function mapStateToProps(state) {
     return {
-      isSubmittingGameCards: state.gameCards.isSubmittingGameCards,
+      isSubmittingGameCards: state.gameRequests.isSubmittingGameCards,
       csrfToken: state.auth.csrfToken,
       loggedInUser: state.auth.loggedInUser,
       loading: state.apiCallsInProgress > 0
@@ -136,7 +139,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
       actions: {
-        submitGameCard: bindActionCreators(gameCardsActions.submitGameCard, dispatch),
+        submitGameCard: bindActionCreators(gameRequestsActions.submitGameCard, dispatch),
       }
     };
 }

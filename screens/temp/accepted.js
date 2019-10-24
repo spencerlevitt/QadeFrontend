@@ -24,6 +24,13 @@ class Accepted extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.props.actions.loadAcceptedGameRequests(this.props.loggedInUser.user.pk, this.props.csrfToken)
+            .catch(error => {
+                alert('Loading accepted game requests failed' + error);
+            });
+    }
+
     render() {
         if (!this.props.isFetchingAcceptedGameRequests && !this.props.acceptedGameRequests.length) {
             return (

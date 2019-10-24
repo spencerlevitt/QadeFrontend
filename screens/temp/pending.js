@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as gameRequestsActions from '../../redux/actions/gameRequestsActions';
 import { withPolling } from "../../redux/polling/withPolling";
+import { NavigationEvents } from "react-navigation";
 // import { getLocation } from "../../components/geolocation/location";
 
 class Pending extends React.Component {
@@ -68,10 +69,30 @@ class Pending extends React.Component {
         }
     };
 
+    componentDidMount() {
+        this.props.actions.loadPendingGameRequests(this.props.loggedInUser.user.pk, this.props.csrfToken)
+            .catch(error => {
+                alert('Loading pending game requests failed' + error);
+            });
+    }
+
     render() {
         if (!this.props.isFetchingPendingGameRequests && !this.props.pendingGameRequests.length) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', padding: 30 }}>
+                    <NavigationEvents
+                        onDidFocus={() => {
+                            this.props.actions.loadPendingGameRequests(this.props.loggedInUser.user.pk, this.props.csrfToken)
+                                .catch(error => {
+                                    alert('Loading pending game requests failed' + error);
+                                });
+
+                            this.props.actions.loadAcceptedGameRequests(this.props.loggedInUser.user.pk, this.props.csrfToken)
+                                .catch(error => {
+                                    alert('Loading accepted game requests failed' + error);
+                                });
+                        }}
+                    />
                     <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no pending match requests. Challenge somebody to get started!</Text>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => NavigationService.navigate('Challenge')} style={{
@@ -221,6 +242,7 @@ function mapDispatchToProps(dispatch) {
     return {
       actions: {
         loadPendingGameRequests: bindActionCreators(gameRequestsActions.loadPendingGameRequests, dispatch),
+        loadAcceptedGameRequests: bindActionCreators(gameRequestsActions.loadAcceptedGameRequests, dispatch),
         acceptGameRequest: bindActionCreators(gameRequestsActions.acceptGameRequest, dispatch),
         rejectGameRequest: bindActionCreators(gameRequestsActions.rejectGameRequest, dispatch)
       }

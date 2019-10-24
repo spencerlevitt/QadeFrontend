@@ -28,8 +28,19 @@ class Submit extends React.Component {
         const loggedInUser = this.props.navigation.getParam('loggedInUser');
         const csrfToken = this.props.navigation.getParam('csrfToken');
 
+        console.log('loggedInUser', loggedInUser);
+        
+        let payload = {
+            status: 1,
+            location: this.getLocation(),
+            user: loggedInUser.user.pk
+        };
+
         try {
-            const response = await this.props.actions.acceptScoreConfirmation(scoreConfirmation.id, loggedInUser.user.email, this.getLocation(), this.getLocation(), csrfToken);   
+            const response = await this.props.actions.acceptScoreConfirmation(scoreConfirmation.id, loggedInUser.user.email, payload, csrfToken)
+                .catch(error => {
+                    alert('Score confimation failed' + error);
+                });;   
 
             console.log('score confirm response', response);
             
@@ -99,7 +110,9 @@ class Submit extends React.Component {
             status: scoreConfirmation.status,
             game_played: scoreConfirmation.game_played,
             game_image_url,
-            win_or_loss
+            win_or_loss,
+            winner_id: scoreConfirmation.winner.profile.id,
+            loser_id: scoreConfirmation.loser.profile.id,
         };
 
         return (

@@ -8,4 +8,5 @@ export const environment = {
     NHL: 'nhl19',
     MAD: 'madden19',
   },
+  SHOW_CC_BILLING_FORM: false
 }

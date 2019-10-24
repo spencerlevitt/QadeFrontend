@@ -18,7 +18,8 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../../redux/actions/userActions';
 import * as todaysMatchesActions from '../../redux/actions/todaysMatchesActions';
-import NavigationService from '../../navigation/NavigationService'
+import NavigationService from '../../navigation/NavigationService';
+import { withPolling } from "../../redux/polling/withPolling";
 
 //empty render (no matches)
 const Empty = () => (
@@ -284,7 +285,7 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameTabs);
+export default withPolling(todaysMatchesActions.loadTodaysMatches, 100000)(connect(mapStateToProps, mapDispatchToProps)(GameTabs));
 
 const styles = StyleSheet.create({
     container: {

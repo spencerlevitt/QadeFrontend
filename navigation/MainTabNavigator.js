@@ -44,6 +44,13 @@ import Onb from '../screens/profile/onb';
 //Test items
 import Loading from '../screens/temp/loading';
 
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { TextInput } from 'react-native-gesture-handler';
+import { withPolling } from "../redux/polling/withPolling";
+
+
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
@@ -165,7 +172,7 @@ tabNavigator.path = '';
 
 const AppContainer = createAppContainer(tabNavigator)
 
-export default class Item extends React.Component {
+class Item extends React.Component {
   render() {
     return (
       <AppContainer
@@ -174,3 +181,17 @@ export default class Item extends React.Component {
     )
   }
 }
+
+Item.propTypes = {};
+
+function mapStateToProps(state) {
+  return {};
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {}
+  };
+}
+
+export default withPolling()(connect(mapStateToProps, mapDispatchToProps)(Item));

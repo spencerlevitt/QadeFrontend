@@ -14,12 +14,8 @@ export function getScoreConfirmations(userId, csrfToken) {
     .catch(error => handleError(error.response));
 }
 
-export function acceptScoreConfirmation (gameId, winnerLocation=null, loserLocation=null, csrfToken) {
-  return Axios.patch(`${baseUrl}finished_games/${gameId}/`, {
-    status: 1,
-    winner_location: winnerLocation ? winnerLocation : undefined,
-    loser_location: loserLocation ? loserLocation : undefined
-  }
+export function acceptScoreConfirmation (gameId, payload, csrfToken) {
+  return Axios.patch(`${baseUrl}finished_games/${gameId}/`, payload
   , {
       headers: {
         'X-CSRFToken': csrfToken || ''

@@ -67,3 +67,16 @@ export function getAcceptedGameRequests(csrfToken) {
     .then(response => handleResponse(response))
     .catch(error => handleError(error.response));
 }
+
+export function submitGameCard(gameCard, csrfToken, payload) {
+  const gameCardUrl = environment.GAME_CARD_URL[gameCard];
+  return Axios.post(`${baseUrl}${gameCardUrl}_game_card/`, payload
+  , {
+    headers: {
+      'X-CSRFToken': csrfToken || '',
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+    .then(response => handleResponse(response))
+    .catch(error => handleError(error.response));
+}

@@ -105,16 +105,15 @@ export default function friendRequestsReducer(state = initialState.friendRequest
         }
       }).filter(friendRequest => friendRequest !== null);
 
-
       acceptedRequest = {
         id,
         first_name: acceptedRequest.user.first_name,
         last_name: acceptedRequest.user.last_name,
         photo_url: acceptedRequest.user.profile.photo_url,
         status: acceptedRequest.status,
-        win_percent: acceptedRequest.statistics.win_percent,
-        won_games: acceptedRequest.statistics.won_games,
-        lost_games: acceptedRequest.statistics.lost_games,
+        win_percent: acceptedRequest.user.statistics.win_percent,
+        won_games: acceptedRequest.user.statistics.won_games,
+        lost_games: acceptedRequest.user.statistics.lost_games,
       };
 
       return {

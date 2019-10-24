@@ -74,7 +74,7 @@ class Profile extends React.Component {
         </View>
         <View>
           <Text style={{ color: '#1E3949', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
-            {!this.props.loading ? `${this.props.loggedInUser.user.first_name} ${this.props.loggedInUser.user.last_name}` : ''}
+            {!this.props.loading && this.props.loggedInUser.user ? `${this.props.loggedInUser.user.first_name} ${this.props.loggedInUser.user.last_name}` : ''}
           </Text>
           <Text style={{ color: '#1E3949', fontSize: 12, textAlign: 'center' }}>
             {!this.props.loading ? consoles[this.props.userDetails.profile.console] : ''} | 

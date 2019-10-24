@@ -33,6 +33,7 @@ class Challenge extends React.Component {
         query: '',
         opponent: {},
         game: 'FIF',
+        wager: 0,
         hideResults: false
     }
 
@@ -88,24 +89,31 @@ class Challenge extends React.Component {
 
     submitGameRequest = async () => {
         const { csrfToken, loggedInUser } = this.props;
-        const payload = {
-            sender_id: loggedInUser.user.pk,
-            receiver_id: this.state.opponent.statistics.id,
-            sender_location: this.getLocation(),
-            game: this.state.game,
-            wager: this.state.wager,
-        };
-
-        try {
-            const response = await this.props.actions.submitGameRequest(csrfToken, payload);
-
-            if (response && response.submittedGameRequest.status === 201) {
-                this.props.navigation.navigate('ChallengeConfirmation');
-            } else if (this.props.hasError) {    
-                alert(`Challenge request failed: ${this.props.errorMessage.message}`);
+        if (this.state.opponent.statistics) {
+            const payload = {
+                sender_id: loggedInUser.user.pk,
+                receiver_id: this.state.opponent.statistics.id,
+                sender_location: this.getLocation(),
+                game: this.state.game,
+                wager: this.state.wager,
+            };
+    
+            try {
+                const response = await this.props.actions.submitGameRequest(csrfToken, payload)
+                    .catch(error => {
+                        alert('Challenge request failed: ' + error.message);
+                    });
+    
+                if (response && response.submittedGameRequest.status === 201) {
+                    this.props.navigation.navigate('ChallengeConfirmation');
+                } else if (this.props.hasError) {    
+                    alert(`Challenge request failed: ${this.props.errorMessage.message}`);
+                }
+            } catch (error) {
+                console.error(error)
             }
-        } catch (error) {
-            console.error(error)
+        } else {
+            alert('Please select an opponent!');
         }
     };
 
@@ -236,7 +244,7 @@ class Challenge extends React.Component {
                                     <TouchableOpacity
                                         onPress={() => {
                                             this.changeInde(0);
-                                            this.setState({ wager: 10 })
+                                            this.setState({ wager: 0 })
                                         }}
                                         style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginRight: 5, marginBottom: 5, borderRadius: 50, borderColor: '#EFEFEF', borderWidth: this.state.selecte == 0 ? 0 : 1, backgroundColor: this.state.selecte == 0 ? '#69C0FF' : 'transparent' }}>
                                         <Text style={{ color: this.state.selecte == 0 ? '#fff' : '#69C0FF' }}>

@@ -50,11 +50,13 @@ export default function scoreConfirmationReducer(state = initialState.scoreConfi
     case types.LOAD_SCORE_CONFIRMATION_SUCCESS:
       // Extract only the needed info for score
       // confirmation screen
+      const loggedInUserId = action.scoreConfirmations.loggedInUserId;
       const loggedInUserEmail = action.scoreConfirmations.loggedInUserEmail;
       
       // get pending score confirmations
-      const scoreConfirmations = action.scoreConfirmations.data.map(scoreConfirmation => {
+      const scoreConfirmations = action.scoreConfirmations.data.results.map(scoreConfirmation => {
         if (scoreConfirmation.status === 0
+            && scoreConfirmation.sender_id !== loggedInUserId
             && (scoreConfirmation.winner.email === loggedInUserEmail
               || scoreConfirmation.loser.email === loggedInUserEmail)) {
     
@@ -66,7 +68,7 @@ export default function scoreConfirmationReducer(state = initialState.scoreConfi
       }).filter(scoreConfirmation => scoreConfirmation !== null);
       
       // get finshed score confirmation
-      const scoresAccepted = action.scoreConfirmations.data.map(scoreAccepted => {
+      const scoresAccepted = action.scoreConfirmations.data.results.map(scoreAccepted => {
         if (scoreAccepted.status === 1
             && (scoreAccepted.winner.email === loggedInUserEmail
               || scoreAccepted.loser.email === loggedInUserEmail)) {

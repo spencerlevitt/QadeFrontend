@@ -29,6 +29,7 @@ export function loadScoreConfirmations(userId, userEmail, csrfToken) {
         }
 
         // attach the loggedIn email to ID sender/receiver
+        scoreConfirmations.loggedUserId = userId;
         scoreConfirmations.loggedInUserEmail = userEmail;
         return dispatch(loadScoreConfirmationsSuccess(scoreConfirmations));
       }).catch(error => {
@@ -52,12 +53,12 @@ export function acceptScoreConfirmationsError(acceptScoreError) {
   return { type: types.ACCEPT_SCORE_CONFIRMATION_ERROR, acceptScoreError };
 }
 
-export function acceptScoreConfirmation(gameId, userEmail, winnerLocation, loserLocation, csrfToken) {
+export function acceptScoreConfirmation(gameId, userEmail, payload, csrfToken) {
   return function (dispatch) {
     dispatch(beginApiCall());
     dispatch(acceptScoreConfirmationsStart());
     return finishedGamesApi
-      .acceptScoreConfirmation(gameId, winnerLocation, loserLocation, csrfToken)
+      .acceptScoreConfirmation(gameId, payload, csrfToken)
       .then(acceptedScore => {
         if (acceptedScore.status !== HttpStatus.OK) {
           const error = new Error(acceptedScore.statusMessage);

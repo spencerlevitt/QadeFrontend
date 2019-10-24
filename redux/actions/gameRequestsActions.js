@@ -20,7 +20,7 @@ export function loadPendingGameRequests(userId, csrfToken) {
     dispatch(beginApiCall());
     dispatch(loadPendingGameRequestsStart());
     return gameRequestsApi
-      .getPendingGameRequests (csrfToken)
+      .getPendingGameRequests(csrfToken)
       .then(pendingGameRequests => {
         if (pendingGameRequests.status !== HttpStatus.OK) {
           const error = new Error(pendingGameRequests.statusMessage);
@@ -174,6 +174,40 @@ export function rejectGameRequest(requestId, csrfToken) {
       }).catch(error => {
         dispatch(apiCallError(error));
         dispatch(rejectGameRequestError(error));
+        throw error;
+      });
+  }
+}
+
+export function submitGameCardStart() {
+  return { type: types.SUBMIT_GAME_CARD_START };
+}
+
+export function submitGameCardSuccess(submittedGameCard) {
+  return { type: types.SUBMIT_GAME_CARD_SUCCESS, submittedGameCard };
+}
+
+export function submitGameCardError(submitGameCardError) {
+  return { type: types.SUBMIT_GAME_CARD_ERROR, submitGameCardError };
+}
+
+export function submitGameCard(requestId, csrfToken, payload) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(submitGameCardStart());
+    return gameRequestsApi
+      .submitGameCard(requestId, csrfToken, payload)
+      .then(submittedGameCard => {
+        if (submittedGameCard.status !== HttpStatus.OK) {
+          const error = new Error(submittedGameCard.statusMessage);
+          dispatch(apiCallError(error));
+          dispatch(submitGameCardError(error));
+        }
+
+        return dispatch(submitGameCardSuccess(submittedGameCard));
+      }).catch(error => {
+        dispatch(apiCallError(error));
+        dispatch(submitGameCardError(error));
         throw error;
       });
   }

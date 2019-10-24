@@ -5,19 +5,23 @@ import NavigationService from '../../navigation/NavigationService';
 
 export const withPolling = (pollingAction=null, duration = 30000, loadScoreConfirmation=true) => Component => {
 
+    const globalPollingActions = [
+        // place polling actions that you want to fire globally here
+    ];
+
     const Wrapper = () => (
         class extends React.Component {
-
+            
             loadScoreConfirmations = async () => {
-                if (loadScoreConfirmation) {
+                if (loadScoreConfirmation && this.props.loggedInUser.user.pk) {
                     const { loggedInUser, csrfToken } = this.props;
 
                     try {
                         const response = await this.props.loadScoreConfirmations(loggedInUser.user.pk, loggedInUser.user.email, csrfToken);
-
+                        
                         if(response && response.scoreConfirmations && response.scoreConfirmations.data) {
                             const scoreConfirmations = response.scoreConfirmations.data;
-                            scoreConfirmations.map((scoreConfirmation) => {
+                            scoreConfirmations.results.map((scoreConfirmation) => {
                                 if (scoreConfirmation.status === 0) {
                                     NavigationService.navigate('ScoreConfirm', { scoreConfirmation, loggedInUser, csrfToken });
                                 }
@@ -32,18 +36,38 @@ export const withPolling = (pollingAction=null, duration = 30000, loadScoreConfi
                 }
             };
 
+            firePollingAction = (Component, pollingaction) => {
+                if (Component.displayName === 'Connect(Pending)' || Component.displayName === 'Connect(Accepted)') {
+                    if (this.props.loggedInUser.user.pk) {
+                        pollingaction(this.props.loggedInUser.user.pk, this.props.csrfToken);
+                    }
+                } else {
+                    pollingaction();
+                }
+            };
+
             componentDidMount() {
                 // Fire action requests to check for pending score confirmations
                 this.loadScoreConfirmations();
+                // const { pollingAction } = this.props;
 
-                if (pollingAction !== null) {
+                if (pollingAction && pollingAction !== null) {
                     // Fire action requests on first load
-                    if (Component.displayName === 'Connect(Pending)' || Component.displayName === 'Connect(Accepted)') {
-                        if (this.props.loggedInUser.user.pk) {
-                            this.props.pollingAction(this.props.loggedInUser.user.pk, this.props.csrfToken);
-                        }
+                    // if its an array of actions fire them off
+                    // individually
+                    if(Array.isArray(pollingAction)) {
+                        pollingAction.map(pAction => {
+                            this.firePollingAction(Component, pAction);
+                        });
                     } else {
-                        this.props.pollingAction();
+                        this.firePollingAction(Component, pollingAction);
+                    }
+
+                    // fire global polling actions
+                    if (globalPollingActions.length) {
+                        globalPollingActions.map((pAction) => {
+                            this.firePollingAction(Component, pAction);
+                        });
                     }
                     
                     // Start polling at interval
@@ -52,22 +76,26 @@ export const withPolling = (pollingAction=null, duration = 30000, loadScoreConfi
                             // Fire action to check for pending score confirmation
                             this.loadScoreConfirmations();
 
-                            if(Component.displayName === 'Connect(Pending)' || Component.displayName === 'Connect(Accepted)') {
-                                if (this.props.loggedInUser.user.pk) {
-                                    this.props.pollingAction(this.props.loggedInUser.user.pk, this.props.csrfToken);
-                                }
+                            if(Array.isArray(pollingAction)) {
+                                pollingAction.map(pAction => {
+                                    this.firePollingAction(Component, pAction);
+                                });
                             } else {
-                                this.props.pollingAction();
+                                this.firePollingAction(Component, pollingAction);
                             }
                         },
                         duration);   
                 }
             }
+
+
+            // stop polling once the component unmounts
             componentWillUnmount() {
                 if (pollingAction) {
-                    clearInterval(this.dataPolling);   
+                    clearInterval(this.dataPolling);
                 }
             }
+
             render() {
                 return <Component {...this.props}/>;
             }
