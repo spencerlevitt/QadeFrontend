@@ -52,15 +52,14 @@ export default function scoreConfirmationReducer(state = initialState.scoreConfi
       // confirmation screen
       const loggedInUserId = action.scoreConfirmations.loggedInUserId;
       const loggedInUserEmail = action.scoreConfirmations.loggedInUserEmail;
-      
+
       // get pending score confirmations
       const scoreConfirmations = action.scoreConfirmations.data.results.map(scoreConfirmation => {
         if (scoreConfirmation.status === 0
             && scoreConfirmation.sender_id !== loggedInUserId
             && (scoreConfirmation.winner.email === loggedInUserEmail
               || scoreConfirmation.loser.email === loggedInUserEmail)) {
-    
-          return getTransformedScoreConfirmations(scoreConfirmation, loggedInUserEmail);      
+                return getTransformedScoreConfirmations(scoreConfirmation, loggedInUserEmail);      
           
         } else {
           return null;
