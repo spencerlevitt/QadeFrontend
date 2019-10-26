@@ -10,49 +10,69 @@ import {
 import Constants from 'expo-constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
+import { AntDesign } from '@expo/vector-icons';
+import NavigationService from '../../navigation/NavigationService'
 
 //console.disableYellowBox = true
 
 const FirstRoute = (props) => (
-    gameData(props.standingsList)
+    gameData(props.standingsList, props.friendsList)
 );
 const SecondRoute = (props) => (
-    gameData(props.standingsList)
+    gameData(props.standingsList, props.friendsList)
 );
 
 const ThirdRoute = (props) => (
-    gameData(props.standingsList)
+    gameData(props.standingsList, props.friendsList)
 );
 
 const FourthRoute = (props) => (
-    gameData(props.standingsList)
+    gameData(props.standingsList, props.friendsList)
 );
 
-gameData = (standingsList) => {
+gameData = (standingsList, friendsList) => {
     return (
         <View>
-            {standingsList.map((standing, idx) => 
-                <View key={idx} style={{ height: 80, justifyContent: 'center' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>
-                                {idx < 9 ? `0${idx}` : idx}
-                            </Text>
-                        </View>
-                        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
-                        <View>
-                            <Text style={[styles.cardText, { fontSize: 16 }]}>
-                                {`${standing.user_stats.user.first_name} ${standing.user_stats.user.last_name}`}
-                            </Text>
-                            <Text style={{ color: '#888' }}>{standing.won_games}-{standing.lost_games}</Text>
-                        </View>
-
-                        <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                            <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>{Math.round(parseInt(standing.rating) * 100) / 100}</Text>
-                        </View>
+            {!friendsList.length
+                ?
+                    <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', backgroundColor: '#ffffffe0', zIndex: 1 }}>
+                        <Text style={{ color: '#888', fontSize: 18, marginTop: 40 }}>Qade is more fun with friends!</Text>
+                        <TouchableOpacity
+                            style={{ flexDirection: 'row', paddingHorizontal: 30, paddingVertical: 5, alignItems: 'center', justifyContent: 'center', borderColor: '#71ceff', borderRadius: 5, borderWidth: 1, marginTop: 10 }}
+                            onPress={() => {NavigationService.navigate('Recent')}}>
+                            <Text style={{ fontSize: 12, color: '#71ceff' }}>Add Friends</Text>
+                            <AntDesign
+                                name={'user'}
+                                size={12}
+                                style={{ marginLeft: 5 }}
+                                color={'#71ceff'}
+                            />
+                        </TouchableOpacity>
                     </View>
-                </View>
-            )}
+                :
+                    standingsList.map((standing, idx) => 
+                        <View key={idx} style={{ height: 80, justifyContent: 'center' }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={{ width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={{ fontSize: 10, color: '#888', fontWeight: 'bold' }}>
+                                        {idx < 9 ? `0${idx}` : idx}
+                                    </Text>
+                                </View>
+                                <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                <View>
+                                    <Text style={[styles.cardText, { fontSize: 16 }]}>
+                                        {`${standing.user_stats.user.first_name} ${standing.user_stats.user.last_name}`}
+                                    </Text>
+                                    <Text style={{ color: '#888' }}>{standing.won_games}-{standing.lost_games}</Text>
+                                </View>
+        
+                                <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
+                                    <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>{Math.round(parseInt(standing.rating) * 100) / 100}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    )
+            }
         </View>
     )
 }
@@ -120,13 +140,13 @@ export default class GameTabs extends React.Component {
     _renderScene = ({ route }) => {
         switch (route.key) {
           case 'first':
-            return <FirstRoute standingsList={this.props.standings.fifa} />;
+            return <FirstRoute friendsList={this.props.friends} standingsList={this.props.standings.fifa} />;
           case 'second':
-                return <SecondRoute standingsList={this.props.standings.madden} />;
+                return <SecondRoute friendsList={this.props.friends} standingsList={this.props.standings.madden} />;
           case 'third':
-                return <ThirdRoute standingsList={this.props.standings.nba} />;
+                return <ThirdRoute friendsList={this.props.friends} standingsList={this.props.standings.nba} />;
           case 'fourth':
-                return <FourthRoute standingsList={this.props.standings.nhl} />;
+                return <FourthRoute friendsList={this.props.friends} standingsList={this.props.standings.nhl} />;
           default:
             return null;
         }

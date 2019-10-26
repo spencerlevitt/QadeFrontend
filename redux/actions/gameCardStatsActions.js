@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import * as gameCardStatsApi from '../../api/gameCardStatsApi';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
+import HttpStatus from 'http-status-codes';
 
 export function loadGameCardStatsStart() {
   return { type: types.LOAD_GAME_CARD_STATS_START };
@@ -27,7 +28,7 @@ export function loadGameCardStats(userId, gameCard, csrfToken) {
           dispatch(loadGameCardStatsError(error));
         }
 
-        return dispatch(loadStatsSuccess(stats));
+        return dispatch(loadGameCardStatsSuccess(stats));
       }).catch(error => {
         dispatch(apiCallError(error));
         dispatch(loadGameCardStatsError(error));

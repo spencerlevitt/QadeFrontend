@@ -22,14 +22,21 @@ import * as friendRequestActions from '../redux/actions/friendRequestActions';
 import * as gameCardStatsActions from '../redux/actions/gameCardStatsActions';
 import { NavigationEvents } from "react-navigation";
 import { withPolling } from "../redux/polling/withPolling";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 class Profile extends React.Component {
   state = {
-    game: 'nba2k'
+    game: 'nba'
   }
 
-  componentDidMount() {
-    const { acceptedFriends, csrfToken, actions } = this.props;
+  _scrollToInput(reactNode: any) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode)
+  }
+
+  componentWillMount() {
+    const { acceptedFriends, csrfToken, actions, loggedInUser } = this.props;
     
     if (!acceptedFriends.length) {
       actions.loadAcceptedFriends(csrfToken).catch(error => {
@@ -37,7 +44,7 @@ class Profile extends React.Component {
       });
     }
 
-    actions.loadGameCardStats(csrfToken).catch(error => {
+    actions.loadGameCardStats(loggedInUser.user.pk, this.state.game, csrfToken).catch(error => {
       alert('Loading game card stats failed' + error);
     });
   }
@@ -57,7 +64,9 @@ class Profile extends React.Component {
     const consoles = ['None', 'Xbox One', 'Playstation 4', 'XBox One & Playstation 4'];
 
     return (
-      <ScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]}>
+      <KeyboardAwareScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]} innerRef={ref => {
+        this.scroll = ref
+      }}>
         <NavigationEvents
           onWillFocus={() => {
             const updatedPhoto = this.props.navigation.getParam('photo_uri');
@@ -162,7 +171,12 @@ class Profile extends React.Component {
               </View>
             </View>
             <View style={{ margin: 30 }}>
-              <TextInput style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
+              <TextInput 
+                  onFocus={(event: Event) => {
+                      // `bind` the function if you're using ES6 classes
+                      this._scrollToInput((event.target))
+                  }}
+                  style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
               </TextInput>
             </View>
             <View style={{ marginBottom: 30 }}>
@@ -207,7 +221,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_score : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_score : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -217,7 +231,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.score : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.score : '-'}
                   </Text>
                 </View>
               </View>
@@ -226,7 +240,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_fieldgoalper : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_fieldgoalper : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -236,7 +250,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.fieldgoalper : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.fieldgoalper : '-'}
                   </Text>
                 </View>
               </View>
@@ -244,7 +258,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_3pointper : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_3pointper : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -254,7 +268,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent['3pointper'] : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent['3pointper'] : '-'}
                   </Text>
                 </View>
               </View>
@@ -262,7 +276,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_fastbreakpoints : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_fastbreakpoints : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -272,7 +286,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.fastbreakpoints : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.fastbreakpoints : '-'}
                   </Text>
                 </View>
               </View>
@@ -280,7 +294,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_pointsinpaint : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_pointsinpaint : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -290,7 +304,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.pointsinpaint : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.pointsinpaint : '-'}
                   </Text>
                 </View>
               </View>
@@ -298,7 +312,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_secondchance : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_secondchance : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -308,7 +322,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.secondchance : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.secondchance : '-'}
                   </Text>
                 </View>
               </View>
@@ -316,7 +330,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_benchpoints : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_benchpoints : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -326,7 +340,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.benchpoints : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.benchpoints : '-'}
                   </Text>
                 </View>
               </View>
@@ -334,7 +348,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_assists : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_assists : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -344,7 +358,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.assists : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.assists : '-'}
                   </Text>
                 </View>
               </View>
@@ -352,7 +366,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_offensiveboards : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_offensiveboards : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -362,7 +376,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.offensiveboards : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.offensiveboards : '-'}
                   </Text>
                 </View>
               </View>
@@ -370,7 +384,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_defensiveboards : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_defensiveboards : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -380,7 +394,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.defensiveboards : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.defensiveboards : '-'}
                   </Text>
                 </View>
               </View>
@@ -388,7 +402,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_steals : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_steals : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -398,7 +412,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.steals : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.steals : '-'}
                   </Text>
                 </View>
               </View>
@@ -406,7 +420,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_blocks : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_blocks : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -416,7 +430,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.blocks : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.blocks : '-'}
                   </Text>
                 </View>
               </View>
@@ -424,7 +438,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_turnovers : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_turnovers : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -434,7 +448,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.turnovers : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.turnovers : '-'}
                   </Text>
                 </View>
               </View>
@@ -442,7 +456,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_fouls : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_fouls : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -452,7 +466,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.fouls : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.fouls : '-'}
                   </Text>
                 </View>
               </View>
@@ -460,7 +474,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_biggestlead : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_biggestlead : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -470,7 +484,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.biggestlead : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.biggestlead : '-'}
                   </Text>
                 </View>
               </View>
@@ -478,7 +492,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_posession : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_posession : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -488,7 +502,7 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.posession : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.posession : '-'}
                   </Text>
                 </View>
               </View>
@@ -496,7 +510,7 @@ class Profile extends React.Component {
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.user_stats.avg_timeoutsremain : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_timeoutsremain : '-'}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -506,16 +520,18 @@ class Profile extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.isFetchingStats ? this.props.gameCardStatsActions.opponent.timeoutsremain : '-'}
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.timeoutsremain : '-'}
                   </Text>
                 </View>
               </View>
 
             </View>
           </View>
+        </View>
+        <View style={{height: 100}}>
 
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     )
   }
 }
@@ -530,7 +546,7 @@ Profile.propTypes = {
   loggedInUser: PropTypes.object.isRequired,
   acceptedFriends: PropTypes.array.isRequired,
   isFetchingAcceptedFriends: PropTypes.bool.isRequired,
-  gameCardStats: PropTypes.array.isRequired,
+  gameCardStats: PropTypes.object.isRequired,
   isFetchingStats: PropTypes.bool.isRequired,
   userDetails: PropTypes.object.isRequired
 };

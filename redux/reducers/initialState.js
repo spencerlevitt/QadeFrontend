@@ -68,6 +68,7 @@ export default {
   loggedInUser: {},
   signedUpUser: {},
   gameCardStats: {
+    stats: {},
     isFetchingStats: false
   },
   standings: {
