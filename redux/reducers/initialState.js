@@ -73,6 +73,10 @@ export default {
     },
     isFetchingStats: false
   },
+  moneyRequest: {
+    requests: [],
+    isSubmittingMoneyRequest: false
+  },
   standings: {
     isFetchingStandings: false,
     nba: [],
