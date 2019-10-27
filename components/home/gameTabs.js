@@ -67,7 +67,7 @@ gameData = (standingsList, friendsList) => {
                                 </View>
         
                                 <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                                    <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>{Math.round(parseInt(standing.rating) * 100) / 100}</Text>
+                                    <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>{parseInt(standing.rating).toFixed(2)}</Text>
                                 </View>
                             </View>
                         </View>

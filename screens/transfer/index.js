@@ -11,7 +11,7 @@ import { EvilIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { environment } from '../../environments/environment.dev';
+import { environment } from '../../environments/environment.prod';
 
 export default class Transfer extends React.Component {
 
