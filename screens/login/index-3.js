@@ -80,19 +80,18 @@ export default class SignupForm extends React.Component {
     }
   }
 
+  _scrollToInput(reactNode) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode)
+  }
+
   onChangeInput = (e, type) => {
     this.setState({ [type]: e });
   };
 
-<<<<<<< HEAD
-    _scrollToInput(reactNode) {
-        // Add a 'scroll' ref to your ScrollView
-        this.scroll.props.scrollToFocusedInput(reactNode)
-=======
   onChangeDate = (e, type) => {
     if (typeof e === 'object') {
       e = e.nativeEvent.text;
->>>>>>> 176952c55f1f60bc12fb68b5e8051a71b50c031a
     }
 
     if (type === 'year') {
