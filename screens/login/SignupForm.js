@@ -186,12 +186,12 @@ export default class SignupForm extends React.Component {
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > 12) {
+                    // if (parseInt(val) > 12) {
                     //   this.setState({ month: ''})
                     // } else {
                       this.onChangeDate(val, 'month')
                     // }}
-                  }}}
+                  }}
                   onBlur={e => this.onChangeDate(e, 'month')}>
                 </TextInput>
               </View>
@@ -211,12 +211,12 @@ export default class SignupForm extends React.Component {
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > 31) {
+                    // if (parseInt(val) > 31) {
                     //   this.setState({ day: ''})
                     // } else {
                       this.onChangeDate(val, 'day')
                     // }
-                  }}}
+                  }}
                   onBlur={e => this.onChangeDate(e, 'day')}>
                 </TextInput>
               </View>
