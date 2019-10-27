@@ -80,6 +80,11 @@ export default class SignupForm extends React.Component {
     }
   }
 
+  _scrollToInput(reactNode) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode)
+  }
+
   onChangeInput = (e, type) => {
     this.setState({ [type]: e });
   };

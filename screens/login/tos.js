@@ -17,7 +17,7 @@ export default class ToS extends React.Component {
     constructor(props) {
         super(props)
 
-        const { toggle } = this.props.navigation.state.params;
+        const { tandc } = this.props.navigation.state.params;
         const { console } = this.props.navigation.state.params;
 
         const { month } = this.props.navigation.state.params;
@@ -31,7 +31,7 @@ export default class ToS extends React.Component {
         const { confirmPassword } = this.props.navigation.state.params;
 
         this.state = {
-            toggle,
+            tandc,
             console,
 
             month,
@@ -62,7 +62,7 @@ export default class ToS extends React.Component {
                     </Text>
                     </View>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate("SignUp", {
-                        toggle: this.state.toggle,
+                        tandc: this.state.tandc,
                         console: this.state.console,
 
                         month: this.state.month,

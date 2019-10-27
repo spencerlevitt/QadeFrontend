@@ -49,7 +49,7 @@ class Challenge extends React.Component {
         })
     }
 
-    _scrollToInput(reactNode: any) {
+    _scrollToInput(reactNode) {
         // Add a 'scroll' ref to your ScrollView
         this.scroll.props.scrollToFocusedInput(reactNode)
     }
