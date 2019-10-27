@@ -31,13 +31,14 @@ export default class SignupForm extends React.Component {
       last_name,
       console2,
       email,
-      dob: new Date(),
+      dob: (year !== '' || month !== '' || day !== '') ? `${year}-${month}-${day}` : new Date(),
       day,
       month,
       year,
       password,
       confirmPassword,
       tandc: false,
+      signingUp: false,
     };
   }
 
@@ -75,6 +76,7 @@ export default class SignupForm extends React.Component {
     } else if ((date.getFullYear() - parseInt(this.state.year)) > 90) {
         Alert.alert("Please enter a real birth year")
     } else {
+        this.setState({ signingUp: true });
         // submit form data to parent component
         this.props.onSubmit(this.state);
     }
@@ -317,7 +319,7 @@ export default class SignupForm extends React.Component {
             </View>
             <TouchableOpacity onPress={() => this.props.navigation.navigate("ToS", {
               tandc: this.state.tandc,
-              console2: this.state.console2,
+              console: this.state.console2,
               month: this.state.month,
               day: this.state.day,
               year: this.state.year,
@@ -335,7 +337,7 @@ export default class SignupForm extends React.Component {
             <TouchableOpacity
               style={{ backgroundColor: "#3A8FFF", height: 40, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}
               onPress={() => this.onSubmit()}>
-              <Text style={{ color: '#fff', fontSize: 14 }}>Create account</Text>
+              <Text style={{ color: '#fff', fontSize: 14 }}>{ this.state.signingUp ? 'Creating account...' : 'Create account' }</Text>
             </TouchableOpacity>
           </View>
         </View>

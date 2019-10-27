@@ -74,7 +74,7 @@ class HomeScreen extends React.Component {
     this.setState({ modalVisible: visible });
   }
 
-  _scrollToInput(reactNode: any) {
+  _scrollToInput(reactNode) {
     // Add a 'scroll' ref to your ScrollView
     this.scroll.props.scrollToFocusedInput(reactNode + 50)
   };

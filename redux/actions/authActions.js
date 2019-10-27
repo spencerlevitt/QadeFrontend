@@ -97,7 +97,12 @@ export function signupUser (signupData, csrfToken) {
   return function (dispatch) {
     dispatch(beginApiCall());
     dispatch(signupStart());
-    
+
+    if (csrfToken === '') {
+      dispatch(loginGetCSRFTokenUser());
+      return null;
+    }
+
     return userApi.signup(signupData, csrfToken)
       .then((signedUpUser) => {
         if (signedUpUser.status == HttpStatus.FORBIDDEN) {
@@ -131,7 +136,7 @@ export function loginGetCSRFTokenError(csrfTokenError) {
   return { type: types.LOGIN_GETCSRF_TOKEN_ERROR, csrfTokenError };
 }
 
-export function loginGetCSRFTokenUser (username = null, password = null) {
+export function loginGetCSRFTokenUser () {
   return function (dispatch) {
     dispatch(beginApiCall());
     dispatch(loginGetCSRFTokenStart());
@@ -143,10 +148,6 @@ export function loginGetCSRFTokenUser (username = null, password = null) {
           dispatch(apiCallError(error));
           return dispatch(loginGetCSRFTokenError(error));
         } else if (csrfTokenData.status === HttpStatus.OK) {
-          if(username && password) {
-            dispatch(loginGetCSRFTokenSuccess(csrfTokenData));
-            return dispatch(loginUser(username, password, csrfTokenData.data.csrfToken));
-          }
           return dispatch(loginGetCSRFTokenSuccess(csrfTokenData));
         }
       })

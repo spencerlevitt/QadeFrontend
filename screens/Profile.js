@@ -30,7 +30,7 @@ class Profile extends React.Component {
     game: 'nba'
   }
 
-  _scrollToInput(reactNode: any) {
+  _scrollToInput(reactNode) {
     // Add a 'scroll' ref to your ScrollView
     this.scroll.props.scrollToFocusedInput(reactNode)
   }
