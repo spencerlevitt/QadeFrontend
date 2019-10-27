@@ -11,9 +11,15 @@ import { EvilIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment.dev';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import * as userActions from '../../redux/actions/userActions';
+import * as moneyRequestAction from '../../redux/actions/moneyRequestAction';
 
-export default class Transfer extends React.Component {
+
+class Transfer extends React.Component {
 
     constructor(props) {
         super(props)
@@ -22,7 +28,8 @@ export default class Transfer extends React.Component {
     state = {
         selected: 0,
         tempView: 0,
-        amount: 10
+        amount: 10,
+        submitting: false
     }
 
     changeIndex = (num) => {
@@ -35,6 +42,36 @@ export default class Transfer extends React.Component {
         // Add a 'scroll' ref to your ScrollView
         this.scroll.props.scrollToFocusedInput(reactNode)
     }
+
+    getLocation = () => {
+        return '41.8339042,-88.0121586';    // TODO navigation library fix
+    };
+
+    submitMoneyRequest = async () => {
+        this.setState({ submitting: true });
+
+        const payload = {
+            "user_id": this.props.loggedInUser.user.pk,
+            "user_location": this.getLocation(),
+            "amount": this.state.amount,
+            "type": this.state.selected
+        }
+
+        try {
+            const response = await this.props.actions.submitMoneyRequest(this.props.csrfToken, payload)
+                .catch(error => {
+                    alert('Transfer request failed: ' + error.message);
+                    this.setState({ submitting: false });
+                });
+
+            if (response && response.moneyRequest && response.moneyRequest.status === 201) {
+                alert(`Your ${response.moneyRequest.data.type === 0 ? 'deposit' : 'withdrawal' } request has been sent.`);
+                this.props.navigation.navigate('Home');
+            }
+        } catch (e) {
+        
+        }
+    };
 
     render() {
         return (
@@ -58,7 +95,7 @@ export default class Transfer extends React.Component {
                             <Text style={{ fontSize: 18, color: '#333', marginBottom: 10, fontSize: 18 }}>Current Balance</Text>
                             <View style={{ flex: 1, justifyContent: 'center' }}>
                                 <Text style={{ color: '#333', fontSize: 30 }}>
-                                    $30.00
+                                    ${!this.props.loading && this.props.userDetails ? this.props.userDetails.profile.balance : '0'}
                                 </Text>
                             </View>
                         </View>
@@ -211,9 +248,9 @@ export default class Transfer extends React.Component {
                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
                         <TouchableOpacity
                             style={{ flex: 1, height:50, maxHeight: 100, justifyContent: 'center', alignItems: 'center', marginLeft: 5, marginBottom: 5, borderRadius: 5, borderColor: '#EFEFEF', borderWidth:  1, backgroundColor: 'transparent' }}
-                            onPress={() => {}}>
+                            onPress={() => this.submitMoneyRequest()}>
                             <Text style={{ color: '#69C0FF', fontSize: 16, paddingLeft: 25, paddingRight: 25 }}>
-                                Submit
+                                { this.state.submitting ? 'Submitting...' : 'Submit' }
                             </Text>
                         </TouchableOpacity>
                     </View>    
@@ -226,3 +263,33 @@ export default class Transfer extends React.Component {
 Transfer.navigationOptions = {
     header: null,
 };
+
+Transfer.propTypes = {
+    loggedInUser: PropTypes.object.isRequired,
+    loggedIn: PropTypes.bool.isRequired,
+    csrfToken: PropTypes.string.isRequired,
+    actions: PropTypes.object.isRequired,
+    userDetails: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+  };
+  
+function mapStateToProps(state) {
+    return {
+      userDetails: state.userDetails,
+      csrfToken: state.auth.csrfToken,
+      loggedInUser: state.auth.loggedInUser,
+      loggedIn: state.auth.loggedIn,
+      loading: state.apiCallsInProgress > 0
+    };
+}
+  
+function mapDispatchToProps(dispatch) {
+    return {
+      actions: {
+        loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
+        submitMoneyRequest: bindActionCreators(moneyRequestAction.submitMoneyRequest, dispatch),
+      }
+    };
+}
+  
+export default connect(mapStateToProps, mapDispatchToProps)(Transfer);
