@@ -29,7 +29,7 @@ export function loadScoreConfirmations(userId, userEmail, csrfToken) {
         }
 
         // attach the loggedIn email to ID sender/receiver
-        scoreConfirmations.loggedUserId = userId;
+        scoreConfirmations.loggedInUserId = userId;
         scoreConfirmations.loggedInUserEmail = userEmail;
         return dispatch(loadScoreConfirmationsSuccess(scoreConfirmations));
       }).catch(error => {

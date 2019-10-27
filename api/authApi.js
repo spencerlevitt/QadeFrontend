@@ -1,5 +1,5 @@
 import { handleResponse, handleError } from "./apiUtils";
-import { environment } from '../environments/environment.dev';
+import { environment } from '../environments/environment.prod';
 import Axios from "axios";
 const baseUrl = environment.API_AUTH_URL;
 

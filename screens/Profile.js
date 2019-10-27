@@ -19,22 +19,34 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
 import * as friendRequestActions from '../redux/actions/friendRequestActions';
+import * as gameCardStatsActions from '../redux/actions/gameCardStatsActions';
 import { NavigationEvents } from "react-navigation";
 import { withPolling } from "../redux/polling/withPolling";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 class Profile extends React.Component {
   state = {
-    game: 'nba2k'
+    game: 'nba'
   }
 
-  componentDidMount() {
-    const { acceptedFriends, csrfToken, actions } = this.props;
+  _scrollToInput(reactNode: any) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode)
+  }
+
+  componentWillMount() {
+    const { acceptedFriends, csrfToken, actions, loggedInUser } = this.props;
     
     if (!acceptedFriends.length) {
       actions.loadAcceptedFriends(csrfToken).catch(error => {
           alert('Loading accepted friends failed' + error);
       });
     }
+
+    actions.loadGameCardStats(loggedInUser.user.pk, this.state.game, csrfToken).catch(error => {
+      alert('Loading game card stats failed' + error);
+    });
   }
 
   render() {
@@ -52,7 +64,9 @@ class Profile extends React.Component {
     const consoles = ['None', 'Xbox One', 'Playstation 4', 'XBox One & Playstation 4'];
 
     return (
-      <ScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]}>
+      <KeyboardAwareScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]} innerRef={ref => {
+        this.scroll = ref
+      }}>
         <NavigationEvents
           onWillFocus={() => {
             const updatedPhoto = this.props.navigation.getParam('photo_uri');
@@ -157,7 +171,12 @@ class Profile extends React.Component {
               </View>
             </View>
             <View style={{ margin: 30 }}>
-              <TextInput style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
+              <TextInput 
+                  onFocus={(event: Event) => {
+                      // `bind` the function if you're using ES6 classes
+                      this._scrollToInput((event.target))
+                  }}
+                  style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
               </TextInput>
             </View>
             <View style={{ marginBottom: 30 }}>
@@ -201,7 +220,9 @@ class Profile extends React.Component {
 
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>111</Text>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_score : '-'}
+                  </Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
@@ -209,14 +230,18 @@ class Profile extends React.Component {
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>120</Text>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.score : '-'}
+                  </Text>
                 </View>
               </View>
 
 
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>47%</Text>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_fieldgoalper : '-'}
+                  </Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
@@ -224,13 +249,17 @@ class Profile extends React.Component {
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>48%</Text>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.fieldgoalper : '-'}
+                  </Text>
                 </View>
               </View>
 
               <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>19%</Text>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_3pointper : '-'}
+                  </Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
@@ -238,15 +267,271 @@ class Profile extends React.Component {
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>42%</Text>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent['3pointper'] : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_fastbreakpoints : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Fast Break Points%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.fastbreakpoints : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_pointsinpaint : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Points In Paint%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.pointsinpaint : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_secondchance : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Second Chance%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.secondchance : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_benchpoints : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Bench Points%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.benchpoints : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_assists : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Assists%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.assists : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_offensiveboards : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Offensive Boards%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.offensiveboards : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_defensiveboards : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Defensive Boards%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.defensiveboards : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_steals : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Steals%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.steals : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_blocks : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Blocks%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.blocks : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_turnovers : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Turn Overs%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.turnovers : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_fouls : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Fouls%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.fouls : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_biggestlead : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Biggest Lead%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.biggestlead : '-'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_posession : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Possession%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.posession : '-'}
+                  </Text>
+                </View>
+              </View>
+              
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.avg_timeoutsremain : '-'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    Avg Timeouts Remain%
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                    {!this.props.isFetchingStats ? this.props.gameCardStats.stats.opponent.timeoutsremain : '-'}
+                  </Text>
                 </View>
               </View>
 
             </View>
           </View>
+        </View>
+        <View style={{height: 100}}>
 
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     )
   }
 }
@@ -261,6 +546,8 @@ Profile.propTypes = {
   loggedInUser: PropTypes.object.isRequired,
   acceptedFriends: PropTypes.array.isRequired,
   isFetchingAcceptedFriends: PropTypes.bool.isRequired,
+  gameCardStats: PropTypes.object.isRequired,
+  isFetchingStats: PropTypes.bool.isRequired,
   userDetails: PropTypes.object.isRequired
 };
 
@@ -271,6 +558,8 @@ function mapStateToProps(state) {
       loggedInUser: state.auth.loggedInUser,
       acceptedFriends: state.friendRequests.acceptedFriends,
       isFetchingAcceptedFriends: state.friendRequests.isFetchingAcceptedFriends,
+      gameCardStats: state.gameCardStats,
+      isFetchingStats: state.gameCardStats.isFetchingStats,
       userDetails: state.userDetails
   };
 }
@@ -280,6 +569,7 @@ function mapDispatchToProps(dispatch) {
       actions: {
           loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
           loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
+          loadGameCardStats: bindActionCreators(gameCardStatsActions.loadGameCardStats, dispatch),
       }
   };
 }

@@ -186,11 +186,11 @@ export default class SignupForm extends React.Component {
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > 12) {
-                      this.setState({ month: ''})
-                    } else {
+                    // if (parseInt(val) > 12) {
+                    //   this.setState({ month: ''})
+                    // } else {
                       this.onChangeDate(val, 'month')
-                    }
+                    // }}
                   }}
                   onBlur={e => this.onChangeDate(e, 'month')}>
                 </TextInput>
@@ -211,11 +211,11 @@ export default class SignupForm extends React.Component {
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > 31) {
-                      this.setState({ day: ''})
-                    } else {
+                    // if (parseInt(val) > 31) {
+                    //   this.setState({ day: ''})
+                    // } else {
                       this.onChangeDate(val, 'day')
-                    }
+                    // }
                   }}
                   onBlur={e => this.onChangeDate(e, 'day')}>
                 </TextInput>
@@ -236,11 +236,11 @@ export default class SignupForm extends React.Component {
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > date.getFullYear()) {
-                      this.setState({ year: ''}) 
-                    } else {
+                    // if (parseInt(val) > date.getFullYear()) {
+                    //   this.setState({ year: ''})
+                    // } else {
                       this.onChangeDate(val, 'year')
-                    }
+                    // }
                   }}
                   onBlur={e => this.onChangeDate(e, 'year')}>
                 </TextInput>
