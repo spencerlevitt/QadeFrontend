@@ -131,7 +131,7 @@ class Transfer extends React.Component {
                                     </View>
                                     <View style={{position: 'absolute', flexDirection: "row"}}>
                                     <Text numberOfLines={1} style={{ color: '#3A8FFF', fontSize: 26, fontWeight: 'bold' }} >$</Text>
-                                    <TextInput onFocus={(event: Event) => {
+                                    <TextInput onFocus={(event) => {
                             // `bind` the function if you're using ES6 classes
                             this._scrollToInput((event.target))
                         }} value={this.state.amount.toString()} style={{color: '#3A8FFF', fontSize: 26, fontWeight: 'bold'}} onChangeText={(val) => {if(parseInt(val) > 0){this.setState({amount: parseInt(val)})}}} keyboardType={'number-pad'}/>
@@ -166,7 +166,7 @@ class Transfer extends React.Component {
 
                                             <View style={{ flex: 1, paddingRight: 10 }}>
                                                 <Text style={{ fontSize: 8 }}>First Name</Text>
-                                                <TextInput onFocus={(event: Event) => {
+                                                <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter First Name'}></TextInput>
@@ -174,7 +174,7 @@ class Transfer extends React.Component {
 
                                             <View style={{ flex: 1 }}>
                                                 <Text style={{ fontSize: 8 }}>Last Name</Text>
-                                                <TextInput onFocus={(event: Event) => {
+                                                <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Last Name'}></TextInput>
@@ -183,7 +183,7 @@ class Transfer extends React.Component {
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             <Text style={{ fontSize: 8 }}>Address</Text>
-                                            <TextInput onFocus={(event: Event) => {
+                                            <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Address'}></TextInput>
@@ -192,7 +192,7 @@ class Transfer extends React.Component {
 
                                             <View style={{ flex: 0.4, paddingRight: 10 }}>
                                                 <Text style={{ fontSize: 8 }}>City</Text>
-                                                <TextInput onFocus={(event: Event) => {
+                                                <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter City'}></TextInput>
@@ -200,7 +200,7 @@ class Transfer extends React.Component {
 
                                             <View style={{ flex: 0.3 }}>
                                                 <Text style={{ fontSize: 8 }}>ZIP Code</Text>
-                                                <TextInput onFocus={(event: Event) => {
+                                                <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter ZIP'}></TextInput>
@@ -208,7 +208,7 @@ class Transfer extends React.Component {
 
                                             <View style={{ flex: 0.3 }}>
                                                 <Text style={{ fontSize: 8 }}>State</Text>
-                                                <TextInput onFocus={(event: Event) => {
+                                                <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'State'}></TextInput>
@@ -217,7 +217,7 @@ class Transfer extends React.Component {
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             <Text style={{ fontSize: 8 }}>Credit/Debit Card Number</Text>
-                                            <TextInput onFocus={(event: Event) => {
+                                            <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'Enter Credit Card Number'}></TextInput>
@@ -226,7 +226,7 @@ class Transfer extends React.Component {
 
                                             <View style={{ flex: 0.2, paddingRight: 10 }}>
                                                 <Text style={{ fontSize: 8 }}>Expires</Text>
-                                                <TextInput onFocus={(event: Event) => {
+                                                <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'MM/YY'}></TextInput>
@@ -234,7 +234,7 @@ class Transfer extends React.Component {
 
                                             <View style={{ flex: 0.2 }}>
                                                 <Text style={{ fontSize: 8 }}>CVV</Text>
-                                                <TextInput onFocus={(event: Event) => {
+                                                <TextInput onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }} style={{ fontSize: 16, borderBottomColor: '#D5D5D5', borderBottomWidth: 1 }} placeholder={'CVV'}></TextInput>

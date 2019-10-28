@@ -7,9 +7,9 @@ import {
   Image,
   Picker,
   TouchableOpacity,
-  TextInput,
   View,
 } from 'react-native';
+import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -19,15 +19,22 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
 import * as friendRequestActions from '../redux/actions/friendRequestActions';
+import * as friendsAction from '../redux/actions/friendsAction';
 import * as gameCardStatsActions from '../redux/actions/gameCardStatsActions';
 import { NavigationEvents } from "react-navigation";
 import { withPolling } from "../redux/polling/withPolling";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Autocomplete from "react-native-autocomplete-input";
 
 
 class Profile extends React.Component {
   state = {
-    game: 'nba'
+    game: 'nba',
+    searchedFriends: [],
+    searchedFriendsNames: [],
+    query: '',
+    opponent: {},
+    hideResults: false
   }
 
   _scrollToInput(reactNode) {
@@ -56,12 +63,75 @@ class Profile extends React.Component {
     if (this.state.game !== newGame) {
       this.setState({ game: newGame });
 
-      const response = await this.props.actions.loadGameCardStats(this.props.loggedInUser.user.pk, this.state.game, this.props.csrfToken)
-        .catch(error => {
-          alert('Loading game card stats failed' + error);
-        });
+      try {
+        if (this.state.opponent.profile) {
+          this.props.actions.loadOpponentGameCardStats(this.props.loggedInUser.user.pk, this.state.opponent.profile.id, this.state.game, this.props.csrfToken)
+            .catch(error => {
+              alert('Loading game card stats failed' + error);
+            });
+        } else {
+          this.props.actions.loadGameCardStats(this.props.loggedInUser.user.pk, this.state.game, this.props.csrfToken)
+            .catch(error => {
+              alert('Loading game card stats failed' + error);
+            });
+        }
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
+
+  getOpponentStats = async (opponent) => {
+    try {
+      if (opponent.profile) {
+        this.props.actions.loadOpponentGameCardStats(this.props.loggedInUser.user.pk, opponent.profile.id, this.state.game, this.props.csrfToken)
+          .catch(error => {
+            alert('Loading game card stats failed' + error);
+          });
+      } else {
+        this.props.actions.loadGameCardStats(this.props.loggedInUser.user.pk, this.state.game, this.props.csrfToken)
+          .catch(error => {
+            alert('Loading game card stats failed' + error);
+          });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  onChangeSearch = async (query) => {
+    const { csrfToken } = this.props;
+    
+    if (query.length > 1) {
+        try {
+            const response = await this.props.actions.searchFriends(csrfToken, query);
+
+            if (response && response.searchedFriends && response.searchedFriends.status === 200) {
+                const nameArray = [];
+                response.searchedFriends.data.map((friend) => {
+                    nameArray.push(`${friend.first_name} ${friend.last_name}`);
+                });
+                this.setState({ 
+                    searchedFriends: response.searchedFriends.data,
+                    searchedFriendsNames: nameArray,
+                    query,
+                    hideResults: false
+                });
+            } else if (this.props.hasError) {
+                alert(`Searching friends failed: ${this.props.errorMessage.message}`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    } else {
+      this.setState({
+        hideResults: true,
+        opponent: {}
+      });
+
+      this.getOpponentStats({});
+    }
+};
 
   render() {
 
@@ -80,6 +150,8 @@ class Profile extends React.Component {
     }];
 
     const consoles = ['None', 'Xbox One', 'Playstation 4', 'XBox One & Playstation 4'];
+
+    const { query } = this.state;
 
     return (
       <KeyboardAwareScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]} innerRef={ref => {
@@ -190,13 +262,44 @@ class Profile extends React.Component {
               </View>
             </View>
             <View style={{ margin: 30 }}>
-              <TextInput 
-                  onFocus={(event: Event) => {
-                      // `bind` the function if you're using ES6 classes
-                      this._scrollToInput((event.target))
-                  }}
-                  style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
-              </TextInput>
+              <Autocomplete
+                autoCapitalize="none"
+                autoCorrect={false}
+                data={this.state.searchedFriends}
+                onChangeText={text => this.onChangeSearch(text)}
+                defaultValue = { query }
+                renderItem={({item, idx}) => (
+                    <TouchableHighlight
+                        underlayColor={'#69C0FF'}
+                        key={idx+'top'}
+                        onPress={() => {
+                          this.setState({
+                            query: `${item.first_name} ${item.last_name}`,
+                            hideResults: true,
+                            opponent: item
+                          });
+
+                          this.getOpponentStats(item);
+                        }}
+                        style={{ zIndex: 1, borderBottomWidth: 1, borderBottomColor: '#000000' }}>
+                        <Text
+                            key={idx+'txt'}
+                            style={{ backgroundColor: '#FFF', height: 30, fontSize: 16, paddingTop: 5, paddingLeft: 5 }}>
+                            {`${item.first_name} ${item.last_name}`}
+                        </Text>
+                    </TouchableHighlight>
+                )}
+                onFocus={(event) => {
+                    // `bind` the function if you're using ES6 classes
+                    this._scrollToInput((event.target))
+                }}
+                keyExtractor={(item, i) => i+'top'}
+                hideResults={this.state.hideResults}
+                style={{ color: '#000', paddingLeft: 15, borderWidth: 0, height: 30}}
+                inputContainerStyle={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 50, borderColor: '#E5E5E5'}}
+                placeholder={'Filter by opponents'}
+                placeholderTextColor={'#A0A0A0'}
+            />
             </View>
             <View style={{ marginBottom: 30 }}>
               <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -299,6 +402,8 @@ function mapStateToProps(state) {
       isFetchingAcceptedFriends: state.friendRequests.isFetchingAcceptedFriends,
       gameCardStats: state.gameCardStats,
       isFetchingStats: state.gameCardStats.isFetchingStats,
+      searchedFriends: state.friendRequests.searchedFriends,
+      isFetchingSearchedFriends: state.friendRequests.isFetchingSearchedFriends,
       userDetails: state.userDetails
   };
 }
@@ -309,6 +414,8 @@ function mapDispatchToProps(dispatch) {
           loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
           loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
           loadGameCardStats: bindActionCreators(gameCardStatsActions.loadGameCardStats, dispatch),
+          loadOpponentGameCardStats: bindActionCreators(gameCardStatsActions.loadOpponentGameCardStats, dispatch),
+          searchFriends: bindActionCreators(friendsAction.searchFriends, dispatch),
       }
   };
 }

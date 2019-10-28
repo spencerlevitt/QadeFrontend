@@ -224,7 +224,7 @@ class HomeScreen extends React.Component {
               }),
             }}>
               <TextInput
-                onFocus={(event: Event) => {
+                onFocus={(event) => {
                   // `bind` the function if you're using ES6 classes
                   this._scrollToInput((event.target))
                 }}

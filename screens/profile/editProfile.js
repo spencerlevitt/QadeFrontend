@@ -134,7 +134,7 @@ class EditProfile extends React.Component {
                                     First Name
                                 </Text>
                                 <TextInput
-                                    onFocus={(event: Event) => {
+                                    onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                     }}
@@ -154,7 +154,7 @@ class EditProfile extends React.Component {
                                         Last Name
                                     </Text>
                                     <TextInput
-                                        onFocus={(event: Event) => {
+                                        onFocus={(event) => {
                                             // `bind` the function if you're using ES6 classes
                                             this._scrollToInput((event.target))
                                         }}
@@ -216,7 +216,7 @@ class EditProfile extends React.Component {
                             </View>
 
                             <TextInput
-                                onFocus={(event: Event) => {
+                                onFocus={(event) => {
                                     // `bind` the function if you're using ES6 classes
                                     this._scrollToInput((event.target))
                                 }}
