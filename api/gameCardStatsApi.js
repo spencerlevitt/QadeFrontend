@@ -13,3 +13,11 @@ export function getStatsWithOpponent(userId, gameCard, csrfToken) {
     .then(handleResponse)
     .catch(error => handleError(error.response));
 }
+
+export function getStatsForOpponent(userId, opponentId, gameCard, csrfToken) {
+  return Axios.get(`${baseUrl}${gameCard}/${userId}/?user=${opponentId}`, {
+    headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
+  })
+    .then(handleResponse)
+    .catch(error => handleError(error.response));
+}

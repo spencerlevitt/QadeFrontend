@@ -119,7 +119,7 @@ class HomeScreen extends React.Component {
               Current Balance
             </Text>
             <Text style={styles.welcomeBalance}>
-            ${!this.props.loading && this.props.userDetails ? this.props.userDetails.profile.balance : '0'}
+            ${!this.props.loading && this.props.userDetails && this.props.userDetails.profile ? this.props.userDetails.profile.balance : '0'}
             </Text>
           </View>
 
@@ -172,21 +172,21 @@ class HomeScreen extends React.Component {
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      {!this.props.loading && this.props.userDetails ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
+                      {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      {!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.win_percent : '0'}%
+                      {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? this.props.userDetails.statistics.win_percent : '0'}%
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win %</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      ${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.net_gain : '0.00'}
+                      ${!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? this.props.userDetails.statistics.net_gain : '0.00'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Net Gain</Text>
                   </View>
@@ -224,7 +224,7 @@ class HomeScreen extends React.Component {
               }),
             }}>
               <TextInput
-                onFocus={(event: Event) => {
+                onFocus={(event) => {
                   // `bind` the function if you're using ES6 classes
                   this._scrollToInput((event.target))
                 }}

@@ -127,7 +127,7 @@ export default class SignupForm extends React.Component {
               placeholder={'First Name'}
               placeholderTextColor={'#666'}
               value={this.state.first_name}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -144,7 +144,7 @@ export default class SignupForm extends React.Component {
               placeholder={'Last Name'}
               placeholderTextColor={'#666'}
               value={this.state.last_name}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -161,7 +161,7 @@ export default class SignupForm extends React.Component {
               placeholder={'Email Address'}
               placeholderTextColor={'#666'}
               value={this.state.email}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -185,7 +185,7 @@ export default class SignupForm extends React.Component {
                   placeholderTextColor={'#666'}
                   maxLength={2}
                   value={this.state.month}
-                  onFocus={(event: Event) => {
+                  onFocus={(event) => {
                     // `bind` the function if you're using ES6 classes
                     this.props._scrollToInput((event.target), this.props.scroll)
                   }}
@@ -210,7 +210,7 @@ export default class SignupForm extends React.Component {
                   placeholderTextColor={'#666'}
                   maxLength={2}
                   value={this.state.day}
-                  onFocus={(event: Event) => {
+                  onFocus={(event) => {
                     // `bind` the function if you're using ES6 classes
                     this.props._scrollToInput((event.target), this.props.scroll)
                   }}
@@ -235,7 +235,7 @@ export default class SignupForm extends React.Component {
                   placeholderTextColor={'#666'}
                   maxLength={4}
                   value={this.state.year}
-                  onFocus={(event: Event) => {
+                  onFocus={(event) => {
                     // `bind` the function if you're using ES6 classes
                     this.props._scrollToInput((event.target), this.props.scroll)
                   }}
@@ -283,7 +283,7 @@ export default class SignupForm extends React.Component {
               secureTextEntry
               placeholderTextColor={'#666'}
               value={this.state.password}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -300,7 +300,7 @@ export default class SignupForm extends React.Component {
               secureTextEntry
               placeholderTextColor={'#666'}
               value={this.state.confirmPassword}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}

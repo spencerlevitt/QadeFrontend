@@ -36,3 +36,25 @@ export function loadGameCardStats(userId, gameCard, csrfToken) {
       })
   }
 }
+
+export function loadOpponentGameCardStats(userId, opponentId, gameCard, csrfToken) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    dispatch(loadGameCardStatsStart());
+    return gameCardStatsApi
+      .getStatsForOpponent(userId, opponentId, gameCard, csrfToken)
+      .then(stats => {
+        if (stats.status !== HttpStatus.OK) {
+          const error = new Error(stats.statusMessage);
+          dispatch(apiCallError(error));
+          dispatch(loadGameCardStatsError(error));
+        }
+
+        return dispatch(loadGameCardStatsSuccess(stats));
+      }).catch(error => {
+        dispatch(apiCallError(error));
+        dispatch(loadGameCardStatsError(error));
+        throw error;
+      })
+  }
+}
