@@ -1,13 +1,14 @@
 import { FETCH_GAMERS, FETCH_GAMERS_ERROR,
      FETCH_RECENT_GAMERS, FETCH_RECENT_GAMERS_ERROR,
-     SEND_FRIEND_REQUEST
+     SEND_FRIEND_REQUEST, REFRESH_RECENT_GAMERS
      } from '../actions/actionTypes';
 
 const initialState = {
     recentGamers: [],
     gamers: [],
     error: null,
-    recentError: null,
+    fetchRecentGamersErr: null,
+    is_next_gamer: null,
   };
 
 export function gamersReducer(state=initialState, action) {
@@ -26,13 +27,21 @@ export function gamersReducer(state=initialState, action) {
         case FETCH_RECENT_GAMERS:
             return {
                 ...state,
-                recentGamers: action.payload,
-                recentError: null
+                recentGamers: [...state.recentGamers, ...action.payload.results],
+                fetchRecentGamersErr: null,
+                is_next_gamer: action.payload.next
+            }
+        case REFRESH_RECENT_GAMERS:
+            return {
+                ...state,
+                recentGamers: action.payload.results,
+                fetchRecentGamersErr: null,
+                is_next_gamer: action.payload.next
             }
         case FETCH_RECENT_GAMERS_ERROR:
             return {
                 ...state,
-                recentError: action.payload
+                fetchRecentGamersErr: action.payload
             }
         case SEND_FRIEND_REQUEST:
             return {

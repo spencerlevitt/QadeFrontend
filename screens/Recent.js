@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Platform,
-  ScrollView,
+  ActivityIndicator,
   StyleSheet,
   Text,
   Image,
@@ -9,7 +9,8 @@ import {
   TextInput,
   View,
   FlatList,
-  Alert
+  Alert,
+  SafeAreaView
 } from 'react-native';
 import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
@@ -20,6 +21,7 @@ import { sendAFriendRequest } from '../redux/actions/friendRequestActions';
 
 function gamersComponent(userInfo, props) {
   const { userId, csrfToken, sendAFriendRequest, navigation } = props;
+  
   return (
     <View style={{flexDirection: 'row', marginTop: 20}}>
       <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
@@ -44,6 +46,8 @@ function gamersComponent(userInfo, props) {
 }
 
 function renderMatches(gameInfo) {
+  const { first_name, last_name } = gameInfo.winner;
+  
   return (
     <View style={{ marginTop: 40, flexDirection: 'row' }}>
       <View style={{ flex: 0.5, alignItems: 'center' }}>
@@ -53,7 +57,7 @@ function renderMatches(gameInfo) {
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
           <View style={{ justifyContent: 'space-between', flexDirection: 'row'}}>
             <View style={{}}>
-              <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333'}]}>{gameInfo.winner.first_name} {gameInfo.winner.last_name}</Text>
+              <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333'}]}>{first_name && first_name} {last_name && last_name}</Text>
               <Text style={{ color: '#888'}}>{gameInfo.winner.statistics.won_games} {" - "} {gameInfo.winner.statistics.lost_games}</Text>
             </View>
 
@@ -93,15 +97,65 @@ function renderMatches(gameInfo) {
 
 function Recent(props) {
   const [componentView, setComponentView] = useState('recent');
-  const [userInput, setUserInput] = useState('')
-  const { gamers, getRecentGames, csrfToken, recentGamers } = props
+  const [userInput, setUserInput] = useState('');
+  const [page, setPage] = useState(2);
+  const [fetching, setFetching] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const { gamers, getRecentGames, csrfToken, recentGamers, recentGamersError, is_next_gamer } = props
  
-  useEffect( () => { getRecentGames(csrfToken) }, []); 
+  useEffect( async () => { 
+    setFetching(true)
+   await getRecentGames(csrfToken, 1) 
+    updatePage();
+    setFetching(false)
+  }, []); 
 
   function searchText(text) {
     setComponentView('gamers');
     setUserInput(text);
     props.getGamers(text, props.csrfToken)
+  }
+
+  async function handleMore() {
+    setFetching(true)
+    if (is_next_gamer) {
+      await getRecentGames(csrfToken, page)
+      updatePage();
+    }
+    setFetching(false)
+  }
+
+  function updatePage() {
+    if(recentGamersError !== null) {
+      let currentPage = page +1;
+      setPage(currentPage);
+    }
+  }
+
+  function renderFooter() {
+    if (fetching) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20,
+            borderTopWidth: 1,
+            borderColor: "#CED0CE"
+          }}
+        >
+          <ActivityIndicator animating size="large" />
+      </View>
+      )
+    }
+    else {
+      return null;
+    }
+  }
+
+  async function refresh() {
+    setRefreshing(true)
+    await getRecentGames(csrfToken, 1, 'refresh');
+    setPage(2);
+    setRefreshing(false)
   }
 
   useEffect( () => {
@@ -137,11 +191,20 @@ function Recent(props) {
           {
             recentGamers.length ?
               (
-                <FlatList 
-                  data={recentGamers}
-                  renderItem = {({ item }) => renderMatches(item, props)}
-                  keyExtractor={item => item.id + ""}  
-                />
+                <View style={{ flex: 1 }}>
+                  <FlatList 
+                    data={recentGamers}
+                    extraData={recentGamers}
+                    renderItem = {({ item }) => renderMatches(item, props)}
+                    keyExtractor={item => item.id + ""}
+                    onEndReached={handleMore}
+                    onEndReachedThreshold={0.5}
+                    keyExtractor={item => item.id + ""} 
+                    refreshing={refreshing}
+                    onRefresh={refresh}
+                    ListFooterComponent={renderFooter}
+                  />
+                </View>
               ) :
               (<Text style={{ marginLeft: 20, color: '#333', fontSize: 18, textAlign: 'center' }}> No recent matches </Text>)
           }
@@ -167,7 +230,9 @@ const mapStateToProps = ({ gamersReducer, auth, userDetails }) => ({
   csrfToken: auth.csrfToken,
   gamers: gamersReducer.gamers,
   recentGamers: gamersReducer.recentGamers,
-  userId: userDetails.statistics.id
+  userId: userDetails.statistics.id,
+  recentGamersError: gamersReducer.fetchRecentGamersErr,
+  is_next_gamer: gamersReducer.is_next_gamer
 })
 
 Recent.navigationOptions = {

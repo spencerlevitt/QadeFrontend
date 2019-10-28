@@ -79,8 +79,8 @@ export function submitGameCard(gameCard, csrfToken, payload) {
   })
 }
 
-export function getRecentGamesApi(csrfToken) {
-  return Axios.get(`${baseUrl}finished_games/?recent_matches=true`, {}, {
+export function getRecentGamesApi(csrfToken, page) {
+  return Axios.get(`${baseUrl}finished_games/?recent_matches=true&page=${page}`, {}, {
     headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
   })
     .then(response => handleResponse(response))
