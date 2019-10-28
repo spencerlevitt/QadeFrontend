@@ -60,8 +60,6 @@ class Profile extends React.Component {
         .catch(error => {
           alert('Loading game card stats failed' + error);
         });
-
-      console.log(response);
     }
   };
 
@@ -248,7 +246,7 @@ class Profile extends React.Component {
                         </View>
                         <View style={{ flex: 1 }}>
                           <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                            Avg {key} %
+                            Avg{key.split('_').map(word => ` ${word}`)} %
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
