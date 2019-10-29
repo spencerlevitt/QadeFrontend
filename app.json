@@ -24,10 +24,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.qade.app"
     },
     "android": {
-      "package": "io.qade.qade"
+      "package": "io.qade.app"
     }
   }
 }

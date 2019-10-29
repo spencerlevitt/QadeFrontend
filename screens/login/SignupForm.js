@@ -31,13 +31,14 @@ export default class SignupForm extends React.Component {
       last_name,
       console2,
       email,
-      dob: new Date(),
+      dob: (year !== '' || month !== '' || day !== '') ? `${year}-${month}-${day}` : new Date(),
       day,
       month,
       year,
       password,
       confirmPassword,
       tandc: false,
+      signingUp: false,
     };
   }
 
@@ -75,6 +76,7 @@ export default class SignupForm extends React.Component {
     } else if ((date.getFullYear() - parseInt(this.state.year)) > 90) {
         Alert.alert("Please enter a real birth year")
     } else {
+        this.setState({ signingUp: true });
         // submit form data to parent component
         this.props.onSubmit(this.state);
     }
@@ -122,7 +124,7 @@ export default class SignupForm extends React.Component {
               placeholder={'First Name'}
               placeholderTextColor={'#666'}
               value={this.state.first_name}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -139,7 +141,7 @@ export default class SignupForm extends React.Component {
               placeholder={'Last Name'}
               placeholderTextColor={'#666'}
               value={this.state.last_name}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -156,7 +158,7 @@ export default class SignupForm extends React.Component {
               placeholder={'Email Address'}
               placeholderTextColor={'#666'}
               value={this.state.email}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -180,17 +182,17 @@ export default class SignupForm extends React.Component {
                   placeholderTextColor={'#666'}
                   maxLength={2}
                   value={this.state.month}
-                  onFocus={(event: Event) => {
+                  onFocus={(event) => {
                     // `bind` the function if you're using ES6 classes
                     this.props._scrollToInput((event.target), this.props.scroll)
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > 12) {
-                      this.setState({ month: ''})
-                    } else {
+                    // if (parseInt(val) > 12) {
+                    //   this.setState({ month: ''})
+                    // } else {
                       this.onChangeDate(val, 'month')
-                    }
+                    // }}
                   }}
                   onBlur={e => this.onChangeDate(e, 'month')}>
                 </TextInput>
@@ -205,17 +207,17 @@ export default class SignupForm extends React.Component {
                   placeholderTextColor={'#666'}
                   maxLength={2}
                   value={this.state.day}
-                  onFocus={(event: Event) => {
+                  onFocus={(event) => {
                     // `bind` the function if you're using ES6 classes
                     this.props._scrollToInput((event.target), this.props.scroll)
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > 31) {
-                      this.setState({ day: ''})
-                    } else {
+                    // if (parseInt(val) > 31) {
+                    //   this.setState({ day: ''})
+                    // } else {
                       this.onChangeDate(val, 'day')
-                    }
+                    // }
                   }}
                   onBlur={e => this.onChangeDate(e, 'day')}>
                 </TextInput>
@@ -230,17 +232,17 @@ export default class SignupForm extends React.Component {
                   placeholderTextColor={'#666'}
                   maxLength={4}
                   value={this.state.year}
-                  onFocus={(event: Event) => {
+                  onFocus={(event) => {
                     // `bind` the function if you're using ES6 classes
                     this.props._scrollToInput((event.target), this.props.scroll)
                   }}
                   keyboardType={'number-pad'}
                   onChangeText={(val) => {
-                    if (parseInt(val) > date.getFullYear()) {
-                      this.setState({ year: ''}) 
-                    } else {
+                    // if (parseInt(val) > date.getFullYear()) {
+                    //   this.setState({ year: ''})
+                    // } else {
                       this.onChangeDate(val, 'year')
-                    }
+                    // }
                   }}
                   onBlur={e => this.onChangeDate(e, 'year')}>
                 </TextInput>
@@ -278,7 +280,7 @@ export default class SignupForm extends React.Component {
               secureTextEntry
               placeholderTextColor={'#666'}
               value={this.state.password}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -295,7 +297,7 @@ export default class SignupForm extends React.Component {
               secureTextEntry
               placeholderTextColor={'#666'}
               value={this.state.confirmPassword}
-              onFocus={(event: Event) => {
+              onFocus={(event) => {
                 // `bind` the function if you're using ES6 classes
                 this.props._scrollToInput((event.target), this.props.scroll)
               }}
@@ -317,7 +319,7 @@ export default class SignupForm extends React.Component {
             </View>
             <TouchableOpacity onPress={() => this.props.navigation.navigate("ToS", {
               tandc: this.state.tandc,
-              console2: this.state.console2,
+              console: this.state.console2,
               month: this.state.month,
               day: this.state.day,
               year: this.state.year,
@@ -335,7 +337,7 @@ export default class SignupForm extends React.Component {
             <TouchableOpacity
               style={{ backgroundColor: "#3A8FFF", height: 40, width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}
               onPress={() => this.onSubmit()}>
-              <Text style={{ color: '#fff', fontSize: 14 }}>Create account</Text>
+              <Text style={{ color: '#fff', fontSize: 14 }}>{ this.state.signingUp ? 'Creating account...' : 'Create account' }</Text>
             </TouchableOpacity>
           </View>
         </View>

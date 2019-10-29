@@ -1,10 +1,10 @@
 import { handleResponse, handleError } from './apiUtils';
-import { environment } from '../environments/environment.prod';
+import { environment } from '../environments/environment.dev';
 import Axios from 'axios';
 const baseUrl = environment.API_URL;
 
-export function getChartData(userId, period, csrfToken) {
-  return Axios.get(`${baseUrl}charts_data/?user=${userId}&period=${period}`, {}, {
+export function submitMoneyRequest(csrfToken, payload) {
+  return Axios.post(`${baseUrl}money_request/`, payload, {
     headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
   })
     .then(response => handleResponse(response))

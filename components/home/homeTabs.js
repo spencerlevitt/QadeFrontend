@@ -21,31 +21,7 @@ import * as todaysMatchesActions from '../../redux/actions/todaysMatchesActions'
 import NavigationService from '../../navigation/NavigationService';
 import { withPolling } from "../../redux/polling/withPolling";
 
-//empty render (no matches)
-const Empty = () => (
-    <View style={{ flexDirection: 'row', flex: 1 }}>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-            <View style={{ flex: 1 }}>
-
-            </View>
-            <View style={{ flex: 1 }}>
-
-            </View>
-        </View>
-        <View style={{ justifyContent: 'center', alignItems: 'center', maxWidth: 100 }}>
-            <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#333', textAlign: 'center', textTransform: 'uppercase' }}>no scheduled matches</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
-
-            </View>
-            <View style={{ flex: 1 }}>
-
-            </View>
-        </View>
-    </View>
-)
-
+//empty render (no matches
 
 class Tabs extends React.Component {
     state = {
@@ -56,17 +32,19 @@ class Tabs extends React.Component {
     render() {
         return (
 
-            <View key={this.props.todaysMatches.length+'-tm-view'} style={{ height: 200, padding: 10 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
-                    <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
-                        {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics
-                            ? `${this.props.userDetails.statistics.won_games_today}-${this.props.userDetails.statistics.lost_games_today}`
-                            : '0-0'} Today
-                    </Text>
+            <View key={this.props.todaysMatches.length+'-tm-view'} style={{ height: 170, padding: 10 }}>
+                <View style={{marginTop: -20}}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
+                        <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
+                            {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics
+                                ? `${this.props.userDetails.statistics.won_games_today}-${this.props.userDetails.statistics.lost_games_today}`
+                                : '0-0'} Today
+                        </Text>
+                    </View>
                 </View>
 
-                <View style={{ position: 'absolute', display: this.props.todaysMatches.length == false ? 'flex' : 'none', width: '100%', marginLeft: 10, alignItems: 'center', bottom: -20 }}>
+                <View style={{ position: 'absolute', display: this.props.todaysMatches.length == false ? 'flex' : 'none', width: '100%', marginLeft: 10, alignItems: 'center', bottom: !this.props.todaysMatches.length ? 10 : -20 }}>
                     <View style={{ width: '30%', flexDirection: 'row' }}>
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 0 ? '#6a8dff' : '#888' }} />
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 1 ? '#6a8dff' : '#888' }} />
@@ -85,7 +63,7 @@ class Tabs extends React.Component {
                                 return (
                                     <View style={styles.card}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
-                                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                            <Image source={card.photo_url.length ? { uri: card.photo_url, cache: 'only-if-cached' } : require('../../assets/images/profilePicture.png')} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
                                             <Text style={styles.cardText}>{`${card.first_name} ${card.last_name}`}</Text>
                                             <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                                 <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>
@@ -140,7 +118,43 @@ class Tabs extends React.Component {
                         >
                         </Swiper>
                     ) : (
-                            <Empty />
+                            <Swiper
+                                cards={['Nick Morton', 'Brandon Hue', 'Yoseph Msa', 'Elon Musk', 'Porter Proeo']}
+                                renderCard={(card) => {
+                                    return (
+                                        <View style={styles.card}>
+                                            <View style={{ flexDirection: 'row', flex: 1 }}>
+                                                <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                    <View style={{ flex: 1, }}>
+                                                    </View>
+                                                    <View style={{ flex: 1 }}>
+                                                    </View>
+                                                </View>
+                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no accepted matches.</Text>
+                                                    <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>Challenge a friend to start gaming!</Text>
+                                                </View>
+                                                <View style={{ flex: 1 }}>
+                                                    <View style={{ flex: 1, }}>
+                                                    </View>
+                                                    <View style={{ flex: 1 }}>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )
+                                }}
+                                onSwiped={() => {}}
+                                //onSwipedAll={() => { this.setState({ index: 0 }) }}
+                                cardIndex={0}
+                                horizontalSwipe={false}
+                                stackSeparation={-20}
+                                verticalSwipe={false}
+                                infinite={false}
+                                backgroundColor={'#ffffff00'}
+                                stackSize={3}>
+                                    
+                            </Swiper>
                         )
                 }
             </View>

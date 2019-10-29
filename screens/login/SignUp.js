@@ -23,11 +23,26 @@ class SignUp extends React.Component {
         scroll: {},
     }
 
-    signUp = async (signUpData) => {
-        const { actions } = this.props;
+    signUpCallApi = async (payload) => {
+        try {
+            const response = await this.props.actions.signupUser(payload, this.props.csrfToken);
 
+            if (response && response.signedUpUser && response.signedUpUser.status === HttpStatus.CREATED) {
+                this.props.navigation.navigate('Login');
+            } else if (this.props.hasError) {    
+                alert(`Sign Up failed: ${this.props.errorMessage.message}`);
+            } else {
+                return null;
+            }
+        } catch(error) {
+            console.log('SignUp Form Error:', error);
+            alert(error);
+        }
+    };
+
+    signUp = async (signUpData) => {
         // Transform data to suitable payload for Axios API call
-        this.state = {
+        const payload = {
             ...signUpData,
             profile: {
                 dob: signUpData.dob,
@@ -42,20 +57,22 @@ class SignUp extends React.Component {
         };
 
         try {
-            const response = await actions.signupUser(this.state, this.props.csrfToken);
+            if (this.props.csrfToken === '') {
+                const response = await this.props.actions.loginGetCSRFTokenUser();
 
-            if (response && response.signedUpUser.status === HttpStatus.CREATED) {
-                this.props.navigation.navigate('Login');
-            } else if (this.props.hasError) {    
-                alert(`Sign Up failed: ${this.props.errorMessage.message}`);
+                if(response && response.csrfTokenData && response.csrfTokenData.status === HttpStatus.OK) {
+                    this.signUpCallApi(payload);
+                }
+            } else {
+                this.signUpCallApi(payload);
             }
-        } catch (error) {
-            console.log('SignUp Form Error:', error);
+        } catch (e) {
+            console.log('Sign up Error. User token could not be generated. Please contact Admin.');
             alert(error);
         }
     };
 
-    _scrollToInput(reactNode: any, scroll) {
+    _scrollToInput(reactNode, scroll) {
         // Add a 'scroll' ref to your ScrollView
         if(!this.scroll) {
             this.scroll = scroll;
@@ -123,7 +140,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     actions: {
-        signupUser: bindActionCreators(authActions.signupUser, dispatch)
+        signupUser: bindActionCreators(authActions.signupUser, dispatch),
+        loginGetCSRFTokenUser: bindActionCreators(authActions.loginGetCSRFTokenUser, dispatch),
     }
 });
 

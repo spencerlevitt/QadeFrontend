@@ -21,8 +21,10 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
 import * as standingsActions from '../redux/actions/standingsActions';
+import * as friendRequestActions from '../redux/actions/friendRequestActions';
 import { TextInput } from 'react-native-gesture-handler';
 import { withPolling } from "../redux/polling/withPolling";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 /*
 DEV
@@ -45,11 +47,17 @@ DEV
 class HomeScreen extends React.Component {
 
   componentDidMount() {
-    const { userDetails, loggedInUser, csrfToken, stats, standings, actions } = this.props;
+    const { userDetails, loggedInUser, csrfToken, stats, standings, acceptedFriends ,actions } = this.props;
     
     if (!userDetails.profile && loggedInUser.user.email) {
       actions.loadUserDetails(csrfToken).catch(error => {
         alert('Loading user failed' + error);
+      });
+    }
+
+    if (!acceptedFriends.length) {
+      actions.loadAcceptedFriends(csrfToken).catch(error => {
+          alert('Loading accepted friends failed' + error);
       });
     }
 
@@ -65,6 +73,11 @@ class HomeScreen extends React.Component {
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
+
+  _scrollToInput(reactNode) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode + 50)
+  };
 
   render() {
     return (
@@ -106,7 +119,7 @@ class HomeScreen extends React.Component {
               Current Balance
             </Text>
             <Text style={styles.welcomeBalance}>
-            ${!this.props.loading && this.props.userDetails ? this.props.userDetails.profile.balance : '0'}
+            ${!this.props.loading && this.props.userDetails && this.props.userDetails.profile ? this.props.userDetails.profile.balance : '0'}
             </Text>
           </View>
 
@@ -134,7 +147,9 @@ class HomeScreen extends React.Component {
 
         </View>
 
-        <ScrollView
+        <KeyboardAwareScrollView innerRef={ref => {
+          this.scroll = ref
+        }}
           style={styles.container}
           scrollEventThrottle={1}
           contentContainerStyle={styles.contentContainer}
@@ -157,21 +172,21 @@ class HomeScreen extends React.Component {
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      {!this.props.loading && this.props.userDetails ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
+                      {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      {!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.win_percent : '0'}%
+                      {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? this.props.userDetails.statistics.win_percent : '0'}%
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win %</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      ${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.net_gain : '0.00'}
+                      ${!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? this.props.userDetails.statistics.net_gain : '0.00'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Net Gain</Text>
                   </View>
@@ -208,18 +223,23 @@ class HomeScreen extends React.Component {
                 outputRange: [-40, 0],
               }),
             }}>
-              <TextInput style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15, fontSize: 18 }} placeholder={'Search Names'}>
+              <TextInput
+                onFocus={(event) => {
+                  // `bind` the function if you're using ES6 classes
+                  this._scrollToInput((event.target))
+                }}
+                style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15, fontSize: 18 }} placeholder={'Search Names'}>
 
               </TextInput>
             </Animated.View>
 
 
-            <GameTabs standings={this.props.standings} />
+            <GameTabs standings={this.props.standings} friends={this.props.acceptedFriends} />
 
 
           </View>
 
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }
@@ -247,6 +267,7 @@ HomeScreen.navigationOptions = {
 };
 
 HomeScreen.propTypes = {
+  acceptedFriends: PropTypes.array.isRequired,
   loggedInUser: PropTypes.object.isRequired,
   loggedIn: PropTypes.bool.isRequired,
   csrfToken: PropTypes.string.isRequired,
@@ -258,6 +279,7 @@ HomeScreen.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    acceptedFriends: state.friendRequests.acceptedFriends,
     userDetails: state.userDetails,
     csrfToken: state.auth.csrfToken,
     loggedInUser: state.auth.loggedInUser,
@@ -271,7 +293,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
-      loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch)
+      loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch),
+      loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
     }
   };
 }

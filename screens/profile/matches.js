@@ -22,7 +22,7 @@ export default function Matches() {
                     <EvilIcons name={'close-o'} size={50} color={'#888'} />
                 </TouchableOpacity>
                 <View style={{ flex: 0.6, justifyContent: 'flex-end', alignItems: 'center' }}>
-                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 80, width: 80, borderRadius: 5, marginBottom: -15 }} />
+                    <Image source={this.props.userDetails.profile.photo_url.length ? { uri: this.props.userDetails.profile.photo_url, cache: 'only-if-cached' } : require('../../assets/images/profilePicture.png')} style={{ height: 80, width: 80, borderRadius: 5, marginBottom: -15 }} />
                 </View>
                 <View style={{ flex: 0.2 }}>
                 </View>

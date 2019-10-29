@@ -111,7 +111,7 @@ class Chart extends React.Component {
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
-                        +${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.earned_today : '0.00'} Today
+                        +${!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? this.props.userDetails.statistics.earned_today : '0.00'} Today
                     </Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>

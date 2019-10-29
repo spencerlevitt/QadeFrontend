@@ -49,7 +49,7 @@ class Challenge extends React.Component {
         })
     }
 
-    _scrollToInput(reactNode: any) {
+    _scrollToInput(reactNode) {
         // Add a 'scroll' ref to your ScrollView
         this.scroll.props.scrollToFocusedInput(reactNode)
     }
@@ -163,7 +163,7 @@ class Challenge extends React.Component {
                                                 </Text>
                                             </TouchableHighlight>
                                         )}
-                                        onFocus={(event: Event) => {
+                                        onFocus={(event) => {
                                             // `bind` the function if you're using ES6 classes
                                             this._scrollToInput((event.target))
                                         }}
@@ -269,7 +269,7 @@ class Challenge extends React.Component {
                                             this.changeInde(2);
                                             this.setState({ wager: text })
                                         }}
-                                        onFocus={(event: Event) => {
+                                        onFocus={(event) => {
                                             // `bind` the function if you're using ES6 classes
                                             this._scrollToInput((event.target))
                                         }}

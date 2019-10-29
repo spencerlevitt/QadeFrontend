@@ -5,6 +5,7 @@ import gameCardStats from './gameCardStatsReducer';
 import standings from './standingsReducer';
 import todaysMatches from './todaysMatchesReducer';
 import gameRequests from './gameRequestsReducer';
+import moneyRequest from './moneyRequestReducer';
 import chartsData from './chartsReducer';
 import friendRequests from './friendRequestsReducer';
 import friends from './friendsReducer';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   friendRequests,
   friends,
   gameRequests,
+  moneyRequest,
   scoreConfirmation,
   gameCardStats,
   standings,

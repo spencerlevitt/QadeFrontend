@@ -68,7 +68,14 @@ export default {
   loggedInUser: {},
   signedUpUser: {},
   gameCardStats: {
+    stats: {
+      opponent: {}
+    },
     isFetchingStats: false
+  },
+  moneyRequest: {
+    requests: [],
+    isSubmittingMoneyRequest: false
   },
   standings: {
     isFetchingStandings: false,

@@ -48,7 +48,7 @@ class Requests extends React.Component {
                         this.props.friendRequests.pendingFriends.map((friendRequest, idx) => 
                             <View key={idx} style={{ height: 80, justifyContent: 'center', paddingHorizontal: 40 }}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                    <Image source={!friendRequest.photo_url.length ? require('../../assets/images/profilePicture.png') : { uri: friendRequest.photo_url }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
                                     <View style={{ flex: 0.5 }}>
                                         <Text style={[{ fontSize: 16 }]}>
                                             {`${friendRequest.first_name} ${friendRequest.last_name}`}

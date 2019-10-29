@@ -105,7 +105,7 @@ class Submit extends React.Component {
             id: scoreConfirmation.id,
             opp_first_name: win_or_loss === 'Won' ? scoreConfirmation.loser.first_name : scoreConfirmation.winner.first_name,
             opp_last_name: win_or_loss === 'Won' ? scoreConfirmation.loser.last_name : scoreConfirmation.winner.last_name,
-            opp_photo_url: win_or_loss === 'Won' ? scoreConfirmation.loser.photo_url : scoreConfirmation.winner.photo_url,
+            opp_photo_url: win_or_loss === 'Won' ? scoreConfirmation.loser.profile.photo_url : scoreConfirmation.winner.profile.photo_url,
             wager_amount: scoreConfirmation.wager_amount, 
             status: scoreConfirmation.status,
             game_played: scoreConfirmation.game_played,
@@ -129,7 +129,7 @@ class Submit extends React.Component {
                     <View style={{ flex: 0.1, paddingLeft: 100, paddingRight: 100 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
+                            <Image source={scoreConfirmation.opp_photo_url.length ? { uri: scoreConfirmation.opp_photo_url } : require('../../assets/images/profilePicture.png')} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
                             <View style={{ flex: 1 }}>
                                 <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>
                                     {scoreConfirmation.opp_first_name ? `${scoreConfirmation.opp_first_name} ${scoreConfirmation.opp_last_name}` : ''}

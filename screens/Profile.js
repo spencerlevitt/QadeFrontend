@@ -7,9 +7,9 @@ import {
   Image,
   Picker,
   TouchableOpacity,
-  TextInput,
   View,
 } from 'react-native';
+import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -19,40 +19,144 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
 import * as friendRequestActions from '../redux/actions/friendRequestActions';
+import * as friendsAction from '../redux/actions/friendsAction';
+import * as gameCardStatsActions from '../redux/actions/gameCardStatsActions';
 import { NavigationEvents } from "react-navigation";
 import { withPolling } from "../redux/polling/withPolling";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Autocomplete from "react-native-autocomplete-input";
+
 
 class Profile extends React.Component {
   state = {
-    game: 'nba2k'
+    game: 'nba',
+    searchedFriends: [],
+    searchedFriendsNames: [],
+    query: '',
+    opponent: {},
+    hideResults: false
   }
 
-  componentDidMount() {
-    const { acceptedFriends, csrfToken, actions } = this.props;
+  _scrollToInput(reactNode) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode)
+  }
+
+  componentWillMount() {
+    const { acceptedFriends, csrfToken, actions, loggedInUser } = this.props;
     
     if (!acceptedFriends.length) {
       actions.loadAcceptedFriends(csrfToken).catch(error => {
           alert('Loading accepted friends failed' + error);
       });
     }
+
+    actions.loadGameCardStats(loggedInUser.user.pk, this.state.game, csrfToken)
+      .catch(error => {
+        alert('Loading game card stats failed' + error);
+      });
   }
+
+  onChangeGameType = async (_value, index, data) => {
+    const newGame = data[index].game;
+
+    if (this.state.game !== newGame) {
+      this.setState({ game: newGame });
+
+      try {
+        if (this.state.opponent.profile) {
+          this.props.actions.loadOpponentGameCardStats(this.props.loggedInUser.user.pk, this.state.opponent.profile.id, this.state.game, this.props.csrfToken)
+            .catch(error => {
+              alert('Loading game card stats failed' + error);
+            });
+        } else {
+          this.props.actions.loadGameCardStats(this.props.loggedInUser.user.pk, this.state.game, this.props.csrfToken)
+            .catch(error => {
+              alert('Loading game card stats failed' + error);
+            });
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  getOpponentStats = async (opponent) => {
+    try {
+      if (opponent.profile) {
+        this.props.actions.loadOpponentGameCardStats(this.props.loggedInUser.user.pk, opponent.profile.id, this.state.game, this.props.csrfToken)
+          .catch(error => {
+            alert('Loading game card stats failed' + error);
+          });
+      } else {
+        this.props.actions.loadGameCardStats(this.props.loggedInUser.user.pk, this.state.game, this.props.csrfToken)
+          .catch(error => {
+            alert('Loading game card stats failed' + error);
+          });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  onChangeSearch = async (query) => {
+    const { csrfToken } = this.props;
+    
+    if (query.length > 1) {
+        try {
+            const response = await this.props.actions.searchFriends(csrfToken, query);
+
+            if (response && response.searchedFriends && response.searchedFriends.status === 200) {
+                const nameArray = [];
+                response.searchedFriends.data.map((friend) => {
+                    nameArray.push(`${friend.first_name} ${friend.last_name}`);
+                });
+                this.setState({ 
+                    searchedFriends: response.searchedFriends.data,
+                    searchedFriendsNames: nameArray,
+                    query,
+                    hideResults: false
+                });
+            } else if (this.props.hasError) {
+                alert(`Searching friends failed: ${this.props.errorMessage.message}`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    } else {
+      this.setState({
+        hideResults: true,
+        opponent: {}
+      });
+
+      this.getOpponentStats({});
+    }
+};
 
   render() {
 
     const data = [{
       value: 'NBA 2K',
+      game: 'nba'
     }, {
       value: 'NHL',
+      game: 'nhl'
     }, {
       value: 'FIFA',
+      game: 'fifa'
     }, {
       value: 'MADDEN',
+      game: 'madden'
     }];
 
     const consoles = ['None', 'Xbox One', 'Playstation 4', 'XBox One & Playstation 4'];
 
+    const { query } = this.state;
+
     return (
-      <ScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]}>
+      <KeyboardAwareScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]} innerRef={ref => {
+        this.scroll = ref
+      }}>
         <NavigationEvents
           onWillFocus={() => {
             const updatedPhoto = this.props.navigation.getParam('photo_uri');
@@ -64,7 +168,7 @@ class Profile extends React.Component {
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1 }}></View>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-            <Image source={{ uri: this.state.updatedPhoto ? this.state.updatedPhoto : this.props.userDetails.profile.photo_url.length ? this.props.userDetails.profile.photo_url : '../../assets/man.png' }} style={{ height: 60, width: 60, borderRadius: 5 }} />
+            <Image source={this.state.updatedPhoto ? { uri: this.state.updatedPhoto } : this.props.userDetails.profile.photo_url.length ? { uri: this.props.userDetails.profile.photo_url } : require('../assets/images/profilePicture.png') } style={{ height: 60, width: 60, borderRadius: 5 }} />
           </View>
           <View style={{ flex: 1 }}>
             <TouchableOpacity style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-end', padding: 20 }} onPress={() => this.props.navigation.navigate("Settings")}>
@@ -144,6 +248,7 @@ class Profile extends React.Component {
                     baseColor={'rgba(0,0,0,0)'}
                     data={data}
                     value={'NBA 2K'}
+                    onChangeText={(value, index, data) => this.onChangeGameType(value, index, data)}
                   />
                 </View>
 
@@ -157,8 +262,44 @@ class Profile extends React.Component {
               </View>
             </View>
             <View style={{ margin: 30 }}>
-              <TextInput style={{ height: '100%', height: 30, borderRadius: 30, borderWidth: 1, borderColor: '#E5E5E5', paddingLeft: 15 }} placeholder={'Filter by opponents'}>
-              </TextInput>
+              <Autocomplete
+                autoCapitalize="none"
+                autoCorrect={false}
+                data={this.state.searchedFriends}
+                onChangeText={text => this.onChangeSearch(text)}
+                defaultValue = { query }
+                renderItem={({item, idx}) => (
+                    <TouchableHighlight
+                        underlayColor={'#69C0FF'}
+                        key={idx+'top'}
+                        onPress={() => {
+                          this.setState({
+                            query: `${item.first_name} ${item.last_name}`,
+                            hideResults: true,
+                            opponent: item
+                          });
+
+                          this.getOpponentStats(item);
+                        }}
+                        style={{ zIndex: 1, borderBottomWidth: 1, borderBottomColor: '#000000' }}>
+                        <Text
+                            key={idx+'txt'}
+                            style={{ backgroundColor: '#FFF', height: 30, fontSize: 16, paddingTop: 5, paddingLeft: 5 }}>
+                            {`${item.first_name} ${item.last_name}`}
+                        </Text>
+                    </TouchableHighlight>
+                )}
+                onFocus={(event) => {
+                    // `bind` the function if you're using ES6 classes
+                    this._scrollToInput((event.target))
+                }}
+                keyExtractor={(item, i) => i+'top'}
+                hideResults={this.state.hideResults}
+                style={{ color: '#000', paddingLeft: 15, borderWidth: 0, height: 30}}
+                inputContainerStyle={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 50, borderColor: '#E5E5E5'}}
+                placeholder={'Filter by opponents'}
+                placeholderTextColor={'#A0A0A0'}
+            />
             </View>
             <View style={{ marginBottom: 30 }}>
               <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -197,56 +338,42 @@ class Profile extends React.Component {
                 </View>
               </View>
 
+              {
+                !this.props.isFetchingStats
+                  ? Object.keys(this.props.gameCardStats.stats.opponent).map((key, idx) =>
+                      <View key={idx} style={{ flexDirection: 'row', marginTop: 10 }}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                            {this.props.gameCardStats.stats[`avg_${key}`]}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                            Avg{key.split('_').map(word => ` ${word}`)} %
+                          </Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                            {this.props.gameCardStats.stats.opponent[key]}
+                          </Text>
+                        </View>
+                      </View>
+                    )
 
-
-              <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>111</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    Avg Score
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>120</Text>
-                </View>
-              </View>
-
-
-              <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>47%</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    Avg Field Goal %
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>48%</Text>
-                </View>
-              </View>
-
-              <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>19%</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                    Avg 3 Point%
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>42%</Text>
-                </View>
-              </View>
+                  : <View>
+                      <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
+                        Loading statistics...
+                      </Text>
+                    </View>
+              }
 
             </View>
           </View>
+        </View>
+        <View style={{height: 100}}>
 
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     )
   }
 }
@@ -261,6 +388,8 @@ Profile.propTypes = {
   loggedInUser: PropTypes.object.isRequired,
   acceptedFriends: PropTypes.array.isRequired,
   isFetchingAcceptedFriends: PropTypes.bool.isRequired,
+  gameCardStats: PropTypes.object.isRequired,
+  isFetchingStats: PropTypes.bool.isRequired,
   userDetails: PropTypes.object.isRequired
 };
 
@@ -271,6 +400,10 @@ function mapStateToProps(state) {
       loggedInUser: state.auth.loggedInUser,
       acceptedFriends: state.friendRequests.acceptedFriends,
       isFetchingAcceptedFriends: state.friendRequests.isFetchingAcceptedFriends,
+      gameCardStats: state.gameCardStats,
+      isFetchingStats: state.gameCardStats.isFetchingStats,
+      searchedFriends: state.friendRequests.searchedFriends,
+      isFetchingSearchedFriends: state.friendRequests.isFetchingSearchedFriends,
       userDetails: state.userDetails
   };
 }
@@ -280,6 +413,9 @@ function mapDispatchToProps(dispatch) {
       actions: {
           loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
           loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
+          loadGameCardStats: bindActionCreators(gameCardStatsActions.loadGameCardStats, dispatch),
+          loadOpponentGameCardStats: bindActionCreators(gameCardStatsActions.loadOpponentGameCardStats, dispatch),
+          searchFriends: bindActionCreators(friendsAction.searchFriends, dispatch),
       }
   };
 }
