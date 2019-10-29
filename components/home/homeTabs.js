@@ -63,7 +63,7 @@ class Tabs extends React.Component {
                                 return (
                                     <View style={styles.card}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
-                                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                            <Image source={card.photo_url.length ? { uri: card.photo_url, cache: 'only-if-cached' } : require('../../assets/images/profilePicture.png')} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
                                             <Text style={styles.cardText}>{`${card.first_name} ${card.last_name}`}</Text>
                                             <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                                 <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>

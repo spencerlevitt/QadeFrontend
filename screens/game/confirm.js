@@ -43,7 +43,7 @@ export default class Submit extends React.Component {
                     <View style={{ flex: 0.1, paddingLeft: 100, paddingRight: 100 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            <Image source={game.photo_url.length ? { uri: game.photo_url } : require('../../assets/images/profilePicture.png')} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
+                            <Image source={game.photo_url.length ? { uri: game.photo_url, cache: 'only-if-cached' } : require('../../assets/images/profilePicture.png')} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
                             <View style={{ flex: 1 }}>
                                 <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>
                                     {`${game.first_name} ${game.last_name}`}

@@ -139,7 +139,7 @@ class Pending extends React.Component {
                 return (
                     <View key={idx+'eqqw'} style={{ height: 80, justifyContent: 'center', paddingLeft: 20 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                            <Image source={pendingGame.photo_url.length ? { uri: pendingGame.photo_url } : require('../../assets/images/profilePicture.png')} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
                             <View style={{ flex: 0.3 }}>
                                 <Text style={[{ fontSize: RFPercentage(2) }]}>
                                     {`${pendingGame.first_name} ${pendingGame.last_name}`}

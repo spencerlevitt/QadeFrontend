@@ -144,7 +144,7 @@ gameData = (standingsList, friendsList) => {
                                         {idx < 9 ? `0${idx}` : idx}
                                     </Text>
                                 </View>
-                                <Image source={standing.user_stats.user.profile.photo_url.length ? { uri: standing.user_stats.user.profile.photo_url } : require('../../assets/images/profilePicture.png') } style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                <Image source={standing.user_stats.user.profile.photo_url.length ? { uri: standing.user_stats.user.profile.photo_url, cache: 'only-if-cached' } : require('../../assets/images/profilePicture.png') } style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
                                 <View>
                                     <Text style={[styles.cardText, { fontSize: 16 }]}>
                                         {`${standing.user_stats.user.first_name} ${standing.user_stats.user.last_name}`}
