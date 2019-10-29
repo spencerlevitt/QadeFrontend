@@ -1,19 +1,169 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Platform,
-  ScrollView,
+  ActivityIndicator,
   StyleSheet,
   Text,
   Image,
   TouchableOpacity,
   TextInput,
   View,
+  FlatList,
+  Alert,
+  SafeAreaView
 } from 'react-native';
 import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import { getGamers, getRecentGames } from '../redux/actions/gamersActions';
+import { sendAFriendRequest } from '../redux/actions/friendRequestActions';
 
-export default function Recent() {
+function gamersComponent(userInfo, props) {
+  const { userId, csrfToken, sendAFriendRequest, navigation } = props;
+  
+  return (
+    <View style={{flexDirection: 'row', marginTop: 20}}>
+      <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
+        <Image source={{ uri: userInfo.photo_url || 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5}} />
+      </View>
+      <View style={styles.gameInfo}>
+        <View>
+          <Text style={{color: '#353637', fontSize: 14, marginBottom: 7, fontWeight: 'bold'}}>{userInfo.first_name} {userInfo.last_name && userInfo.last_name}</Text>
+          <Text style={styles.boldText}>Lifetime against 12-4</Text>
+        </View>
+        {
+          userInfo.is_friend === true ?
+          (<TouchableOpacity onPress={() => navigation.navigate('Challenge')} style={{ backgroundColor: '#3A8FFF', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Challenge'.toUpperCase()}</Text></TouchableOpacity>) :
+          userInfo.is_friend === false ?
+          (<TouchableOpacity onPress={() => sendAFriendRequest(userId, userInfo.profile.id, csrfToken)} style={{ backgroundColor: '#000', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Add Friend'.toUpperCase()}</Text></TouchableOpacity>)
+          :
+          (<TouchableOpacity style={{ backgroundColor: '#43a24e', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'friend request sent'.toUpperCase()}</Text></TouchableOpacity>)
+        }
+      </View>
+    </View>
+  )
+}
+
+function renderMatches(gameInfo) {
+  const { first_name, last_name } = gameInfo.winner;
+  
+  return (
+    <View style={{ marginTop: 40, flexDirection: 'row' }}>
+      <View style={{ flex: 0.5, alignItems: 'center' }}>
+        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5}} />
+      </View>
+      <View style={{ flex: 2, paddingBottom: 15, borderBottomColor: '#eee', borderBottomWidth: 1 }}>
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+          <View style={{ justifyContent: 'space-between', flexDirection: 'row'}}>
+            <View style={{}}>
+              <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333'}]}>{first_name && first_name} {last_name && last_name}</Text>
+              <Text style={{ color: '#888'}}>{gameInfo.winner.statistics.won_games} {" - "} {gameInfo.winner.statistics.lost_games}</Text>
+            </View>
+
+            <Text style={{ fontSize: 12, color: '#888', paddingLeft: 10, paddingRight: 10 }}>
+              beat
+            </Text>
+
+            <View style={{}}>
+              <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333' }]}>{gameInfo.loser.first_name} {gameInfo.loser.last_name}</Text>    
+              <Text style={{ color: '#888' }}>{gameInfo.loser.statistics.won_games} {" - "} {gameInfo.loser.statistics.lost_games}</Text>
+            </View>
+          </View>
+
+          <View style={{marginRight: 10}}>
+            <Text style={{ fontSize: 12, color: '#888' }}>
+              {gameInfo.game_played}
+            </Text>
+          </View>
+
+        </View>
+
+        <View style={{ width: '80%', marginTop: 20, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+            <Text style={{ fontSize: 12 }}>{gameInfo.winning_team.toUpperCase()}</Text>
+
+            <Text style={{ fontSize: 24, marginLeft: 15, marginRight: 15 }}>
+              {Math.round(gameInfo.winning_score)} { " - "} {Math.round(gameInfo.losing_score)}
+          </Text>
+          
+            <Text style={{ fontSize: 12 }}>{gameInfo.losing_team.toUpperCase()}</Text>
+          
+
+        </View>
+      </View>
+    </View>
+  )
+}
+
+function Recent(props) {
+  const [componentView, setComponentView] = useState('recent');
+  const [userInput, setUserInput] = useState('');
+  const [page, setPage] = useState(2);
+  const [fetching, setFetching] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const { gamers, getRecentGames, csrfToken, recentGamers, recentGamersError, is_next_gamer } = props
+ 
+  useEffect( async () => { 
+    setFetching(true)
+   await getRecentGames(csrfToken, 1) 
+    updatePage();
+    setFetching(false)
+  }, []); 
+
+  function searchText(text) {
+    setComponentView('gamers');
+    setUserInput(text);
+    props.getGamers(text, props.csrfToken)
+  }
+
+  async function handleMore() {
+    setFetching(true)
+    if (is_next_gamer) {
+      await getRecentGames(csrfToken, page)
+      updatePage();
+    }
+    setFetching(false)
+  }
+
+  function updatePage() {
+    if(recentGamersError !== null) {
+      let currentPage = page +1;
+      setPage(currentPage);
+    }
+  }
+
+  function renderFooter() {
+    if (fetching) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20,
+            borderTopWidth: 1,
+            borderColor: "#CED0CE"
+          }}
+        >
+          <ActivityIndicator animating size="large" />
+      </View>
+      )
+    }
+    else {
+      return null;
+    }
+  }
+
+  async function refresh() {
+    setRefreshing(true)
+    await getRecentGames(csrfToken, 1, 'refresh');
+    setPage(2);
+    setRefreshing(false)
+  }
+
+  useEffect( () => {
+    if(userInput === '') {
+      setComponentView('recent')
+    }
+  })
+
   return (
     <View style={styles.container}>
       <View style={{ marginTop: Constants.statusBarHeight, padding: 20 }}>
@@ -25,244 +175,71 @@ export default function Recent() {
           </View>
 
           <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 15 }}>
-            <TextInput style={{ color: '#78849E', fontSize: 16 }} placeholderTextColor={'#78849E'} placeholder={'Search Gamers'}>
+            <TextInput onChangeText={text => searchText(text)} style={{ color: '#78849E', fontSize: 16 }} placeholderTextColor={'#78849E'} placeholder={'Search Gamers'}>
 
             </TextInput>
           </View>
         </View>
       </View>
-      <ScrollView style={{ marginTop: 20, padding: 20 }}>
-        <Text style={{ marginLeft: 20, color: '#333', fontSize: 24 }}>
+      {
+        componentView === 'recent' ? 
+        (
+        <>
+          <Text style={{ marginLeft: 20, color: '#333', fontSize: 24 }}>
           Recent Matches
-        </Text>
-
-
-
-
-
-
-
-        <View style={{ marginTop: 40, flexDirection: 'row' }}>
-          <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5, marginRight: 15 }} />
-          <View style={{ flex: 1, paddingBottom: 15, borderBottomColor: '#eee', borderBottomWidth: 1 }}>
-
-
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-
-              <View style={{ flex: 1/3, flexDirection: 'row', alignItems: 'center' }}>
+          </Text>
+          {
+            recentGamers.length ?
+              (
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333', textAlign: 'right' }]}>Chris Wright</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888', textAlign: 'right' }}>10-5</Text>
-                    </View>
-                  </View>
+                  <FlatList 
+                    data={recentGamers}
+                    extraData={recentGamers}
+                    renderItem = {({ item }) => renderMatches(item, props)}
+                    keyExtractor={item => item.id + ""}
+                    onEndReached={handleMore}
+                    onEndReachedThreshold={0.5}
+                    keyExtractor={item => item.id + ""} 
+                    refreshing={refreshing}
+                    onRefresh={refresh}
+                    ListFooterComponent={renderFooter}
+                  />
                 </View>
-              </View>
-
-              <View style={{ width: 40 }}>
-                <Text style={{ textAlign: 'center', fontSize: 12 }}>
-                  beat
-                </Text>
-              </View>
-
-              <View style={{ flex: 1/3, flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: 10, fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-
-              <View style={{ flex: 1/3 }}>
-                <Text style={{ textAlign: 'right', fontSize: 12 }}>
-                  21m | FIFA
-                </Text>
-              </View>
-
-            </View>
-
-            <View style={{ flex: 1, marginTop: 20, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-
-              <View style={{ flex: 0.35 }}>
-                <Text style={{ textAlign: 'center' }}>Juventus</Text>
-              </View>
-
-              <View style={{ flex: 0.3 }}>
-                <Text style={{ fontSize: 24, textAlign: 'center' }}>
-                  3 - 4
-              </Text>
-
-              </View>
-              <View style={{ flex: 0.35 }}>
-                <Text style={{ textAlign: 'center' }}>Real Madrid</Text>
-              </View>
-
-            </View>
-          </View>
-        </View>
-
-
-
-
-
-
-
-
-        <View style={{ marginTop: 40, flexDirection: 'row' }}>
-          <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5, marginRight: 15 }} />
-          <View style={{ flex: 1, paddingBottom: 15, borderBottomColor: '#eee', borderBottomWidth: 1 }}>
-
-
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-
-              <View style={{ flex: 0.25, flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-
-              <View style={{ width: 40, marginTop: 5 }}>
-                <Text style={{ textAlign: 'center', fontSize: 12 }}>
-                  beat
-                </Text>
-              </View>
-
-              <View style={{ flex: 0.3, flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>Chris Wright</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888' }}>10-5</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-
-              <View style={{ flex: 0.45 }}>
-                <Text style={{ textAlign: 'right', fontSize: 12 }}>
-                  21m | FIFA
-                </Text>
-              </View>
-
-            </View>
-
-            <View style={{ flex: 1, marginTop: 20, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-
-              <View style={{ flex: 0.35 }}>
-                <Text style={{ textAlign: 'center' }}>Juventus</Text>
-              </View>
-
-              <View style={{ flex: 0.3 }}>
-                <Text style={{ fontSize: 24, textAlign: 'center' }}>
-                  3 - 4
-              </Text>
-
-              </View>
-              <View style={{ flex: 0.35 }}>
-                <Text style={{ textAlign: 'center' }}>Real Madrid</Text>
-              </View>
-
-            </View>
-          </View>
-        </View>
-
-
-
-
-
-
-      </ScrollView>
+              ) :
+              (<Text style={{ marginLeft: 20, color: '#333', fontSize: 18, textAlign: 'center' }}> No recent matches </Text>)
+          }
+        </>
+        ) : 
+        (
+          gamers.length ?
+            (
+              <FlatList 
+                data={gamers}
+                renderItem = {({ item }) => gamersComponent(item, props)}
+                keyExtractor={item => item.profile.id + ""}  
+              />
+            ) : (<Text style={{ marginLeft: 20, color: '#333', fontSize: 24 }}> gamer not available </Text>)
+        )
+      }
     </View>
 
   );
 }
 
-
-/*
-
-With Data Provider (Example)
-
-        To get the first name and last character for longer names
-
-        var namesplit = data.name.split(" ")
-
-        let name = null
-        if(namesplit[0].length() > 8 || namesplit[1].length() > 8){
-          name = namesplit[0] + " " + namesplit[1].charAt(0)
-        }else{
-          name = data.name
-        }
-
-
-        Data Provider
-
-        <View style={{ marginTop: 40, flexDirection: 'row' }}>
-          <Image source={{ uri: '{data.profilePic}' }} style={{ height: 40, width: 40, borderRadius: 5, marginRight: 15 }} />
-          <View style={{ flex: 1, paddingBottom: 15, borderBottomColor: '#eee', borderBottomWidth: 1 }}>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <View style={{ flex: 0.3, flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>{data.name}</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888' }}>{data.wins}-{data.losses}</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-              <View style={{ flex: 0.15 }}>
-                <Text style={{ textAlign: 'center' }}>
-                  beat
-                </Text>
-              </View>
-              <View style={{ flex: 0.3, flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333' }]}>{data.loser}</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: '#888' }}>{data.loserWin}-{data.loserLosses}</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-              <View style={{ flex: 0.25 }}>
-                <Text style={{ textAlign: 'center', fontSize: 12 }}>
-                  {data.gametime} | {data.game}
-                </Text>
-              </View>
-            </View>
-            <View style={{ flex: 1, marginTop: 20, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-              <View style={{ flex: 0.35 }}>
-                <Text style={{ textAlign: 'center' }}>{data.team1}</Text>
-              </View>
-              <View style={{ flex: 0.3 }}>
-                <Text style={{ fontSize: 24, textAlign: 'center' }}>
-                  {data.score1} - {data.score2}
-              </Text>
-              </View>
-              <View style={{ flex: 0.35 }}>
-                <Text style={{ textAlign: 'center' }}>{data.team2}</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-
-
-*/
+const mapStateToProps = ({ gamersReducer, auth, userDetails }) => ({
+  csrfToken: auth.csrfToken,
+  gamers: gamersReducer.gamers,
+  recentGamers: gamersReducer.recentGamers,
+  userId: userDetails.statistics.id,
+  recentGamersError: gamersReducer.fetchRecentGamersErr,
+  is_next_gamer: gamersReducer.is_next_gamer
+})
 
 Recent.navigationOptions = {
   header: null,
 };
+
+export default connect(mapStateToProps, { getGamers, sendAFriendRequest, getRecentGames })(Recent);
 
 const styles = StyleSheet.create({
   container: {
@@ -275,5 +252,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 2,
     elevation: 8
+  },
+  gameInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 2,
+    padding: 4
+  },
+  boldText: {
+    fontSize: 14,
+    color: "#7f8283"
+  },
+  clickableText: {
+    color: '#fff', fontSize: 10
   }
 });

@@ -14,6 +14,14 @@ export function loadFriendRequestsSuccess(friendRequests) {
 
 export function loadFriendRequestsError(loadFriendRequestsError) {
   return { type: types.LOAD_FRIEND_REQUESTS_ERROR, loadFriendRequestsError };
+} 
+
+export function sendRequest(payload) {
+  return { type: types.SEND_FRIEND_REQUEST, payload }
+}
+
+export function sendRequestError(payload) {
+  return { type: types.SEND_FRIEND_REQUEST_ERROR, payload }
 }
 
 export function loadFriendRequests(userId, userEmail, csrfToken) {
@@ -140,5 +148,16 @@ export function rejectFriendRequest(requestId, status, csrfToken) {
         dispatch(acceptFriendRequestError(error));
         throw error;
       });
+  }
+}
+
+export function sendAFriendRequest(user_id, eventual_friend_id, csrfToken) {
+  return function (dispatch) {
+    dispatch(beginApiCall());
+    return friendRequestsApi
+    .createFriendRequest(user_id, eventual_friend_id, csrfToken)
+    .then(data => dispatch(sendRequest(data.data.eventual_friend)))
+    .catch( error => dispatch(sendRequestError(error)))
+
   }
 }
