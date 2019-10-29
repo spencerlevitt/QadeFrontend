@@ -144,7 +144,7 @@ gameData = (standingsList, friendsList) => {
                                         {idx < 9 ? `0${idx}` : idx}
                                     </Text>
                                 </View>
-                                <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                <Image source={standing.user_stats.user.profile.photo_url.length ? { uri: standing.user_stats.user.profile.photo_url } : require('../../assets/images/profilePicture.png') } style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
                                 <View>
                                     <Text style={[styles.cardText, { fontSize: 16 }]}>
                                         {`${standing.user_stats.user.first_name} ${standing.user_stats.user.last_name}`}
@@ -153,7 +153,7 @@ gameData = (standingsList, friendsList) => {
                                 </View>
         
                                 <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-                                    <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>{parseInt(standing.rating).toFixed(2)}</Text>
+                                    <Text style={{ color: '#333', fontSize: 30, fontWeight: '100' }}>{parseFloat(standing.rating).toFixed(2)}</Text>
                                 </View>
                             </View>
                         </View>

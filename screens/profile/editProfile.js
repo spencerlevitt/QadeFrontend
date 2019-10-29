@@ -200,7 +200,7 @@ class EditProfile extends React.Component {
                             <TouchableOpacity
                                 style={{ backgroundColor: '#fff', width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}
                                 onPress={() => NavigationService.navigate('CameraPro')}>
-                                <Image source={this.props.userDetails.profile.photo_url.length ? {uri: this.props.userDetails.profile.photo_url} : require('../../assets/man.png')} style={{ height: 60, width: 60, borderRadius: 5, margin: 15, marginHorizontal: 30 }} />
+                                <Image source={this.props.userDetails.profile.photo_url.length ? {uri: this.props.userDetails.profile.photo_url} : require('../../assets/images/profilePicture.png')} style={{ height: 60, width: 60, borderRadius: 5, margin: 15, marginHorizontal: 30 }} />
                                 <Text style={{ color: '#333', fontSize: 22, textAlign: 'center' }}>
                                     Change Profile
                             </Text>

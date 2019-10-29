@@ -168,7 +168,7 @@ class Profile extends React.Component {
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1 }}></View>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-            <Image source={{ uri: this.state.updatedPhoto ? this.state.updatedPhoto : this.props.userDetails.profile.photo_url.length ? this.props.userDetails.profile.photo_url : '../../assets/man.png' }} style={{ height: 60, width: 60, borderRadius: 5 }} />
+            <Image source={this.state.updatedPhoto ? { uri: this.state.updatedPhoto } : this.props.userDetails.profile.photo_url.length ? { uri: this.props.userDetails.profile.photo_url } : require('../assets/images/profilePicture.png') } style={{ height: 60, width: 60, borderRadius: 5 }} />
           </View>
           <View style={{ flex: 1 }}>
             <TouchableOpacity style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-end', padding: 20 }} onPress={() => this.props.navigation.navigate("Settings")}>
