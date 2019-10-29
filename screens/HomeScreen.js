@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Platform,
-  ScrollView,
+  AsyncStorage,
   StyleSheet,
   Text,
   Image,
@@ -47,6 +47,7 @@ DEV
 class HomeScreen extends React.Component {
 
   componentDidMount() {
+    this._retrieveData()
     const { userDetails, loggedInUser, csrfToken, stats, standings, acceptedFriends ,actions } = this.props;
     
     if (!userDetails.profile && loggedInUser.user.email) {
@@ -65,9 +66,33 @@ class HomeScreen extends React.Component {
     actions.loadStandings(csrfToken);
   }
 
+  _storeData = async () => {
+    try {
+      await AsyncStorage.setItem('IS_ONBOARDED', 'True');
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('IS_ONBOARDED');
+      if (value !== null) {
+        // We have data!!
+      } else {
+        this.setState({onboarded: false})
+        this.props.navigation.navigate('Onboard');
+        return this._storeData();
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+
   state = {
     menuPos: new Animated.Value(0),
     modalVisible: false,
+    onboarded: true
   };
 
   setModalVisible(visible) {

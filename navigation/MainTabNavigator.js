@@ -8,6 +8,7 @@ import HomeScreen from '../screens/HomeScreen';
 import Recent from '../screens/Recent';
 import Profile from '../screens/Profile';
 import Game from '../screens/Game';
+import Onboard from '../screens/onboard'
 
 import NavigationService from './NavigationService';
 
@@ -61,7 +62,8 @@ const HomeStack = createStackNavigator(
     Home: HomeScreen,
     Challenge,
     ChallengeConfirmation,
-    Transfer
+    Transfer,
+    Onboard
   },
   config
 );

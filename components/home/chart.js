@@ -106,7 +106,6 @@ class Chart extends React.Component {
     }
 
     render() {
-        console.log(this.props, ">>>>>>>>PROPS")
         const { statistics ={earned_today: 0} } = this.props.userDetails
         return (
             <View key={this.props.scoresAccepted+'-view'}>
