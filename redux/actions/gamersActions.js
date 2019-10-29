@@ -1,6 +1,6 @@
 import { beginApiCall, apiCallError } from "./apiStatusActions";
 import HttpStatus from 'http-status-codes';
-import { gamers } from '../../api/userApi';
+import { searchGamers } from '../../api/userApi';
 import { getRecentGamesApi } from '../../api/gameRequestsApi';
 import { FETCH_GAMERS, FETCH_GAMERS_ERROR, FETCH_RECENT_GAMERS, FETCH_RECENT_GAMERS_ERROR, REFRESH_RECENT_GAMERS } from '../actions/actionTypes';
 
@@ -27,14 +27,13 @@ export function refreshRecentGamers(payload) {
 export function getGamers(searchKey, csrfToken) {
     return function (dispatch) {
         dispatch(beginApiCall());
-        return gamers(searchKey, csrfToken).then( data => dispatch(gamersSearch(data.data)))
+        return searchGamers(searchKey, csrfToken).then( data => dispatch(gamersSearch(data.data)))
         .catch(error => dispatch(searchGamersError(error) && console.log(error)))
     }
 }
 
 export function getRecentGames(csrfToken, page, type) {
     return function(dispatch) {
-        console.log(page, "ACTION PAGE")
         dispatch(beginApiCall());
         return getRecentGamesApi(csrfToken, page).then( data=> {
             if(type) {

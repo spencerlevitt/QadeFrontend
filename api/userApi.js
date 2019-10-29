@@ -32,7 +32,7 @@ export function updateProfile(profileId, profileData, csrfToken) {
     .catch(error => handleError(error.response));
 }
 
-export function gamers(key, csrfToken) {
+export function searchGamers(key, csrfToken) {
   return Axios.get(`${baseUrl}users/?search=${key}`, {
     headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
   })
