@@ -22,9 +22,10 @@ import { bindActionCreators } from 'redux';
 import * as userActions from '../redux/actions/userActions';
 import * as standingsActions from '../redux/actions/standingsActions';
 import * as friendRequestActions from '../redux/actions/friendRequestActions';
-import { TextInput } from 'react-native-gesture-handler';
+import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
 import { withPolling } from "../redux/polling/withPolling";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Autocomplete from "react-native-autocomplete-input";
 
 /*
 DEV
@@ -46,8 +47,20 @@ DEV
 
 class HomeScreen extends React.Component {
 
-  componentDidMount() {
-    const { userDetails, loggedInUser, csrfToken, stats, standings, acceptedFriends ,actions } = this.props;
+  state = {
+    searchedFriends: [],
+    searchedFriendsNames: [],
+    searchedStandings: [],
+    query: '',
+    opponent: {},
+    menuPos: new Animated.Value(0),
+    modalVisible: false,
+    searchZIndex: 0,
+    hideResults: true
+  }
+
+  componentWillMount() {
+    const { userDetails, loggedInUser, csrfToken, acceptedFriends ,actions } = this.props;
     
     if (!userDetails.profile && loggedInUser.user.email) {
       actions.loadUserDetails(csrfToken).catch(error => {
@@ -61,14 +74,18 @@ class HomeScreen extends React.Component {
       });
     }
 
+    this.setState({
+      searchedFriends: [
+        ...this.props.acceptedFriends
+      ],
+      searchedStandings: {
+        ...this.props.standings
+      }
+    });
+
     // Load all game standings: fifa, nba, nhl, madden 
     actions.loadStandings(csrfToken);
   }
-
-  state = {
-    menuPos: new Animated.Value(0),
-    modalVisible: false,
-  };
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
@@ -79,7 +96,43 @@ class HomeScreen extends React.Component {
     this.scroll.props.scrollToFocusedInput(reactNode + 50)
   };
 
+  games = ['fifa', 'madden', 'nba', 'nhl']
+
+  onChangeSearch = async (query) => {
+    if (query.length > 1) {
+      const searchedFriends = this.props.acceptedFriends
+        .filter(acceptedFriend => acceptedFriend.first_name.toLowerCase().search(query) > -1
+          || acceptedFriend.last_name.toLowerCase().search(query) > -1
+          || `${acceptedFriend.first_name} ${acceptedFriend.last_name}`.toLowerCase().trim() === query.toLowerCase().trim());
+      
+      let searchedStandings = {};
+      this.games.map(game => {
+        searchedStandings[game] = this.props.standings[game]
+          .filter(standing => standing.user_stats.user.first_name.toLowerCase().search(query) > -1
+          || standing.user_stats.user.last_name.toLowerCase().search(query) > -1
+          || `${standing.user_stats.user.first_name} ${standing.user_stats.user.last_name}`.trim().toLowerCase() === query.toLowerCase().trim());
+      });
+
+      this.setState({
+        searchedFriends,
+        searchedFriendsNames: searchedFriends.map(friend => `${friend.first_name} ${friend.last_name}`),
+        searchedStandings,
+        query,
+        hideResults: true
+      });  
+    } else {
+      this.setState({
+        hideResults: true,
+        opponent: {},
+        searchedFriends: this.props.acceptedFriends,
+        searchedStandings: this.props.standings
+      });
+    }
+  };
+
   render() {
+    const { query } = this.state;
+
     return (
       <View style={[styles.container, { paddingTop: Constants.statusBarHeight }]}>
 
@@ -217,24 +270,54 @@ class HomeScreen extends React.Component {
               </View>
             </View>
             <Animated.View style={{
-              height: 40, zIndex: 0, paddingLeft: 50, paddingRight: 50,
+              height: 40, zIndex: this.state.searchZIndex, paddingLeft: 50, paddingRight: 50,
               marginTop: this.state.menuPos.interpolate({
                 inputRange: [0, 1],
                 outputRange: [-40, 0],
               }),
             }}>
-              <TextInput
-                onFocus={(event) => {
-                  // `bind` the function if you're using ES6 classes
-                  this._scrollToInput((event.target))
-                }}
-                style={{ borderColor: '#E5E5E5', borderWidth: 1, borderRadius: 25, paddingLeft: 15, fontSize: 18 }} placeholder={'Search Names'}>
+              <Autocomplete
+                autoCapitalize="none"
+                autoCorrect={false}
+                data={this.state.searchedFriends}
+                onChangeText={text => this.onChangeSearch(text)}
+                defaultValue = { query }
+                renderItem={({item, idx}) => (
+                    <TouchableHighlight
+                        underlayColor={'#69C0FF'}
+                        key={idx+'top'}
+                        onPress={() => {
+                          this.setState({
+                            query: `${item.first_name} ${item.last_name}`,
+                            hideResults: true,
+                            opponent: item                            
+                          });
 
-              </TextInput>
+                          this.onChangeSearch(`${item.first_name} ${item.last_name}`);
+                        }}
+                        style={{ zIndex: 2, borderBottomWidth: 1, borderBottomColor: '#000000' }}>
+                        <Text
+                            key={idx+'txt'}
+                            style={{ backgroundColor: '#FFF', height: 30, fontSize: 16, paddingTop: 5, paddingLeft: 5 }}>
+                            {`${item.first_name} ${item.last_name}`}
+                        </Text>
+                    </TouchableHighlight>
+                )}
+                onFocus={(event) => {
+                    // `bind` the function if you're using ES6 classes
+                    this._scrollToInput((event.target))
+                }}
+                keyExtractor={(item, i) => i+'top'}
+                hideResults={this.state.hideResults}
+                style={{ color: '#000', paddingLeft: 15, fontSize: 18, borderWidth: 0, height: 20}}
+                inputContainerStyle={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 25, borderColor: '#E5E5E5'}}
+                placeholder={'Search Names'}
+                placeholderTextColor={'#A0A0A0'}
+              />
             </Animated.View>
 
 
-            <GameTabs standings={this.props.standings} friends={this.props.acceptedFriends} />
+            <GameTabs standings={this.state.searchedStandings} friends={this.state.searchedFriends} />
 
 
           </View>
@@ -251,12 +334,14 @@ class HomeScreen extends React.Component {
         duration: 300,
         easing: Easing.easing,
       }).start();
+      this.setState({ searchZIndex: 0 });
     } else {
       Animated.timing(this.state.menuPos, {
         toValue: 1,
         duration: 300,
         easing: Easing.easing,
       }).start();
+      this.setState({ searchZIndex: 2 });
     }
   };
 }
