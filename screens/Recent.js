@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Platform,
   ActivityIndicator,
   StyleSheet,
   Text,
@@ -9,12 +8,8 @@ import {
   TextInput,
   View,
   FlatList,
-  Alert,
-  SafeAreaView
 } from 'react-native';
 import Constants from 'expo-constants';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { getGamers, getRecentGames } from '../redux/actions/gamersActions';
 import { sendAFriendRequest } from '../redux/actions/friendRequestActions';
@@ -30,15 +25,15 @@ function gamersComponent(userInfo, props) {
       <View style={styles.gameInfo}>
         <View>
           <Text style={{color: '#353637', fontSize: 14, marginBottom: 7, fontWeight: 'bold'}}>{userInfo.first_name} {userInfo.last_name && userInfo.last_name}</Text>
-          <Text style={styles.boldText}>Lifetime against 12-4</Text>
+          <Text style={styles.boldText}>Lifetime against { userInfo.statistics.won_games } {"-"} {userInfo.statistics.lost_games}</Text>
         </View>
         {
           userInfo.is_friend === true ?
           (<TouchableOpacity onPress={() => navigation.navigate('Challenge')} style={{ backgroundColor: '#3A8FFF', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Challenge'.toUpperCase()}</Text></TouchableOpacity>) :
-          userInfo.is_friend === false ?
+          userInfo.is_friend === (false || "outgoing") ?
           (<TouchableOpacity onPress={() => sendAFriendRequest(userId, userInfo.profile.id, csrfToken)} style={{ backgroundColor: '#000', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Add Friend'.toUpperCase()}</Text></TouchableOpacity>)
           :
-          (<TouchableOpacity style={{ backgroundColor: '#43a24e', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'friend request sent'.toUpperCase()}</Text></TouchableOpacity>)
+          (<TouchableOpacity style={{ backgroundColor: '#43a24e', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'request sent'.toUpperCase()}</Text></TouchableOpacity>)
         }
       </View>
     </View>
@@ -102,13 +97,18 @@ function Recent(props) {
   const [fetching, setFetching] = useState(false)
   const [refreshing, setRefreshing] = useState(false);
   const { gamers, getRecentGames, csrfToken, recentGamers, recentGamersError, is_next_gamer } = props
+  const { userId } = props;
  
-  useEffect( async () => { 
+  useEffect(() => { 
+    fetchgamers()
+  }, []); 
+
+  async function fetchgamers() {
     setFetching(true)
-   await getRecentGames(csrfToken, 1) 
+    await getRecentGames(csrfToken, 1) 
     updatePage();
     setFetching(false)
-  }, []); 
+  }
 
   function searchText(text) {
     setComponentView('gamers');
@@ -206,7 +206,7 @@ function Recent(props) {
                   />
                 </View>
               ) :
-              (<Text style={{ marginLeft: 20, color: '#333', fontSize: 18, textAlign: 'center' }}> No recent matches </Text>)
+              (<View style={{ flex: 1, justifyContent: "center", alignItems: "center"}}><Text style={{ marginLeft: 20, color: '#333', fontSize: 18, textAlign: 'center' }}> No recent matches </Text></View>)
           }
         </>
         ) : 
@@ -214,7 +214,7 @@ function Recent(props) {
           gamers.length ?
             (
               <FlatList 
-                data={gamers}
+                data={gamers.filter(user => user.profile.id !== userId)}
                 renderItem = {({ item }) => gamersComponent(item, props)}
                 keyExtractor={item => item.profile.id + ""}  
               />
@@ -230,7 +230,7 @@ const mapStateToProps = ({ gamersReducer, auth, userDetails }) => ({
   csrfToken: auth.csrfToken,
   gamers: gamersReducer.gamers,
   recentGamers: gamersReducer.recentGamers,
-  userId: userDetails.statistics.id,
+  userId: userDetails.profile.id,
   recentGamersError: gamersReducer.fetchRecentGamersErr,
   is_next_gamer: gamersReducer.is_next_gamer
 })
