@@ -28,7 +28,7 @@ class SignUp extends React.Component {
             const response = await this.props.actions.signupUser(payload, this.props.csrfToken);
 
             if (response && response.signedUpUser && response.signedUpUser.status === HttpStatus.CREATED) {
-                this.props.navigation.navigate('Login');
+                this.props.navigation.navigate('Main');
             } else if (this.props.hasError) {    
                 alert(`Sign Up failed: ${this.props.errorMessage.message}`);
             } else {

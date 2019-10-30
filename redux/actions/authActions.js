@@ -105,10 +105,10 @@ export function signupUser (signupData, csrfToken) {
 
     return userApi.signup(signupData, csrfToken)
       .then((signedUpUser) => {
-        if (signedUpUser.status == HttpStatus.FORBIDDEN) {
+        if (signedUpUser && signedUpUser.status == HttpStatus.FORBIDDEN) {
           dispatch(beginApiCall());
           return dispatch(loginGetCSRFTokenUser());
-        } else if (signedUpUser.status !== HttpStatus.CREATED) {
+        } else if ( signedUpUser && signedUpUser.status !== HttpStatus.CREATED) {
           const error = new Error(signedUpUser.statusMessage);
           dispatch(apiCallError(error));
           dispatch(signupError(error));

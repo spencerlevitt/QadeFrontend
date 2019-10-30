@@ -7,8 +7,8 @@ export default class LinksScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <Onboarding
-                    onSkip={() => this.props.navigation.navigate('Login')}
-                    onDone={() => this.props.navigation.navigate('Login')}
+                    onSkip={() => this.props.navigation.navigate('Home')}
+                    onDone={() => this.props.navigation.navigate('Home')}
                     bottomBarColor={'#fff'}
                     pages={[
                         {
