@@ -1,0 +1,1 @@
+ A) Scan their IDs to confirm they are over 18 (and this will probably be used most often), or B) Click to connect their own Yoti account if they already have one

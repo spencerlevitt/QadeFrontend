@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.yoti.mobile.android.sdk:yoti-button-sdk:1.1.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/yoti-button-sdk-1.1.0.aar/cbc0a3839942049cf11a1b7910cfe322/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/yoti-button-sdk-1.1.0.aar/cbc0a3839942049cf11a1b7910cfe322/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yoti.mobile.android.sdk/yoti-button-sdk/1.1.0/17cb0e77cc1b628b91f01b451273fe4cd22f3c51/yoti-button-sdk-1.1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yoti.mobile.android.sdk/yoti-button-sdk/1.1.0/58ff786a35f70921dc845daa9338d60b9286c652/yoti-button-sdk-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

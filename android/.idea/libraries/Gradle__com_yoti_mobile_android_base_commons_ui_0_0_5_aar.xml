@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.yoti.mobile.android:base-commons-ui:0.0.5@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-base-commons-ui-0.0.5.aar/a3ee8ed4e8e66689b244900273ee20db/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-base-commons-ui-0.0.5.aar/a3ee8ed4e8e66689b244900273ee20db/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yoti.mobile.android/base-commons-ui/0.0.5/ba175f881bdb891eeb8e4cfe2388a23f64b85841/base-commons-ui-0.0.5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yoti.mobile.android/base-commons-ui/0.0.5/fa7131961a844add52cdb5449c4de5611a512693/base-commons-ui-0.0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

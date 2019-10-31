@@ -24,6 +24,7 @@ public class AppConstants {
     List<Constants.EmbeddedResponse> embeddedResponses = new ArrayList<>();
 
     
+        
         // ADD EMBEDDED RESPONSES HERE
         // START EMBEDDED RESPONSES
         embeddedResponses.add(new Constants.EmbeddedResponse("https://exp.host/@ptalus/Qade", "assets://shell-app-manifest.json", "application/json"));

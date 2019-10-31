@@ -9,7 +9,11 @@ import {
   TouchableOpacity,
   TextInput,
   View,
+  Dimensions,
+    Linking,
 } from 'react-native';
+import {WebView} from 'react-native';
+
 import Constants from 'expo-constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,10 +21,32 @@ import { Dropdown } from 'react-native-material-dropdown';
 import Yoti from 'yoti-react-native';
 import stripe from 'tipsi-stripe';
 import { environment } from '../environments/environment.dev';
+import { getUserDetails } from '../api/userApi';
+//import { yoti } from 'yoti';
+//import { RequestBuilder, Payload } from 'yoti';
+import { pemcontent } from '../assets/keys/Qade-access-security.pem';
+import * as WebBrowser  from 'expo-web-browser';
+
+
+const deviceHeight = Dimensions.get('window').height;
+const deviceWidth = Dimensions.get('window').width;
 
 export default class Profile extends React.Component {
+  constructor(props){
+    super(props);
+
+
+    this.state = {
+        userDetails: null
+    }
+  }
+  
   state = {
     game: 'nba2k'
+  }
+  docscan = async () => {
+//    Linking.openURL('https://api.yoti.com/idverify/v1/web/index.html?sessionID=46bffa3d-b9c8-46d3-9bf7-0592338cc704&sessionToken=c30d9832-a1fb-4d7a-987f-4af373dce736');
+      WebBrowser.openBrowserAsync('https://api.yoti.com/idverify/v1/web/index.html?sessionID=2f030d2c-2cfd-48a7-a784-01970f2a3012&sessionToken=d701ff06-143c-4046-afb7-8a2118d4af69');
   }
   paystripe = async () => {
       const token = await stripe.paymentRequestWithCardForm({
@@ -45,24 +71,32 @@ export default class Profile extends React.Component {
 
 
   render() {
+
         stripe.setOptions({
           publishableKey: environment.STRIPE_KEY,
           merchantId: environment.STRIPE_MERCHANTID, // Optional
           androidPayMode: 'test', // Android only
         })
+      getUserDetails().then((details) => console.log(details.data));
+//      this.setState({userDetails: getUserDetails()}, () => console.log(this.state.userDetais));
 
       	const yoticonfig = {
         onClick: (e) => {
-            console.log('Yoti buttin clicked')
+            console.log('Yoti button clicked')
             //The yoti integration doesn't work without this handler
+        },
+        onCallbackSuccess: (u, r) => {
+            console.log('Yoti success callback')
+            console.log(u)
+            console.log(r)
         },
 		sdkId: environment.YOTI_SDKID,
 		scenarioId: environment.YOTI_SCENARIOID,
 		onInitSuccess: () => { window.alert("NEW.Initialised successfully") },
 		onInitError: () => { window.alert("Initialisation failed") },
 		android: {
-          callbackAction: "com.qade.qade.YOTI_CALLBACK",
-          callbackBackendAction: "com.qade.qade.BACKEND_CALLBACK"
+          callbackAction: "com.qade.YOTI_CALLBACK",
+          callbackBackendAction: "com.qade.BACKEND_CALLBACK"
 		},
 		ios: {
 			callbackBackendUrl: "https://some.domain/login"
@@ -77,6 +111,8 @@ export default class Profile extends React.Component {
     }, {
       value: 'MADDEN',
     }];
+
+
     return (
       <ScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]}>
         <View style={{ flexDirection: 'row' }}>
@@ -116,6 +152,11 @@ export default class Profile extends React.Component {
             {/* Remove before prod */}
             <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
                 <Yoti {...yoticonfig} />
+            </View>
+            <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
+              <TouchableOpacity style={{ height: 50, width: '90%', borderRadius: 5, borderColor: '#BCE0FD', borderWidth: 2, justifyContent: 'center' }} onPress={() => this.docscan()}>
+                <Text style={{ color: '#2699FB', fontWeight: 'bold', textAlign: 'center' }}>Doc Scan with Yoti</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={{ flex: 1, marginTop: 20, alignItems: 'center' }}>
