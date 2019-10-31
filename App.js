@@ -14,6 +14,8 @@ import { Toast } from 'react-native-redux-toast';
 let onboard = true;
 const { store, persistor } = configureStore();
 
+console.disableYellowBox = true;
+
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
 
