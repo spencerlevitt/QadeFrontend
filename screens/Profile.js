@@ -131,7 +131,7 @@ class Profile extends React.Component {
 
       this.getOpponentStats({});
     }
-};
+  };
 
   render() {
 

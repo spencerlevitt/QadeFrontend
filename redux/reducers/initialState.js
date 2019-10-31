@@ -26,6 +26,10 @@ export default {
       }
     }
   },
+  finishedGames: {
+    games: [],
+    isFetchingFinishedGames: false
+  },
   friendRequests: {
     pendingFriends: [],
     acceptedFriends: [],

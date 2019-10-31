@@ -14,6 +14,17 @@ export function getScoreConfirmations(userId, csrfToken) {
     .catch(error => handleError(error.response));
 }
 
+export function getFinishedGames(userId, csrfToken) {
+  return Axios.get(`${baseUrl}finished_games/?user=${userId}&status=1`, {}
+  , {
+      headers: {
+        'X-CSRFToken': csrfToken || ''
+      }
+  })
+    .then(response => handleResponse(response))
+    .catch(error => handleError(error.response));
+}
+
 export function acceptScoreConfirmation (gameId, payload, csrfToken) {
   return Axios.patch(`${baseUrl}finished_games/${gameId}/`, payload
   , {

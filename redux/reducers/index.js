@@ -8,6 +8,7 @@ import gameRequests from './gameRequestsReducer';
 import moneyRequest from './moneyRequestReducer';
 import chartsData from './chartsReducer';
 import friendRequests from './friendRequestsReducer';
+import finishedGames from './finishedGamesReducer';
 import friends from './friendsReducer';
 import scoreConfirmation from './scoreConfirmationReducer';
 import apiCallsInProgress from './apiStatusReducer';
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   apiCallsInProgress,
   auth,
   chartsData,
+  finishedGames,
   friendRequests,
   friends,
   gameRequests,
