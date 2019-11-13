@@ -8,10 +8,16 @@ import {
     View,
     Dimensions
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -30,14 +36,13 @@ export default class Submit extends React.Component {
 
         let gamePic
         let gameSS
-
         switch(gameID){
             case 'NBA' : {
                 gamePic = require('../../assets/images/game/nba-header.png')
                 gameSS = require('../../assets/images/game/nba-ss.png')
             }
             break;
-            case 'NFL' : {
+            case 'MAD' : {
                 gamePic = require('../../assets/images/game/nfl-header.png')
                 gameSS = require('../../assets/images/game/nfl-ss.png')
             }
@@ -56,7 +61,7 @@ export default class Submit extends React.Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+                <View style={{ height: 110 + statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: statusBarHeight }}>
                     <View style={{ flex: 0.2 }}>
                     </View>
                     <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' }}>
@@ -68,7 +73,9 @@ export default class Submit extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}>
                     <View style={{ flex: 0.3 }}>
-                        <Image style={{flex: 1,width: Dimensions.get("window").width, height: 200}} resizeMode='cover' source={gamePic} />
+                        <Image 
+                        style={{flex: 1,width: Dimensions.get("window").width, height: 200}} resizeMode='cover' 
+                        source={gamePic} />
                     </View>
                     <View style={{ flex: 0.4, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 12, color: '#888', textAlign: 'center', paddingTop: 20, paddingBottom: 20 }}>Turn your phone sideways and take picture</Text>

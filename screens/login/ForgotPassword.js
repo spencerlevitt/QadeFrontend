@@ -7,9 +7,9 @@ import {
     KeyboardAvoidingView,
     ScrollView
 } from 'react-native';
-import { EvilIcons } from '@expo/vector-icons';
+import { EvilIcons } from 'react-native-vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 
 export default class ForgotPassword extends React.Component {
 
@@ -19,7 +19,7 @@ export default class ForgotPassword extends React.Component {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: Constants.statusBarHeight, justifyContent: 'center' }}>
+            <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: statusBarHeight, justifyContent: 'center' }}>
                 <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
                     <Text style={{ fontSize: 20, textAlign: 'center', color: '#666' }}>
                         Forgot Password

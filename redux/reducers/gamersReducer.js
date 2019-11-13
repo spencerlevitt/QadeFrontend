@@ -1,6 +1,6 @@
 import { FETCH_GAMERS, FETCH_GAMERS_ERROR,
      FETCH_RECENT_GAMERS, FETCH_RECENT_GAMERS_ERROR,
-     SEND_FRIEND_REQUEST, REFRESH_RECENT_GAMERS
+     SEND_FRIEND_REQUEST, REFRESH_RECENT_GAMERS, MY_MATCHES
      } from '../actions/actionTypes';
 
 const initialState = {
@@ -13,6 +13,12 @@ const initialState = {
 
 export function gamersReducer(state=initialState, action) {
     switch (action.type) {
+        case MY_MATCHES: 
+            return {
+                ...state,
+                myMatches: action.payload,
+                error: null
+            }
         case FETCH_GAMERS: 
             return {
                 ...state,
@@ -27,14 +33,14 @@ export function gamersReducer(state=initialState, action) {
         case FETCH_RECENT_GAMERS:
             return {
                 ...state,
-                recentGamers: [...state.recentGamers, ...action.payload.results],
+                recentGamers: [...action.payload.results],
                 fetchRecentGamersErr: null,
                 is_next_gamer: action.payload.next
             }
         case REFRESH_RECENT_GAMERS:
             return {
                 ...state,
-                recentGamers: action.payload.results,
+                //recentGamers: action.payload.results,
                 fetchRecentGamersErr: null,
                 is_next_gamer: action.payload.next
             }

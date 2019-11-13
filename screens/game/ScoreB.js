@@ -8,10 +8,16 @@ import {
     View,
     Dimensions
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -24,7 +30,7 @@ export default class ScoreB extends React.Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+                <View style={{ height: 110 + statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: statusBarHeight }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ color: '#333', fontSize: 20 }}>Score Confirmation</Text>
                     </View>

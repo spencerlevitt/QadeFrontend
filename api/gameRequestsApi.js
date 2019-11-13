@@ -79,10 +79,24 @@ export function submitGameCard(gameCard, csrfToken, payload) {
   })
 }
 
-export function getRecentGamesApi(csrfToken, page) {
-  return Axios.get(`${baseUrl}finished_games/?recent_matches=true&page=${page}`, {}, {
+export function getMyMatchesApi(csrfToken, page, userID) {
+  return Axios.get(`${baseUrl}finished_games/?user=${userID}&recent_matches=true&page=${page}`, {}, {
     headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
   })
     .then(response => handleResponse(response))
+    .catch(error => handleError(error.response));
+}
+
+export function getRecentGamesApi(csrfToken, page, userID) {
+   console.log('user ===>'+userID);
+   console.log(csrfToken);
+   console.log(`${baseUrl}finished_games/?recent_matches=true&user=${userID}`);
+  return Axios.get(`${baseUrl}finished_games/?recent_matches=true&user=${userID}`, {}, {
+    headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
+  })
+    .then( (response)=> {
+      console.log(response);
+      return handleResponse(response)
+    })
     .catch(error => handleError(error.response));
 }

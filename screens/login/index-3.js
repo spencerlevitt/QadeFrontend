@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Alert
 } from "react-native";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from 'react-native-vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 
 export default class SignupForm extends React.Component {

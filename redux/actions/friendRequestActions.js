@@ -152,6 +152,11 @@ export function rejectFriendRequest(requestId, status, csrfToken) {
 }
 
 export function sendAFriendRequest(user_id, eventual_friend_id, csrfToken) {
+  console.log('????????');
+  console.log(user_id);
+  console.log(eventual_friend_id);
+  console.log(csrfToken);
+  console.log('??????')
   return function (dispatch) {
     dispatch(beginApiCall());
     return friendRequestsApi

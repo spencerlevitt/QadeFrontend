@@ -8,11 +8,18 @@ import {
     View,
     Dimensions
 } from 'react-native';
-import { EvilIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as gameRequestsActions from '../../redux/actions/gameRequestsActions';
+import axios from 'axios';
 
 //console.disableYellowBox = true
 
@@ -58,11 +65,13 @@ class CameraPre extends React.Component {
     }
 
     onSubmitGameScore = async () => {
+        const _game = this.props.navigation.getParam('game');
         const game = this.props.navigation.getParam('game').game;
         const photoData = this.props.navigation.getParam('photoData');
-        const { csrfToken } = this.props;
+        const { csrfToken, loggedInUser} = this.props;
         const payload = this.createFormData(photoData);
-
+        const rec_id = loggedInUser.user.pk === _game.senderId ? _game.receiverId : _game.senderId;
+        console.log('====> '+rec_id);
         try {
             const response = await this.props.actions.submitGameCard(game, csrfToken, payload)
                 .catch(error => {
@@ -73,6 +82,12 @@ class CameraPre extends React.Component {
                 if (this.props.hasError) {
                     alert(`Submitting game score failed: ${this.props.errorMessage.message}`);
                 } else {
+                  axios.post(socketBaseUrl+'/socket', {
+                     message:`${loggedInUser.user.first_name} says the challenge is done `,
+                     event:'gameWin',
+                     sender_id: loggedInUser.user.pk,
+                     user_id: rec_id,
+                        });
                     this.props.navigation.navigate('Await');
                 }                
             }

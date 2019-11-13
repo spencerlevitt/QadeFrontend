@@ -9,11 +9,18 @@ import {
     TextInput,
     View,
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import NavigationService from '../../navigation/NavigationService';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
+
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -69,7 +76,7 @@ class EditProfile extends React.Component {
     };
 
     updateProfile = async () => {
-        const data = new FormData();
+      const data = new FormData();
         
         if (this.state.photo.uri.length) {
             data.append('photo', {
@@ -88,9 +95,8 @@ class EditProfile extends React.Component {
         data.append('zip', this.props.userDetails.profile.zip);
         data.append('bio', this.state.bio);
         data.append('console', this.state.console2);
-
         try {
-            const response = await this.props.actions.updateProfile(this.props.userDetails.profile.id, data, this.props.csrfToken);
+            const response = await this.props.actions.updateProfile(this.props.loggedInUser.user.pk, data, this.props.csrfToken);
 
             if (response) {
                 // TODO: show a toast here
@@ -107,7 +113,7 @@ class EditProfile extends React.Component {
                 this.scroll = ref
             }}>
 
-                <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight, marginBottom: 25 }}>
+                <View style={{ height: 110 + statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: statusBarHeight, marginBottom: 25 }}>
 
                     <View style={{ flex: 0.2 }}>
 
@@ -200,7 +206,16 @@ class EditProfile extends React.Component {
                             <TouchableOpacity
                                 style={{ backgroundColor: '#fff', width: '100%', borderRadius: 5, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}
                                 onPress={() => NavigationService.navigate('CameraPro')}>
-                                <Image source={this.props.userDetails.profile.photo_url.length ? {uri: this.props.userDetails.profile.photo_url} : require('../../assets/man.png')} style={{ height: 60, width: 60, borderRadius: 5, margin: 15, marginHorizontal: 30 }} />
+                                <Image 
+                                source={
+                                 this.props.userDetails &&
+                                 this.props.userDetails.profile &&
+                                this.props.userDetails.profile.photo_url &&
+                                this.props.userDetails.profile.photo_url.length ? 
+                                {uri: this.props.userDetails.profile.photo_url} : 
+                                require('../../assets/man.png')} 
+                                style={{ height: 60, width: 60, borderRadius: 5, margin: 15, marginHorizontal: 30 }} 
+                                />
                                 <Text style={{ color: '#333', fontSize: 22, textAlign: 'center' }}>
                                     Change Profile
                             </Text>

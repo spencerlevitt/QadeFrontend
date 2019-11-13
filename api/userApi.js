@@ -29,7 +29,10 @@ export function updateProfile(profileId, profileData, csrfToken) {
     headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
   })
     .then(handleResponse)
-    .catch(error => handleError(error.response));
+    .catch((error) =>{
+       //console.log(error.response);
+       return handleError(error.response)
+    });
 }
 
 export function searchGamers(key, csrfToken) {

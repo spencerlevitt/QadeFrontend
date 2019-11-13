@@ -10,9 +10,18 @@ import {
   View,
 } from 'react-native';
 import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
-import Constants from 'expo-constants';
+import Constants from '../constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
+
+
+
 import { Dropdown } from 'react-native-material-dropdown';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -21,10 +30,12 @@ import * as userActions from '../redux/actions/userActions';
 import * as friendRequestActions from '../redux/actions/friendRequestActions';
 import * as friendsAction from '../redux/actions/friendsAction';
 import * as gameCardStatsActions from '../redux/actions/gameCardStatsActions';
+import * as gamersActions from '../redux/actions/gamersActions';
 import { NavigationEvents } from "react-navigation";
 import { withPolling } from "../redux/polling/withPolling";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Autocomplete from "react-native-autocomplete-input";
+import Axios from 'axios';
 
 
 class Profile extends React.Component {
@@ -34,6 +45,7 @@ class Profile extends React.Component {
     searchedFriendsNames: [],
     query: '',
     opponent: {},
+    results: null,
     hideResults: false
   }
 
@@ -43,8 +55,8 @@ class Profile extends React.Component {
   }
 
   componentWillMount() {
-    const { acceptedFriends, csrfToken, actions, loggedInUser } = this.props;
-    
+    const { acceptedFriends, getRecentGames, csrfToken, actions, loggedInUser } = this.props;
+    console.log(csrfToken);
     if (!acceptedFriends.length) {
       actions.loadAcceptedFriends(csrfToken).catch(error => {
           alert('Loading accepted friends failed' + error);
@@ -52,25 +64,36 @@ class Profile extends React.Component {
     }
 
     actions.loadGameCardStats(loggedInUser.user.pk, this.state.game, csrfToken)
+    .then( (resp)=>{
+       this.setState({results: resp.stats.data});
+    })
       .catch(error => {
         alert('Loading game card stats failed' + error);
       });
+
+   actions.loadMyMatches(csrfToken, 1, null, loggedInUser.user.pk);
   }
 
   onChangeGameType = async (_value, index, data) => {
     const newGame = data[index].game;
-
-    if (this.state.game !== newGame) {
-      this.setState({ game: newGame });
-
+      this.setState({ game: newGame }, ()=>{
       try {
         if (this.state.opponent.profile) {
           this.props.actions.loadOpponentGameCardStats(this.props.loggedInUser.user.pk, this.state.opponent.profile.id, this.state.game, this.props.csrfToken)
+          .then( (resp)=>{
+            console.log('1 ===>');
+            // console.log(resp);
+          })
             .catch(error => {
               alert('Loading game card stats failed' + error);
             });
         } else {
           this.props.actions.loadGameCardStats(this.props.loggedInUser.user.pk, this.state.game, this.props.csrfToken)
+          .then( (resp)=>{
+             console.log('2 ==>');
+             console.log(resp.stats.data);
+             this.setState({results: resp.stats.data});
+          })
             .catch(error => {
               alert('Loading game card stats failed' + error);
             });
@@ -78,18 +101,26 @@ class Profile extends React.Component {
       } catch (e) {
         console.error(e);
       }
-    }
+      });
   };
 
   getOpponentStats = async (opponent) => {
     try {
       if (opponent.profile) {
         this.props.actions.loadOpponentGameCardStats(this.props.loggedInUser.user.pk, opponent.profile.id, this.state.game, this.props.csrfToken)
+          .then( (resp)=>{
+             console.log('3 ==>');
+             console.log(resp.stats.data);
+             this.setState({results: resp.stats && resp.stats.data && resp.stats.data[0]});
+          })
           .catch(error => {
-            alert('Loading game card stats failed' + error);
+            alert('Loading game card stats failed getting opp' + error);
           });
       } else {
         this.props.actions.loadGameCardStats(this.props.loggedInUser.user.pk, this.state.game, this.props.csrfToken)
+          .then( (resp)=>{
+             this.setState({results: resp.stats && resp.stats.data});
+          })
           .catch(error => {
             alert('Loading game card stats failed' + error);
           });
@@ -134,7 +165,6 @@ class Profile extends React.Component {
 };
 
   render() {
-
     const data = [{
       value: 'NBA 2K',
       game: 'nba'
@@ -154,7 +184,7 @@ class Profile extends React.Component {
     const { query } = this.state;
 
     return (
-      <KeyboardAwareScrollView style={[styles.container, { paddingTop: Constants.statusBarHeight, }]} innerRef={ref => {
+      <KeyboardAwareScrollView style={[styles.container, { paddingTop: statusBarHeight, }]} innerRef={ref => {
         this.scroll = ref
       }}>
         <NavigationEvents
@@ -168,7 +198,20 @@ class Profile extends React.Component {
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1 }}></View>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-            <Image source={{ uri: this.state.updatedPhoto ? this.state.updatedPhoto : this.props.userDetails.profile.photo_url.length ? this.props.userDetails.profile.photo_url : '../../assets/man.png' }} style={{ height: 60, width: 60, borderRadius: 5 }} />
+         {this.state.updatedPhoto ? (
+            <Image source={{ uri: this.state.updatedPhoto }} 
+            style={{ height: 60, width: 60, borderRadius: 5 }} />
+         ) : (
+         <Image 
+         source={
+         this.props.userDetails &&
+         this.props.userDetails.profile &&
+         this.props.userDetails.profile.photo_url &&
+         this.props.userDetails.profile.photo_url.length ? 
+         {uri: this.props.userDetails.profile.photo_url} : 
+         require('../assets/blank.png')} 
+         style={{ height: 60, width: 60, borderRadius: 5 }} />
+         )}
           </View>
           <View style={{ flex: 1 }}>
             <TouchableOpacity style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-end', padding: 20 }} onPress={() => this.props.navigation.navigate("Settings")}>
@@ -182,7 +225,10 @@ class Profile extends React.Component {
           </Text>
           <Text style={{ color: '#1E3949', fontSize: 12, textAlign: 'center' }}>
             {!this.props.loading ? consoles[this.props.userDetails.profile.console] : ''} | 
-            {!this.props.loading ? ` ${this.props.userDetails.profile.city}` : ''}
+            {!this.props.loading ? 
+            this.props.userDetails.profile.city !== 'null' ?
+            ` ${this.props.userDetails.profile.city}` : ''
+            : ''}
             <Image source={require('../assets/images/shield.png')} style={{ height: 12, width: 10 }} />
           </Text>
           <View style={{ padding: 15 }}>
@@ -220,7 +266,16 @@ class Profile extends React.Component {
           </View>
 
           <View style={{ paddingLeft: 50, paddingRight: 50, marginTop: 20, marginBottom: 20 }}>
-            <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} onPress={() => this.props.navigation.navigate("Matches")}>
+            <TouchableOpacity style={{ borderBottomColor: '#eee', borderBottomWidth: 1, paddingBottom: 10 }} 
+            onPress={() => {
+               //console.log(this.state.matches);
+               if(this.props.myMatches){
+               this.props.navigation.navigate("Matches", 
+               { 
+                  photo_url: this.props.userDetails.profile.photo_url,
+                  matches: this.props.myMatches.results.reverse() });
+               }
+            }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ fontSize: 16 }}>
                   Match History
@@ -305,25 +360,33 @@ class Profile extends React.Component {
               <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 0.33 }}>
                   <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.loading ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
+                    {!this.props.loading && this.state.results && this.state.results.actual_stat ? 
+                    `${this.state.results.actual_stat.won_games}-${this.state.results.actual_stat.lost_games}` : '0-0'}
                   </Text>
                   <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>Record</Text>
                 </View>
 
                 <View style={{ flex: 0.33 }}>
                   <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>
-                    {!this.props.loading ? this.props.userDetails.statistics.win_percent : '0.0'}%
+                   {!this.props.loading && this.state.results ?   
+                   Number.isNaN((this.state.results.actual_stat.won_games / (this.state.results.actual_stat.won_games+this.state.results.actual_stat.lost_games))) ?
+                   0 : ((this.state.results.actual_stat.won_games / (this.state.results.actual_stat.won_games+this.state.results.actual_stat.lost_games))
+                   * 100).toFixed(1)
+                     : '0.0'}%
                   </Text>
                   <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>Win %</Text>
                 </View>
 
                 <View style={{ flex: 0.33 }}>
                   <Text style={{ color: '#333', fontSize: 26, fontWeight: 'bold', textAlign: 'center' }}>
-                    ${!this.props.loading ? this.props.userDetails.statistics.net_gain : '0.00'}
+                    ${!this.props.loading ?
+                    this.state.results &&  
+                    this.state.results.actual_stat &&
+                    this.state.results.actual_stat.net_gain &&
+                    this.state.results.actual_stat.net_gain : '0.00'}
                   </Text>
                   <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>Net Gain</Text>
                 </View>
-
 
               </View>
 
@@ -337,27 +400,37 @@ class Profile extends React.Component {
                   <Text style={{ color: '#888', fontSize: 12, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>Opponent</Text>
                 </View>
               </View>
-
+      {console.log('********')}
+      {console.log(this.state.results)}
+      {console.log('********')}
               {
-                !this.props.isFetchingStats
-                  ? Object.keys(this.props.gameCardStats.stats.opponent).map((key, idx) =>
+               this.state.results 
+                  //? Object.keys(this.props.gameCardStats.stats.opponent).map((key, idx) =>
+                  ? Object.keys(this.state.results).map((key, idx) =>
+                      key.includes('avg') ? (
                       <View key={idx} style={{ flexDirection: 'row', marginTop: 10 }}>
                         <View style={{ flex: 1 }}>
                           <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                            {this.props.gameCardStats.stats[`avg_${key}`]}
+                            {this.state.results.actual_stat[key] ? this.state.results.actual_stat[key].toFixed(1) : 0}
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
                           <Text style={{ color: '#000', fontSize: 10, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                            Avg{key.split('_').map(word => ` ${word}`)} %
+                            {key.split('_').map(word => ` ${word}`)}
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
                           <Text style={{ color: '#888', fontSize: 13, textTransform: 'uppercase', fontWeight: 'bold', textAlign: 'center' }}>
-                            {this.props.gameCardStats.stats.opponent[key]}
+                            {
+                               this.state.results.opponent &&
+                               this.state.results.opponent[key] ? 
+                               this.state.results.opponent[key].toFixed(1)
+                           : 0
+                           }
                           </Text>
                         </View>
                       </View>
+                      ) : null 
                     )
 
                   : <View>
@@ -378,10 +451,6 @@ class Profile extends React.Component {
   }
 }
 
-Profile.navigationOptions = {
-  header: null,
-};
-
 Profile.propTypes = {
   csrfToken: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
@@ -395,6 +464,7 @@ Profile.propTypes = {
 
 function mapStateToProps(state) {
   return {
+      myMatches: state.gamersReducer.myMatches,
       csrfToken: state.auth.csrfToken,
       loading: state.apiCallsInProgress > 0,
       loggedInUser: state.auth.loggedInUser,
@@ -411,6 +481,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
       actions: {
+          loadMyMatches: bindActionCreators(gamersActions.getMyMatches, dispatch),
           loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
           loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
           loadGameCardStats: bindActionCreators(gameCardStatsActions.loadGameCardStats, dispatch),

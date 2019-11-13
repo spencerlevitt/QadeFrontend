@@ -7,9 +7,16 @@ import {
     KeyboardAvoidingView,
     ScrollView
 } from 'react-native';
-import { EvilIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
+
 import { TextInput } from 'react-native-gesture-handler';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { environment } from '../../environments/environment.dev';
 import { connect } from 'react-redux';
@@ -17,7 +24,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import * as userActions from '../../redux/actions/userActions';
 import * as moneyRequestAction from '../../redux/actions/moneyRequestAction';
-
+import axios from 'axios';
 
 class Transfer extends React.Component {
 
@@ -56,20 +63,35 @@ class Transfer extends React.Component {
             "amount": this.state.amount,
             "type": this.state.selected
         }
-
         try {
-            const response = await this.props.actions.submitMoneyRequest(this.props.csrfToken, payload)
-                .catch(error => {
-                    alert('Transfer request failed: ' + error.message);
-                    this.setState({ submitting: false });
-                });
-
-            if (response && response.moneyRequest && response.moneyRequest.status === 201) {
-                alert(`Your ${response.moneyRequest.data.type === 0 ? 'deposit' : 'withdrawal' } request has been sent.`);
+         axios.post(`http://qade.us-east-2.elasticbeanstalk.com/v1/money_request/`, payload, {
+               headers: this.props.csrfToken ? 
+               { "X-CSRFToken": this.props.csrfToken ,
+                "Content-Type": 'application/json'
+               } : {},
+         }).then( (resp)=>{
+            console.log('done');
+            this.setState({submitting: false}, ()=>{
+                alert(`Your ${payload.type === 0 ? 'deposit' : 'withdrawal' } request has been sent.`);
                 this.props.navigation.navigate('Home');
-            }
+            });
+         })
+         .catch( (error)=> {
+               alert('Transfer request failed: ' + error.message);
+               this.setState({ submitting: false });
+            });
+            // const response = await this.props.actions.submitMoneyRequest(this.props.csrfToken, payload)
+            //     .catch(error => {
+            //         alert('Transfer request failed: ' + error.message);
+            //         this.setState({ submitting: false });
+            //     });
+
+            // if (response && response.moneyRequest && response.moneyRequest.status === 201) {
+               //  alert(`Your ${response.moneyRequest.data.type === 0 ? 'deposit' : 'withdrawal' } request has been sent.`);
+               //  this.props.navigation.navigate('Home');
+            // }
         } catch (e) {
-        
+         
         }
     };
 
@@ -78,7 +100,7 @@ class Transfer extends React.Component {
             <KeyboardAwareScrollView style={{ flex: 1 }} innerRef={ref => {
                 this.scroll = ref
             }}>
-                <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+                <View style={{ height: 110 + statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: statusBarHeight }}>
                     <View style={{ flex: 0.2 }}>
                     </View>
                     <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' }}>

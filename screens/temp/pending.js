@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { EvilIcons } from '@expo/vector-icons';
+
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ScrollView } from 'react-native-gesture-handler';
 import NavigationService from '../../navigation/NavigationService';
@@ -16,6 +16,14 @@ import * as gameRequestsActions from '../../redux/actions/gameRequestsActions';
 import { withPolling } from "../../redux/polling/withPolling";
 import { NavigationEvents } from "react-navigation";
 // import { getLocation } from "../../components/geolocation/location";
+import axios from 'axios';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 
 class Pending extends React.Component {
 
@@ -31,10 +39,9 @@ class Pending extends React.Component {
     };
 
     acceptGameRequest = async (idx, pendingGame) => {
-        const { csrfToken } = this.props;
+        const { csrfToken, loggedInUser } = this.props;
         const { id } = pendingGame;
         const location = this.getLocation();
-        
         try {
             const response = await this.props.actions.acceptGameRequest(id, location, csrfToken);
 
@@ -42,6 +49,12 @@ class Pending extends React.Component {
                 // Update state of game request to show reminder
                 // and reset just incase that same game request
                 // is rejected by sender
+                    axios.post(socketBaseUrl+'/socket', {
+                        message:`${loggedInUser.user.first_name} accepted your challenge `,
+                        event:'gameAccept',
+                        sender_id: loggedInUser.user.pk,
+                        user_id: pendingGame.senderId,
+                     });
                 this.setState({ [idx]: 1 });
                 setTimeout(() => {
                     this.setState({ [idx]: 2 });
@@ -53,14 +66,21 @@ class Pending extends React.Component {
             }
             console.log(error);
         }
+        
     };
 
     rejectGameRequest = async (idx, pendingGame) => {
-        const { csrfToken  } = this.props;
+        const { csrfToken , loggedInUser } = this.props;
         const { id } = pendingGame;
         
         try {
             const response = await this.props.actions.rejectGameRequest(id, csrfToken);
+            axios.post(socketBaseUrl+'/socket', {
+                  message:`${loggedInUser.user.first_name} rejected your challenge `,
+                  event:'gameReject',
+                  sender_id: loggedInUser.user.pk,
+                  user_id: pendingGame.senderId,
+               });
         } catch (error) {
             if (this.props.hasError) {
                 alert(`Reject game request failed: ${this.props.errorMessage.message}`);
@@ -139,7 +159,15 @@ class Pending extends React.Component {
                 return (
                     <View key={idx+'eqqw'} style={{ height: 80, justifyContent: 'center', paddingLeft: 20 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                           
+                           <Image
+                           source={pendingGame &&
+                                pendingGame.photo_url ?
+                                {uri: pendingGame.photo_url.replace('?a', '?alt=media')} : 
+                                require('../../assets/man.png')}
+                            style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} 
+                            />
+                           
                             <View style={{ flex: 0.3 }}>
                                 <Text style={[{ fontSize: RFPercentage(2) }]}>
                                     {`${pendingGame.first_name} ${pendingGame.last_name}`}

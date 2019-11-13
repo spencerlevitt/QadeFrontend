@@ -5,10 +5,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import Animated from 'react-native-reanimated';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import { EvilIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
+
 import NavigationService from '../../navigation/NavigationService'
 
 //There are two examples of how the data should be formatted once it is pulled from the server.
@@ -102,7 +109,7 @@ export default class ProfileTabs extends React.Component {
   //Render function for TabView
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+      <View style={{ flex: 1, backgroundColor: '#faf7f7', paddingTop: statusBarHeight }}>
         <View style={{ backgroundColor: '#faf7f7'}}>
         <TouchableOpacity onPress={() => NavigationService.navigate("Profile")} style={{ paddingLeft: 5, paddingTop: 5, alignItems: 'flex-start'}}>
           <EvilIcons name={'arrow-left'} size={35} color={'#888'} />

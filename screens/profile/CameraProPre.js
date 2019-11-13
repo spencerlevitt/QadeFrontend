@@ -8,7 +8,13 @@ import {
     View,
     Dimensions
 } from 'react-native';
-import { EvilIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -58,7 +64,7 @@ class CameraPre extends React.Component {
         data.append('console', this.props.userDetails.profile.console);
 
         try {
-            const response = await this.props.actions.updateProfile(this.props.userDetails.profile.id, data, this.props.csrfToken);
+            const response = await this.props.actions.updateProfile(this.props.loggedInUser.user.pk, data, this.props.csrfToken);
 
 
             if (response && response.updatedProfile && response.updatedProfile.status === 200) {

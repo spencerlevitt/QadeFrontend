@@ -21,6 +21,12 @@ export function acceptScoreConfirmation (gameId, payload, csrfToken) {
         'X-CSRFToken': csrfToken || ''
       }
   })
-    .then(response => handleResponse(response))
-    .catch(error => handleError(error.response));
+    .then( (response)=>{
+      console.log(response);
+       return handleResponse(response)
+    })
+    .catch( (error)=>{
+      console.log(error);
+      return handleError(error.response);
+    })
 }

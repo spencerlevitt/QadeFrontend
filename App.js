@@ -1,9 +1,9 @@
-import { AppLoading } from 'expo';
-import { Asset } from 'expo-asset';
-import * as Font from 'expo-font';
+// import { AppLoading } from 'expo';
+// import { Asset } from 'expo-asset';
+// import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View, Text, AsyncStorage } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/dist/Ionicons';
 import AppNavigator from './navigation/AppNavigator';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import configureStore from './redux/configureStore.dev';
@@ -12,23 +12,14 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Toast } from 'react-native-redux-toast';
 
 let onboard = true;
+socketBaseUrl = 'http://67.205.134.163';
+statusBarHeight = 60;
 const { store, persistor } = configureStore();
 
 console.disableYellowBox = true;
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
-
-  if (!isLoadingComplete && !props.skipLoadingScreen) {
-    return (
-      <AppLoading
-        startAsync={loadResourcesAsync}
-        onError={handleLoadingError}
-        onFinish={() => handleFinishLoading(setLoadingComplete)}
-      />
-    );
-  } else {
-    if (onboard != false) {
       return (
         <ReduxProvider store={store}>
           <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
@@ -40,22 +31,14 @@ export default function App(props) {
           </PersistGate>
         </ReduxProvider>
       );
-    } else {
-      return (
-        <View style={styles.container}>
-          {/* Implmentation onboard if before login */}
-        </View>
-      );
-    }
-  }
 }
 
 async function checkOnboard() {
   await AsyncStorage.setItem("onboard", false)
 }
 
-async function loadResourcesAsync() {
-  await Promise.all([
+function loadResourcesAsync() {
+  /*await Promise.all([
     Asset.loadAsync([
       require('./assets/images/camera.png'),
       require('./assets/images/drone.png'),
@@ -88,7 +71,7 @@ async function loadResourcesAsync() {
     }),
     onboard = AsyncStorage.getItem("onboard")
 
-  ]);
+  ]);*/
 }
 
 function handleLoadingError(error) {

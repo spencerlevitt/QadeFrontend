@@ -7,10 +7,16 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -23,10 +29,9 @@ export default class Submit extends React.Component {
         const { navigation } = this.props;
         const game = navigation.getParam('game');
         const gameID = navigation.getParam('game').game;
-
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+                <View style={{ height: 110 + statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: statusBarHeight }}>
                     <View style={{ flex: 0.2 }}>
                     </View>
                     <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' }}>
@@ -43,7 +48,10 @@ export default class Submit extends React.Component {
                     <View style={{ flex: 0.1, paddingLeft: 100, paddingRight: 100 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            <Image source={game.photo_url.length ? { uri: game.photo_url } : require('../../assets/man.png')} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
+                            <Image 
+                            source={game.photo_url && game.photo_url.length ? { uri: game.photo_url.replace('?a', '?alt=media') } : require('../../assets/man.png')} 
+                            style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} 
+                            />
                             <View style={{ flex: 1 }}>
                                 <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>
                                     {`${game.first_name} ${game.last_name}`}
@@ -66,7 +74,12 @@ export default class Submit extends React.Component {
                         <Text style={{ fontSize: 22, color: '#333', marginBottom: 20 }}>Did you win?</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Submit", { isUserWon: false, game })}>
+                                <TouchableOpacity 
+                                onPress={() => {
+                                   //alert('');
+                                   this.props.navigation.navigate("Submit", { isUserWon: false, game });
+                                   
+                                   }}>
                                     <EvilIcons name={'close-o'} size={60} color={'#e6685f'} />
                                 </TouchableOpacity>
 

@@ -7,7 +7,7 @@ import {
     ScrollView,
     Linking
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from 'react-native-vector-icons';
 
 export default class SignupEmailConfirmation extends React.Component {
 

@@ -9,16 +9,47 @@ import {
     TextInput,
     View,
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import NavigationService from '../../navigation/NavigationService';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 
-export default function Match() {
+
+import moment from 'moment';
+
+export default function Match( { navigation } ) {
+    const stats = navigation.getParam('stats');
+    var game_key = '';
+    switch(stats.game_played){
+       case 'NHL' :{
+          game_key = 'NHL19MatchData';
+          break;
+       }
+       case 'MAD' :{
+          game_key = 'Madden19MatchData';
+          break;
+       }
+       case 'FIF' :{
+          game_key = 'FIFA19MatchData';
+          break;
+       }
+       case 'NBA' :{
+          game_key = 'NBA19MatchData';
+          break;
+       }
+    }
+
+    var winner = parseInt(stats[game_key].team1_score) > parseInt(stats[game_key].team2_score) ? 'team1_' : 'team2_';
+    var loser = parseInt(stats[game_key].team1_score) > parseInt(stats[game_key].team2_score) ? 'team2_' : 'team1_';
     return (
         <View style={styles.container}>
 
-            <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight, marginBottom: 25 }}>
+            <View style={{ height: 110 + statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: statusBarHeight, marginBottom: 25 }}>
 
                 <View style={{ flex: 0.2 }}>
 
@@ -28,10 +59,10 @@ export default function Match() {
                         Match Facts
                         </Text>
                     <Text style={{ color: '#333', fontSize: 14, textAlign: 'center' }}>
-                        21m | NBA $5.00
+                        {`${moment(stats.created_at).format('MM-DD')  } | ${stats.game_played} `}
                         </Text>
                 </View>
-                <TouchableOpacity onPress={() => NavigationService.navigate("Settings")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => NavigationService.navigate("Matches")} style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
                     <EvilIcons name={'close-o'} size={50} color={'#888'} />
                 </TouchableOpacity>
             </View>
@@ -44,18 +75,29 @@ export default function Match() {
 
 
                     <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-                        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5, marginRight: 15 }} />
+                          <Image 
+                           source={
+                           stats.winner &&
+                           stats.winner.profile &&
+                           stats.winner.profile.photo_url &&
+                           stats.winner.profile.photo_url.length ? 
+                           {uri: stats.winner.profile.photo_url} : require('../../assets/man.png')} 
+                           style={{ height: 40, width: 40, borderRadius: 5, marginRight: 15 }} 
+                           />
                         <View style={{ flex: 1 }}>
-
 
                             <View style={{ flex: 1, flexDirection: 'row' }}>
 
                                 <View style={{ flex: 0.4, flexDirection: 'row', alignItems: 'center' }}>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333', textAlign: 'center' }]}>Chris Wright</Text>
+                                        <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333', textAlign: 'center' }]}>
+                                        {stats.winner.first_name} {stats.winner.last_name}
+                                        </Text>
                                         <View style={{ flexDirection: 'row' }}>
                                             <View style={{ flex: 1 }}>
-                                                <Text style={{ color: '#888', textAlign: 'center' }}>10-5</Text>
+                                                <Text style={{ color: '#888', textAlign: 'center' }}>
+                                                  {stats.winner.statistics.won_games}-{stats.winner.statistics.lost_games}
+                                                </Text>
                                             </View>
                                         </View>
                                     </View>
@@ -69,10 +111,14 @@ export default function Match() {
 
                                 <View style={{ flex: 0.4, flexDirection: 'row', alignItems: 'center' }}>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333', textAlign: 'center' }]}>Chris Wright</Text>
+                                        <Text style={[styles.cardText, { fontSize: RFPercentage(1.5), fontWeight: 'bold', color: '#333', textAlign: 'center' }]}>
+                                        {stats.loser.first_name} {stats.loser.last_name}
+                                        </Text>
                                         <View style={{ flexDirection: 'row' }}>
                                             <View style={{ flex: 1 }}>
-                                                <Text style={{ color: '#888', textAlign: 'center' }}>10-5</Text>
+                                                <Text style={{ color: '#888', textAlign: 'center' }}>
+                                                {stats.loser.statistics.won_games}-{stats.loser.statistics.lost_games}
+                                                </Text>
                                             </View>
                                         </View>
                                     </View>
@@ -81,9 +127,13 @@ export default function Match() {
                         </View>
                     </View>
 
+                  {/*stats && 
+                   stats[game_key] &&
                     <View style={{ flexDirection: 'row', marginVertical: 15 }}>
                         <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
+                            <Text style={{ textAlign: 'center' }}>
+                            {stats}
+                            </Text>
                         </View>
                         <View style={{ flex: 0.6 }}>
                             <Text style={{ textAlign: 'center' }}>Score</Text>
@@ -91,189 +141,35 @@ export default function Match() {
                         <View style={{ flex: 0.2 }}>
                             <Text style={{ textAlign: 'center' }}>111</Text>
                         </View>
-
                     </View>
+                  */}
 
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
+                   {stats && 
+                   stats[game_key]
+                    ? Object.keys(stats[game_key]).map( (key, idx)=>{
+                     if(key.substring(0, 6) !== winner) return null;
+                     return (
+                     <View style={{ flexDirection: 'row', marginVertical: 15 }}>
                         <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
+                            <Text style={{ textAlign: 'center' }}>
+                            {stats[game_key][key]}
+                            </Text>
                         </View>
                         <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Fields Goals</Text>
+                            <Text style={{ textAlign: 'center' }}>
+                            {key.replace(winner, '')}
+                            </Text>
                         </View>
                         <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>3 Points</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Free Throws</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Fast Break Points</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Points in Paint</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Second Chance</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Bench Points</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Assists</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Offensive Rebounds</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Defensive Rebounds</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Steals</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Blocks</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Turnovers</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', marginVertical: 15 }}>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>120</Text>
-                        </View>
-                        <View style={{ flex: 0.6 }}>
-                            <Text style={{ textAlign: 'center' }}>Team Fouls</Text>
-                        </View>
-                        <View style={{ flex: 0.2 }}>
-                            <Text style={{ textAlign: 'center' }}>111</Text>
+                            <Text style={{ textAlign: 'center' }}>
+                            {stats[game_key][key.replace(winner, loser)]}
+                            </Text>
                         </View>
                     </View>
+                       )
+                    }) : null }
+                     
+                  
 
                 </View>
 

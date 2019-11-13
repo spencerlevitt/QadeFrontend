@@ -9,8 +9,7 @@ import {
     View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit'
-import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import * as shape from 'd3-shape'
 import * as scale from 'd3-scale'
 import { connect } from 'react-redux';
@@ -52,7 +51,6 @@ class Chart extends React.Component {
     }
 
     buttons = () => {
-        if (!this.props.isFetchingScoreConfirmations && this.props.scoresAccepted.length) {
             return (
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -102,14 +100,31 @@ class Chart extends React.Component {
                     </View>
                 </View>
             )
-        }
     }
 
     render() {
+       var a = this.props && 
+      !this.props.isFetchingScoreConfirmations &&
+      this.props.chartsData && 
+      this.props.chartsData.data &&
+      !this.props.chartsData.isFetchingChartsData &&
+      this.props.chartsData.data[this.state.period] && 
+      this.props.chartsData.data[this.state.period].win_percent &&
+      this.props.chartsData.data[this.state.period].win_percent.length > 0 ?
+      this.props.chartsData.data[this.state.period].win_percent : [1]; 
+       var b = this.props && 
+      !this.props.isFetchingScoreConfirmations &&
+      this.props.chartsData && 
+      this.props.chartsData.data &&
+      !this.props.chartsData.isFetchingChartsData &&
+      this.props.chartsData.data[this.state.period] && 
+      this.props.chartsData.data[this.state.period].money &&
+      this.props.chartsData.data[this.state.period].money.length > 0 ?
+      this.props.chartsData.data[this.state.period].money : [1]; 
         return (
             <View key={this.props.scoresAccepted+'-view'}>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
+                    <Icon name={'pulse'} size={35} color={'#05a54d'} />
                     <Text style={{ color: '#05a54d', fontWeight: 'bold', marginLeft: 10 }}>
                         +${!this.props.loading && this.props.userDetails ? this.props.userDetails.statistics.earned_today : '0.00'} Today
                     </Text>
@@ -125,54 +140,56 @@ class Chart extends React.Component {
                         <View style={{ height: 8, width: 8, borderRadius: 20, backgroundColor: 'rgba(58, 143, 255, 1)', marginRight: 3 }}>
 
                         </View>
-                        <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>Win %</Text>
+                        <Text style={{ color: '#333', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase' }}>
+                     Win {!this.props.loading && 
+                      this.props.userDetails && 
+                      this.props.userDetails.statistics ? 
+                      ((this.props.userDetails.statistics.won_games / (this.props.userDetails.statistics.won_games+this.props.userDetails.statistics.lost_games)) * 100).toFixed(1)
+                      : '0'}%
+                        </Text>
                     </View>
                 </View>
                 <View style={{
-                    flexDirection: 'row', height: 160,
+                   flexDirection: 'row', height: 160,
                 }}>
-                    <View
-                        key={this.props.scoresAccepted.length+'-empty'}
-                        style={{ 
-                        display: (!this.props.isFetchingScoreConfirmations && !this.props.scoresAccepted.length) ? 'flex' : 'none',
-                        position: 'absolute', zIndex: 1, top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 70}}>
-                        <Text style={{color: '#333', textAlign: 'center', fontSize: 16}}>Play your first match to start tracking progress!</Text>
-                    </View>
 
+                  {a && b ?
+                     (
                     <LineChart
                         key={this.props.scoresAccepted.length+'-line-chart'}
                         data={{
-                            datasets: [{
-                                data: this.props.scoresAccepted.length ? !this.props.chartsData.isFetchingChartsData
-                                    && this.props.chartsData.data[this.state.period]
-                                    ? this.props.chartsData.data[this.state.period].win_percent : [] : this.state.randomData,
-                                color: (opacity = 1) => `rgba(58, 143, 255, 1)`,
-                                strokeWidth: 1.5 // optional
-                            },
+                           //labels: ["1", "T", "W", "TH", "F", "S"],
+                           datasets: [
+                           {
+                              data: a,
+                              color: (opacity = 1) => `rgba(58, 143, 255, 1)`,
+                              strokeWidth: 1.5 // optional
+                           },
                             {
-                                data: this.props.scoresAccepted.length ? !this.props.chartsData.isFetchingChartsData
-                                    && this.props.chartsData.data[this.state.period]
-                                    ? this.props.chartsData.data[this.state.period].money : [] : this.state.randomData2,
-                                color: (opacity = 1) => `rgba(0, 255, 255, 1)`,
-                                strokeWidth: 1.5 // optional
-                            }]
+                               data: b,
+                              color: (opacity = 1) => `rgba(0, 255, 255, 1)`,
+                              strokeWidth: 1.5 // optional
+                           }
+                           ]
                         }}
                         width={Dimensions.get('window').width + 160} // from react-native
-                        height={150}
+                        height={180}
                         chartConfig={{
-                            backgroundColor: "#ffffff00",
-                            backgroundGradientFrom: '#fff',
-                            backgroundGradientTo: '#fff',
-                            strokeWidth: 1,
-                            decimalPlaces: 2, // optional, defaults to 2dp
+                           backgroundColor: "#ffffff00",
+                           backgroundGradientFrom: '#fff',
+                           backgroundGradientTo: '#fff',
+                           strokeWidth: 1,
+                           decimalPlaces: 2, // optional, defaults to 2dp
+                            //color: (opacity = 1) => `rgba(0, 0,0,1)`
                             color: (opacity = 1) => `rgba(0, 255, 255, 1)`
                         }}
-                        withDots={false}
+                        withDots={true}
                         withInnerLines={false}
                         withOuterLines={false}
                         withVerticalLabels={true}
                         withHorizontalLabels={false}
                         bezier
+                        xLabelsOffset={0}
                         style={{
                             position: 'absolute',
                             top: 0,
@@ -182,7 +199,16 @@ class Chart extends React.Component {
                             marginLeft: -55,
                             backgroundColor: 'transparent'
                         }}
-                    />
+                    /> ) : (
+                        <View
+                        key={this.props.scoresAccepted.length+'-empty'}
+                        style={{ 
+                        display: (!this.props.isFetchingScoreConfirmations && !this.props.scoresAccepted.length) ? 'flex' : 'none',
+                        position: 'absolute', zIndex: 1, top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 70}}>
+                        <Text style={{color: '#333', textAlign: 'center', fontSize: 16}}>Play your first match to start tracking progress!</Text>
+                    </View>
+                    )}
+                    {/*
                     <LinearGradient
                         colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
                         style={{
@@ -192,7 +218,7 @@ class Chart extends React.Component {
                             top: 0,
                             height: 160,
                         }}
-                    />
+                    />*/}
                 </View>
                 {this.buttons()}
 

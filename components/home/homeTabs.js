@@ -4,14 +4,16 @@ import {
     Platform,
     StyleSheet,
     Text,
+    ScrollView,
     TouchableOpacity,
     View,
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Swiper from 'react-native-deck-swiper';
 import Animated from 'react-native-reanimated';
-import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
 import Chart from './chart';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -20,7 +22,7 @@ import * as userActions from '../../redux/actions/userActions';
 import * as todaysMatchesActions from '../../redux/actions/todaysMatchesActions';
 import NavigationService from '../../navigation/NavigationService';
 import { withPolling } from "../../redux/polling/withPolling";
-
+var statusBarHeight = 60;
 //empty render (no matches
 
 class Tabs extends React.Component {
@@ -32,7 +34,9 @@ class Tabs extends React.Component {
     render() {
         return (
 
-            <View key={this.props.todaysMatches.length+'-tm-view'} style={{ height: 170, padding: 10 }}>
+            <View key={this.props.todaysMatches.length+'-tm-view'} style={{ 
+               
+               height: 180, padding: 10 }}>
                 <View style={{marginTop: -20}}>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <MaterialCommunityIcons name={'pulse'} size={35} color={'#05a54d'} />
@@ -44,26 +48,47 @@ class Tabs extends React.Component {
                     </View>
                 </View>
 
-                <View style={{ position: 'absolute', display: this.props.todaysMatches.length == false ? 'flex' : 'none', width: '100%', marginLeft: 10, alignItems: 'center', bottom: !this.props.todaysMatches.length ? 10 : -20 }}>
+            {/*
+                <View style={{ position: 'absolute', 
+                //display: this.props.todaysMatches.length == false ? 'flex' : 'none', 
+                width: '100%',
+                marginLeft: 10, alignItems: 'center', 
+                bottom: !this.props.todaysMatches.length ? 10 : -20 }}>
                     <View style={{ width: '30%', flexDirection: 'row' }}>
                         <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 0 ? '#6a8dff' : '#888' }} />
-                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 1 ? '#6a8dff' : '#888' }} />
-                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 2 ? '#6a8dff' : '#888' }} />
-                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 3 ? '#6a8dff' : '#888' }} />
-                        <View style={{ flex: 1, margin: 4, borderBottomWidth: 3, borderBottomColor: this.state.index == 4 ? '#6a8dff' : '#888' }} />
                     </View>
                 </View>
-
+                */}
                 {
                     !this.props.isFetchingTodaysMatches && this.props.todaysMatches.length ? (
-                        <Swiper
-                            cards={!this.props.isFetchingTodaysMatches ? this.props.todaysMatches : []}
-                            keyExtractor={(cardData) => `tm-${cardData.id}-${Math.random()}`}
-                            renderCard={(card) => {
-                                return (
-                                    <View style={styles.card}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
-                                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                     <ScrollView
+                     horizontal={true}
+                     style={{
+                        //flex:1,
+                        
+                        marginTop:30,
+                        //flexDirection:'row',
+                        overflowX:'scroll',
+                        //width: 500 * this.props.todaysMatches.length,
+                        //width:5000000,
+                        height:70
+                     }}
+                     >
+                     {this.props.todaysMatches.map( (card)=>{
+                        return (
+                             <View 
+                             style={styles.card}
+                             >
+                              <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 5 }}>
+                                 <Image 
+                                 source={
+                                 card &&
+                                 card.photo_url &&
+                                card.photo_url.length ? 
+                                {uri: card.photo_url} : 
+                                require('../../assets/man.png')} 
+                                            style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} 
+                                            />
                                             <Text style={styles.cardText}>{`${card.first_name} ${card.last_name}`}</Text>
                                             <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                                 <View style={{ padding: 3, borderRadius: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: '#3b8fff' }}>
@@ -87,12 +112,17 @@ class Tabs extends React.Component {
 
                                                 <View style={{ flex: 0.5, alignItems: 'center' }}>
 
-                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>{card.win_percent}%</Text>
-                                                    <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win's</Text>
+                                                    <Text style={{ color: '#333', fontSize: 17, fontWeight: 'bold' }}>
+                                    
+                                                      {card && 
+                                                      card.won_games ? 
+                                                      ((card.won_games / (card.won_games+card.lost_games)) * 100).toFixed(1)
+                                                      : '0'}%
+                                                    </Text>
+                                                    <Text style={{ color: '#333', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win%</Text>
 
                                                 </View>
                                             </View>
-
 
                                             <View style={{ alignItems: 'flex-end' }}>
                                                 <TouchableOpacity onPress={() => NavigationService.navigate('Confirm', {'game': card})}>
@@ -105,56 +135,19 @@ class Tabs extends React.Component {
                                             </View>
                                         </View>
                                     </View>
-                                )
-                            }}
-                            onSwiped={(index) => { if (index == 5) { this.setState({ index: 0 }) } else { this.setState({ index: this.state.index + 1 }) } }}
-                            onSwipedAll={() => { this.setState({ index: 0 }) }}
-                            cardIndex={0}
-                            stackSeparation={0}
-                            infinite={true}
-                            backgroundColor={'#ffffff00'}
-                            stackSize={3}
-                        //infinite={true}
-                        >
-                        </Swiper>
+                        )
+                     })}
+                        </ScrollView>
                     ) : (
-                            <Swiper
-                                cards={['Nick Morton', 'Brandon Hue', 'Yoseph Msa', 'Elon Musk', 'Porter Proeo']}
-                                renderCard={(card) => {
-                                    return (
-                                        <View style={styles.card}>
-                                            <View style={{ flexDirection: 'row', flex: 1 }}>
-                                                <View style={{ flex: 1, justifyContent: 'center' }}>
-                                                    <View style={{ flex: 1, }}>
-                                                    </View>
-                                                    <View style={{ flex: 1 }}>
-                                                    </View>
-                                                </View>
-                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                    <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>You have no accepted matches.</Text>
-                                                    <Text style={{ fontSize: 18, color: '#888', textAlign: 'center' }}>Challenge a friend to start gaming!</Text>
-                                                </View>
-                                                <View style={{ flex: 1 }}>
-                                                    <View style={{ flex: 1, }}>
-                                                    </View>
-                                                    <View style={{ flex: 1 }}>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    )
-                                }}
-                                onSwiped={() => {}}
-                                //onSwipedAll={() => { this.setState({ index: 0 }) }}
-                                cardIndex={0}
-                                horizontalSwipe={false}
-                                stackSeparation={-20}
-                                verticalSwipe={false}
-                                infinite={false}
-                                backgroundColor={'#ffffff00'}
-                                stackSize={3}>
-                                    
-                            </Swiper>
+                           <View>
+                           <Image
+                           style={{
+                              marginTop:-10,
+                              width:'100%'}}
+                           resizeMode="contain"
+                           source={require('../../assets/HomePlaceholder(600x234).png')}
+                           />
+                           </View>
                         )
                 }
             </View>
@@ -260,6 +253,7 @@ class GameTabs extends React.Component {
     render() {
         return (
             <TabView
+            swipeEnabled={false}
                 navigationState={this.state}
                 renderScene={this._renderScene}
                 renderTabBar={this._renderTabBar}
@@ -314,7 +308,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     contentContainer: {
-        paddingTop: Constants.statusBarHeight,
+        paddingTop: statusBarHeight,
     },
     welcomeContainer: {
         alignItems: 'center',
@@ -405,8 +399,12 @@ const styles = StyleSheet.create({
     },
     card: {
         height: 100,
+        marginTop:5,
         padding: 15,
-        width: '100%',
+        width:350,
+        marginRight:20,
+        marginLeft:10,
+        //width: '100%',
         backgroundColor: '#fff',
         borderRadius: 10,
         elevation: 8,

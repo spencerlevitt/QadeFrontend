@@ -1,22 +1,28 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
-import { MaterialCommunityIcons, AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
-import * as Permissions from 'expo-permissions';
-import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
-import { Camera } from 'expo-camera';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
+//import * as Permissions from 'expo-permissions';
+import ImagePicker from 'react-native-image-picker';
+import Constants from '../../constants';
+import { RNCamera } from 'react-native-camera';
 
 export default class CameraScreen extends React.Component {
     state = {
         hasCameraPermission: null,
-        type: Camera.Constants.Type.back,
+        type: RNCamera.Constants.Type.back,
         pic: null
     };
 
     async componentDidMount() {
-        this.getPermissionAsync();
-        const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({ hasCameraPermission: status === 'granted' });
+      //   this.getPermissionAsync();
+      //   const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      //   this.setState({ hasCameraPermission: status === 'granted' });
     }
 
     getPermissionAsync = async () => {
@@ -29,33 +35,42 @@ export default class CameraScreen extends React.Component {
       }
     
     _pickImage = async () => {
-        const photoData = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
-        });
-        
-        if(photoData.cancelled != true){
-            this.setState({ capturing: false, captures: photoData })
-            this.props.navigation.navigate('CameraProPre', { photoData })
-        }
+      const options = {
+  title: 'Select Image',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+};
+     ImagePicker.launchImageLibrary(options, (photoData) => {
+  // Same code as in above section!
+   this.setState({ capturing: false, captures: photoData })
+   this.props.navigation.navigate('CameraProPre', { photoData })
+});
+      //   const photoData = await ImagePicker.launchImageLibraryAsync({
+      //       mediaTypes: ImagePicker.MediaTypeOptions.All,
+      //       allowsEditing: true,
+      //       aspect: [4, 3],
+      //   });
+      //   if(photoData.cancelled != true){
+      //       this.setState({ capturing: false, captures: photoData })
+      //       this.props.navigation.navigate('CameraProPre', { photoData })
+      //   }
     }    
 
 
     render() {
-        const { hasCameraPermission } = this.state;
-        if (hasCameraPermission === null) {
-            return <View />;
-        } else if (hasCameraPermission === false) {
-            return <Text>No access to camera</Text>;
-        } else {
+      //   const { hasCameraPermission } = this.state;
+      //   if (hasCameraPermission === null) {
+      //       return <View />;
+      //   } else if (hasCameraPermission === false) {
+      //       return <Text>No access to camera</Text>;
+      //   } else {
             cameraRef = React.createRef();
             return (
                 <View style={{ flex: 1 }}>
-                    <Camera style={{ flex: 1 }} type={this.state.type} ref={camera => this.camera = camera}>
+                    <RNCamera style={{ flex: 1 }} type={this.state.type} ref={camera => this.camera = camera}>
                         <View style={{ flex: 1 }}>
-
-
                             <View
                                 style={{
                                     flex: 1,
@@ -70,15 +85,15 @@ export default class CameraScreen extends React.Component {
                                         justifyContent: 'flex-start',
                                         alignItems: 'flex-start',
                                         marginTop: 20,
-                                        paddingTop: Constants.statusBarHeight,
+                                        paddingTop: statusBarHeight,
                                         padding: 20
                                     }}
                                     onPress={() => {
                                         this.setState({
                                             type:
-                                                this.state.type === Camera.Constants.Type.back
-                                                    ? Camera.Constants.Type.front
-                                                    : Camera.Constants.Type.back,
+                                                this.state.type === RNCamera.Constants.Type.back
+                                                    ? RNCamera.Constants.Type.front
+                                                    : RNCamera.Constants.Type.back,
                                         });
                                     }}>
                                     <EvilIcons name={'camera'} size={70} color={'#eee'} />
@@ -91,7 +106,7 @@ export default class CameraScreen extends React.Component {
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                         marginTop: 20,
-                                        paddingTop: Constants.statusBarHeight,
+                                        paddingTop: statusBarHeight,
                                         padding: 20
                                     }}
                                     onPress={this._pickImage}>
@@ -105,7 +120,7 @@ export default class CameraScreen extends React.Component {
                                         justifyContent: 'flex-end',
                                         alignItems: 'flex-end',
                                         marginTop: 20,
-                                        paddingTop: Constants.statusBarHeight,
+                                        paddingTop: statusBarHeight,
                                         padding: 20
                                     }}
                                     onPress={() => this.props.navigation.goBack()}
@@ -139,11 +154,10 @@ export default class CameraScreen extends React.Component {
 
                         </View>
 
-                    </Camera>
+                    </RNCamera>
                 </View>
             );
         }
-    }
 
     handleShortCapture = async () => {
         const photoData = await this.camera.takePictureAsync();

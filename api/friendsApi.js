@@ -12,6 +12,7 @@ export function getAcceptedFriends(csrfToken) {
 }
 
 export function searchFriends(csrfToken, query) {
+   console.log(`${baseUrl}users/?show=friends&search=${query}`);
   return Axios.get(`${baseUrl}users/?show=friends&search=${query}`, {}, {
     headers: csrfToken ? { "X-CSRFToken": csrfToken } : {},
   })

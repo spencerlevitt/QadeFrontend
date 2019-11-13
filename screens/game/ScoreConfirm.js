@@ -7,15 +7,21 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import Constants from 'expo-constants';
-import { EvilIcons } from '@expo/vector-icons';
+import Constants from '../../constants';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as scoreConfirmationActions from "../../redux/actions/scoreConfirmationActions";
 import * as scoreDisputeActions from "../../redux/actions/scoreDisputeActions";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-
+import axios from 'axios';
 //console.disableYellowBox = true
 
 class Submit extends React.Component {
@@ -28,14 +34,18 @@ class Submit extends React.Component {
         const loggedInUser = this.props.navigation.getParam('loggedInUser');
         const csrfToken = this.props.navigation.getParam('csrfToken');
 
-        console.log('loggedInUser', loggedInUser);
+        const rec_id = loggedInUser.user.pk === scoreConfirmation.winner_id ? 
+        scoreConfirmation.loser_id : scoreConfirmation.winner_id;
         
         let payload = {
             status: 1,
             location: this.getLocation(),
             user: loggedInUser.user.pk
         };
-
+      //  console.log(payload);
+       console.log(scoreConfirmation);
+      //  console.log(rec_id);
+      //  console.log(loggedInUser);
         try {
             const response = await this.props.actions.acceptScoreConfirmation(scoreConfirmation.id, loggedInUser.user.email, payload, csrfToken)
                 .catch(error => {
@@ -45,6 +55,12 @@ class Submit extends React.Component {
             console.log('score confirm response', response);
             
             if (response) {
+               axios.post(socketBaseUrl+'/socket', {
+                  message:`${loggedInUser.user.first_name} has confirmed the game results `,
+                  event:'gameConfirm',
+                  sender_id: loggedInUser.user.pk,
+                  user_id: rec_id,
+                     });
                 this.props.navigation.navigate("ScoreA");
             }
         } catch (error) {
@@ -55,6 +71,8 @@ class Submit extends React.Component {
     disputeScore = async (scoreConfirmation) => {
         const loggedInUser = this.props.navigation.getParam('loggedInUser');
         const csrfToken = this.props.navigation.getParam('csrfToken');
+        const rec_id = loggedInUser.user.pk === scoreConfirmation.winner_id ? 
+        scoreConfirmation.loser_id : scoreConfirmation.winner_id;
         const payload = {
             user_id: loggedInUser.user.pk,
             game_id: scoreConfirmation.id,
@@ -66,6 +84,12 @@ class Submit extends React.Component {
             const response = await this.props.actions.disputeScoreConfirmation(payload, loggedInUser.user.email, csrfToken);
             
             if (response) {
+                axios.post(socketBaseUrl+'/socket', {
+                  message:`${loggedInUser.user.first_name} has confirmed the game results `,
+                  event:'gameDispute',
+                  sender_id: loggedInUser.user.pk,
+                  user_id: rec_id,
+                     });
                 this.props.navigation.navigate("ScoreB");
             }
         } catch (error) {
@@ -105,7 +129,7 @@ class Submit extends React.Component {
             id: scoreConfirmation.id,
             opp_first_name: win_or_loss === 'Won' ? scoreConfirmation.loser.first_name : scoreConfirmation.winner.first_name,
             opp_last_name: win_or_loss === 'Won' ? scoreConfirmation.loser.last_name : scoreConfirmation.winner.last_name,
-            opp_photo_url: win_or_loss === 'Won' ? scoreConfirmation.loser.photo_url : scoreConfirmation.winner.photo_url,
+            opp_photo_url: win_or_loss === 'Won' ? scoreConfirmation.loser.profile.photo_url : scoreConfirmation.winner.profile.photo_url,
             wager_amount: scoreConfirmation.wager_amount, 
             status: scoreConfirmation.status,
             game_played: scoreConfirmation.game_played,
@@ -117,7 +141,7 @@ class Submit extends React.Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ height: 110 + Constants.statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+                <View style={{ height: 110 + statusBarHeight, flexDirection: 'row', backgroundColor: '#faf7f7', paddingTop: statusBarHeight }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ color: '#333', fontSize: 20 }}>Score Confirmation</Text>
                     </View>
@@ -129,7 +153,14 @@ class Submit extends React.Component {
                     <View style={{ flex: 0.1, paddingLeft: 100, paddingRight: 100 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} />
+                            <Image 
+                           source={scoreConfirmation &&
+                              scoreConfirmation.opp_photo_url &&
+                              scoreConfirmation.opp_photo_url.length ? 
+                              {uri: scoreConfirmation.opp_photo_url} : 
+                              require('../../assets/man.png')} 
+                            style={{ height: 60, width: 60, borderRadius: 5, marginRight: 15 }} 
+                            />
                             <View style={{ flex: 1 }}>
                                 <Text style={[styles.cardText, { fontSize: RFPercentage(2.4), fontWeight: 'bold', color: '#333' }]}>
                                     {scoreConfirmation.opp_first_name ? `${scoreConfirmation.opp_first_name} ${scoreConfirmation.opp_last_name}` : ''}

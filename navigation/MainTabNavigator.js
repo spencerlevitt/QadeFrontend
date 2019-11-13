@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View, Vibration } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
@@ -49,11 +49,31 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { TextInput } from 'react-native-gesture-handler';
 import { withPolling } from "../redux/polling/withPolling";
+import * as userActions from '../redux/actions/userActions';
+import * as standingsActions from '../redux/actions/standingsActions';
+import * as friendRequestActions from '../redux/actions/friendRequestActions';
+import * as todaysMatchesActions from '../redux/actions/todaysMatchesActions';
+import * as gameRequestsActions from '../redux/actions/gameRequestsActions';
+import * as chartsActions from '../redux/actions/chartsActions';
+import { getGamers, getRecentGames, getMyMatches } from '../redux/actions/gamersActions';
+import OneSignal from 'react-native-onesignal';
+
+import StatusBarAlert from 'react-native-statusbar-alert';
+import SocketIOClient from 'socket.io-client';
+import { getUniqueId, getManufacturer } from 'react-native-device-info';
+import axios from 'axios';
+
+
+
+
 
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
-  default: {},
+  default: {
+     headerMode:'none',
+     header: null
+  },
 });
 
 const HomeStack = createStackNavigator(
@@ -173,11 +193,140 @@ tabNavigator.path = '';
 const AppContainer = createAppContainer(tabNavigator)
 
 class Item extends React.Component {
+  constructor(){
+     super();
+     this.state = {}
+     this.onIds = this.onIds.bind(this);
+  }
+  componentWillUnmount() {
+    OneSignal.removeEventListener('ids', this.onIds);
+}
+onIds(device) {
+   const { loggedInUser } = this.props;
+    axios.post(socketBaseUrl+'/saveUUID', {
+       UUID: device.userId,
+       userID: loggedInUser.user.pk
+    });
+}
+   componentDidMount(){
+    const { csrfToken, actions, loggedInUser } = this.props;
+    OneSignal.init("8e764183-7e1b-4609-8f31-b066eecc3750");
+    OneSignal.inFocusDisplaying(0);
+    OneSignal.addEventListener('ids', this.onIds);
+    
+    this.socket = SocketIOClient(socketBaseUrl);
+    
+    this.socket.on( loggedInUser.user.pk+'!!' , (data)=>{
+           actions.loadTodaysMatches(loggedInUser.user.pk, csrfToken)
+            .catch(error => {
+               // alert('Loading todays matches failed' + error);
+            });
+
+         actions.loadPendingGameRequests(loggedInUser.user.pk, csrfToken)
+         .catch(error => {
+            // alert('Loading pending game requests failed' + error);
+         });
+
+         actions.loadAcceptedGameRequests(loggedInUser.user.pk, csrfToken)
+         .catch(error => {
+            // alert('Loading accepted game requests failed' + error);
+         });
+
+      actions.loadUserDetails(csrfToken)
+      .then( ()=>{
+         //alert('loaded');
+      })
+      .catch(error => {
+       // alert('Loading user failed' + error);
+      });
+    //}
+      actions.loadAcceptedFriends(csrfToken).catch(error => {
+         // alert('Loading accepted friends failed' + error);
+      });
+    
+    // Load all game standings: fifa, nba, nhl, madden 
+    actions.loadStandings(csrfToken, loggedInUser.user.pk);
+
+   actions.loadMyMatches(csrfToken, 1, null, loggedInUser.user.pk);
+   actions.loadChartsData(loggedInUser.user.pk, 7, csrfToken);
+   
+      actions.getRecentGames(csrfToken, 1, null , loggedInUser.user.pk);
+
+
+     })
+    
+    
+    this.socket.on( loggedInUser.user.pk , (data)=>{
+       this.setState({
+          message: data.message,
+          showAlert: true
+       } , ()=>{
+          setTimeout( ()=>{
+             this.setState({showAlert: false}, ()=>{
+           actions.loadTodaysMatches(loggedInUser.user.pk, csrfToken)
+            .catch(error => {
+               // alert('Loading todays matches failed' + error);
+            });
+
+         actions.loadPendingGameRequests(loggedInUser.user.pk, csrfToken)
+         .catch(error => {
+            // alert('Loading pending game requests failed' + error);
+         });
+
+         actions.loadAcceptedGameRequests(loggedInUser.user.pk, csrfToken)
+         .catch(error => {
+            // alert('Loading accepted game requests failed' + error);
+         });
+
+      actions.loadUserDetails(csrfToken)
+      .then( ()=>{
+         //alert('loaded');
+      })
+      .catch(error => {
+       // alert('Loading user failed' + error);
+      });
+    //}
+      actions.loadAcceptedFriends(csrfToken).catch(error => {
+         // alert('Loading accepted friends failed' + error);
+      });
+    
+    // Load all game standings: fifa, nba, nhl, madden 
+   actions.loadStandings(csrfToken, loggedInUser.user.pk);
+   actions.loadMyMatches(csrfToken, 1, null, loggedInUser.user.pk);
+   actions.loadChartsData(loggedInUser.user.pk, 7, csrfToken);
+
+             });
+   
+      actions.getRecentGames(csrfToken, 1, null , loggedInUser.user.pk);
+
+
+
+          }, 3000);
+       })
+     })
+ }
   render() {
     return (
+      <View
+      style={{
+         flex:1
+      }}
+      >
+      <StatusBarAlert
+      visible={this.state.showAlert}
+      message={this.state.message}
+      backgroundColor="#3CC29E"
+      color="white"
+      height={68}
+      style={{
+         padding: 5
+      }}
+      >
+      </StatusBarAlert>
       <AppContainer
         ref={navigatorRef => NavigationService.setTopLevelNavigator(navigatorRef)}
       />
+      </View>
     )
   }
 }
@@ -185,12 +334,29 @@ class Item extends React.Component {
 Item.propTypes = {};
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    acceptedFriends: state.friendRequests.acceptedFriends,
+    userDetails: state.userDetails,
+    csrfToken: state.auth.csrfToken,
+    loggedInUser: state.auth.loggedInUser,
+    loggedIn: state.auth.loggedIn,
+    standings: state.standings,
+    loading: state.apiCallsInProgress > 0
+  };
 }
-
 function mapDispatchToProps(dispatch) {
   return {
-    actions: {}
+    actions: {
+      loadMyMatches: bindActionCreators(getMyMatches, dispatch),
+      getRecentGames: bindActionCreators(getRecentGames, dispatch),
+      loadChartsData: bindActionCreators(chartsActions.loadChartsData, dispatch),
+      loadPendingGameRequests: bindActionCreators(gameRequestsActions.loadPendingGameRequests, dispatch),
+      loadAcceptedGameRequests: bindActionCreators(gameRequestsActions.loadAcceptedGameRequests, dispatch),
+      loadTodaysMatches: bindActionCreators(todaysMatchesActions.loadTodaysMatches, dispatch),
+      loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
+      loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch),
+      loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
+    }
   };
 }
 

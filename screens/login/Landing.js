@@ -7,9 +7,9 @@ import {
     KeyboardAvoidingView,
     ScrollView
 } from 'react-native';
-import { EvilIcons } from '@expo/vector-icons';
+import { EvilIcons } from 'react-native-vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
  
@@ -31,7 +31,7 @@ class Landing extends React.Component {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: Constants.statusBarHeight }}>
+            <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: statusBarHeight }}>
                 <View style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, textAlign: 'center' }}>
                         Welcome

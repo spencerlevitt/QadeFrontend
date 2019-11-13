@@ -4,7 +4,7 @@ import {
     View,
     TouchableOpacity
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../../constants';
 import { connect } from 'react-redux';
 import SignUpForm from './SignupForm';
 import PropTypes from 'prop-types';
@@ -83,7 +83,7 @@ class SignUp extends React.Component {
 
     render() {
         return (
-            <KeyboardAwareScrollView style={{ flex: 1, backgroundColor: '#fff', paddingTop: Constants.statusBarHeight }}
+            <KeyboardAwareScrollView style={{ flex: 1, backgroundColor: '#fff', paddingTop: statusBarHeight }}
                 innerRef={ref => {
                     this.scroll = ref;
                     this.setState({ scroll: this.scroll });

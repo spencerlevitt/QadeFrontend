@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>10</integer>
+	<key>logs</key>
+	<dict>
+		<key>5272C8EB-4316-4C4F-8B62-5A9282A62458</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>5272C8EB-4316-4C4F-8B62-5A9282A62458.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>qade project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>qade</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace qade with scheme qade and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>594237691.30950797</real>
+			<key>timeStoppedRecording</key>
+			<real>594237693.61217904</real>
+			<key>title</key>
+			<string>Building workspace qade with scheme qade and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>5272C8EB-4316-4C4F-8B62-5A9282A62458</string>
+		</dict>
+		<key>86518F4A-06EE-49CE-8F55-F5794C769B7F</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>86518F4A-06EE-49CE-8F55-F5794C769B7F.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>qade project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>qade</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace qade with scheme qade and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>595123594.36542201</real>
+			<key>timeStoppedRecording</key>
+			<real>595123595.19291401</real>
+			<key>title</key>
+			<string>Building workspace qade with scheme qade and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>86518F4A-06EE-49CE-8F55-F5794C769B7F</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

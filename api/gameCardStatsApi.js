@@ -7,6 +7,7 @@ const baseUrl = environment.API_URL;
 // get all the stats later it will retrieve
 // the logged in user stats
 export function getStatsWithOpponent(userId, gameCard, csrfToken) {
+console.log(`${baseUrl}${gameCard}/${userId}/`);
   return Axios.get(`${baseUrl}${gameCard}/${userId}/`, {
     headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
   })
@@ -15,7 +16,9 @@ export function getStatsWithOpponent(userId, gameCard, csrfToken) {
 }
 
 export function getStatsForOpponent(userId, opponentId, gameCard, csrfToken) {
-  return Axios.get(`${baseUrl}${gameCard}/${userId}/?user=${opponentId}`, {
+   console.log('*****');
+   console.log(`${baseUrl}${gameCard}?user=${userId}/&opponent=${opponentId}`);
+  return Axios.get(`${baseUrl}${gameCard}?user=${userId}&opponent=${opponentId}`, {
     headers: csrfToken ? {"X-CSRFToken": csrfToken} : {},
   })
     .then(handleResponse)

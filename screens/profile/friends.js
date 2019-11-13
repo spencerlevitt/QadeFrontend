@@ -6,7 +6,7 @@ import {
     TextInput,
     View,
 } from 'react-native';
-import { AntDesign, EvilIcons } from '@expo/vector-icons';
+import { AntDesign, EvilIcons } from 'react-native-vector-icons';
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ScrollView } from 'react-native-gesture-handler';
 import NavigationService from '../../navigation/NavigationService';
@@ -45,8 +45,13 @@ class Friends extends React.Component {
                         this.props.acceptedFriends.map((friend, idx) => 
                             <View key={idx} style={{ justifyContent: 'center', paddingHorizontal: 40, marginVertical: 15 }}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:  'center' }}>
-
-                                    <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                     <Image 
+                                source={
+                                 friend && 
+                                 friend.photo_url ?
+                                {uri: friend.photo_url} : require('../../assets/blank.png')} 
+                                 style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} 
+                                />
                                     <View style={{ flex: 0.5 }}>
                                         <Text style={[{ fontSize: 16 }]}>
                                         {`${friend.first_name} ${friend.last_name}`}
@@ -63,7 +68,9 @@ class Friends extends React.Component {
                                                 <Text style={{ textTransform: 'uppercase', fontSize: 10, textAlign: 'center' }}>record</Text>
                                             </View>
                                             <View style={{ flex: 1 }}>
-                                                <Text style={{ fontSize: 16, textAlign: 'center' }}>{friend.win_percent}</Text>
+                                                <Text style={{ fontSize: 16, textAlign: 'center' }}>
+                                             {friend.won_games === 0 ? 0 : ( (friend.won_games / (friend.won_games+friend.lost_games))  * 100).toFixed(1)   }%
+                                                </Text>
                                                 <Text style={{ textTransform: 'uppercase', fontSize: 10, textAlign: 'center' }}>win %</Text>
                                             </View>
                                         </View>

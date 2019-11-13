@@ -11,8 +11,13 @@ import {
   View,
   Modal
 } from 'react-native';
-import Constants from 'expo-constants';
-import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import Constants from '../constants';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 
 import HomeTabs from '../components/home/homeTabs'
 import GameTabs from '../components/home/gameTabs'
@@ -26,6 +31,7 @@ import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
 import { withPolling } from "../redux/polling/withPolling";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Autocomplete from "react-native-autocomplete-input";
+import * as todaysMatchesActions from '../redux/actions/todaysMatchesActions';
 
 /*
 DEV
@@ -42,9 +48,7 @@ DEV
 @C - done with style migration
 @B - Made progress checker under Swiper
 
-
 */
-
 class HomeScreen extends React.Component {
 
   state = {
@@ -58,15 +62,17 @@ class HomeScreen extends React.Component {
     searchZIndex: 0,
     hideResults: true
   }
-
   componentWillMount() {
     const { userDetails, loggedInUser, csrfToken, acceptedFriends ,actions } = this.props;
-    
-    if (!userDetails.profile && loggedInUser.user.email) {
-      actions.loadUserDetails(csrfToken).catch(error => {
+    //if (!userDetails.profile && loggedInUser.user.email) {
+      actions.loadUserDetails(csrfToken)
+      .then( ()=>{
+         //alert('loaded');
+      })
+      .catch(error => {
         alert('Loading user failed' + error);
       });
-    }
+    //}
 
     if (!acceptedFriends.length) {
       actions.loadAcceptedFriends(csrfToken).catch(error => {
@@ -82,10 +88,12 @@ class HomeScreen extends React.Component {
         ...this.props.standings
       }
     });
-
+ 
     // Load all game standings: fifa, nba, nhl, madden 
-    actions.loadStandings(csrfToken);
+    actions.loadStandings(csrfToken, loggedInUser.user.pk);
   }
+
+
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
@@ -131,10 +139,10 @@ class HomeScreen extends React.Component {
   };
 
   render() {
+     const { csrfToken, actions, loggedInUser } = this.props;
     const { query } = this.state;
-
     return (
-      <View style={[styles.container, { paddingTop: Constants.statusBarHeight }]}>
+      <View style={[styles.container, { paddingTop: statusBarHeight }]}>
 
         <Modal
           animationType="slide"
@@ -198,7 +206,7 @@ class HomeScreen extends React.Component {
             </View>
           </View>
 
-        </View>
+        </View>      
 
         <KeyboardAwareScrollView innerRef={ref => {
           this.scroll = ref
@@ -212,6 +220,7 @@ class HomeScreen extends React.Component {
           {/* Tabs for Progress and Matches */}
           <HomeTabs />
 
+         {console.log(this.props.userDetails)}
           {/* Stat Center */}
           <View style={{ backgroundColor: '#f8f8f8', marginTop: 10 }}>
             <View style={{
@@ -225,21 +234,33 @@ class HomeScreen extends React.Component {
                 <View style={{ flex: 1, flexDirection: 'row' }}>
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` : '0-0'}
+                      {!this.props.loading && 
+                      this.props.userDetails && 
+                      this.props.userDetails.statistics ? 
+                      `${this.props.userDetails.statistics.won_games}-${this.props.userDetails.statistics.lost_games}` 
+                      : '0-0'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Record</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      {!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? this.props.userDetails.statistics.win_percent : '0'}%
+                      {!this.props.loading && 
+                      this.props.userDetails && 
+                      this.props.userDetails.statistics ? 
+                      ((this.props.userDetails.statistics.won_games / (this.props.userDetails.statistics.won_games+this.props.userDetails.statistics.lost_games)) * 100).toFixed(1)
+                      : '0'}%
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Win %</Text>
                   </View>
 
                   <View style={{ flex: 0.3 }}>
                     <Text style={{ color: '#333', fontSize: 22, fontWeight: 'bold' }}>
-                      ${!this.props.loading && this.props.userDetails && this.props.userDetails.statistics ? this.props.userDetails.statistics.net_gain : '0.00'}
+                      ${!this.props.loading && 
+                      this.props.userDetails && 
+                      this.props.userDetails.statistics ? 
+                      this.props.userDetails.statistics.net_gain : 
+                      '0.00'}
                     </Text>
                     <Text style={{ color: '#888', fontSize: 8, textTransform: 'uppercase', fontWeight: 'bold' }}>Net Gain</Text>
                   </View>
@@ -317,7 +338,11 @@ class HomeScreen extends React.Component {
             </Animated.View>
 
 
-            <GameTabs standings={this.state.searchedStandings} friends={this.state.searchedFriends} />
+            <GameTabs 
+            user={this.props.userDetails} 
+            standings={this.state.searchedStandings} 
+            friends={this.state.searchedFriends} 
+            />
 
 
           </View>
@@ -346,11 +371,6 @@ class HomeScreen extends React.Component {
   };
 }
 
-
-HomeScreen.navigationOptions = {
-  header: null,
-};
-
 HomeScreen.propTypes = {
   acceptedFriends: PropTypes.array.isRequired,
   loggedInUser: PropTypes.object.isRequired,
@@ -377,6 +397,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
+      loadTodaysMatches: bindActionCreators(todaysMatchesActions.loadTodaysMatches, dispatch),
       loadUserDetails: bindActionCreators(userActions.loadUserDetails, dispatch),
       loadStandings: bindActionCreators(standingsActions.loadStandings, dispatch),
       loadAcceptedFriends: bindActionCreators(friendRequestActions.loadAcceptedFriends, dispatch),
@@ -384,7 +405,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withPolling([userActions.loadUserDetails, standingsActions.loadStandings], 100000)(connect(mapStateToProps, mapDispatchToProps)(HomeScreen));
+export default withPolling([userActions.loadUserDetails, todaysMatchesActions.loadTodaysMatches,  standingsActions.loadStandings], 100000)(connect(mapStateToProps, mapDispatchToProps)(HomeScreen));
 
 const styles = StyleSheet.create({
   container: {

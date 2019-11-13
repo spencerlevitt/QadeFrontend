@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component,  useState, useEffect } from 'react';
 import {
   Platform,
   ActivityIndicator,
@@ -12,33 +12,58 @@ import {
   Alert,
   SafeAreaView
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../constants';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { EvilIcons, AntDesign, Feather, FontAwesome, Entypo, MaterialCommunityIcons } from 'react-native-vector-icons';
 import { connect } from 'react-redux';
 import { getGamers, getRecentGames } from '../redux/actions/gamersActions';
 import { sendAFriendRequest } from '../redux/actions/friendRequestActions';
+import axios from 'axios';
 
 function gamersComponent(userInfo, props) {
-  const { userId, csrfToken, sendAFriendRequest, navigation } = props;
-  
+  const { userId, csrfToken, loggedInUser, sendAFriendRequest, navigation } = props;
+  if(userId === userInfo.profile.id){
+     return null;
+  }
   return (
     <View style={{flexDirection: 'row', marginTop: 20}}>
       <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
-        <Image source={{ uri: userInfo.photo_url || 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5}} />
+        <Image 
+      source={
+      userInfo.profile &&
+      userInfo.profile.photo_url &&
+      userInfo.profile.photo_url.length ? 
+      {uri: userInfo.profile.photo_url.replace('?a', '?alt=media')} : require('../assets/man.png')} 
+           style={{ height: 40, width: 40, borderRadius: 5}} 
+           />
       </View>
       <View style={styles.gameInfo}>
         <View>
           <Text style={{color: '#353637', fontSize: 14, marginBottom: 7, fontWeight: 'bold'}}>{userInfo.first_name} {userInfo.last_name && userInfo.last_name}</Text>
-          <Text style={styles.boldText}>Lifetime against 12-4</Text>
+          <Text style={styles.boldText}>Lifetime against 0-0</Text>
         </View>
         {
           userInfo.is_friend === true ?
-          (<TouchableOpacity onPress={() => navigation.navigate('Challenge')} style={{ backgroundColor: '#3A8FFF', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Challenge'.toUpperCase()}</Text></TouchableOpacity>) :
+          (<TouchableOpacity 
+          onPress={() =>{
+            navigation.navigate('Challenge')
+          }}
+           style={{ backgroundColor: '#3A8FFF', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Challenge'.toUpperCase()}</Text></TouchableOpacity>) :
           userInfo.is_friend === false ?
-          (<TouchableOpacity onPress={() => sendAFriendRequest(userId, userInfo.profile.id, csrfToken)} style={{ backgroundColor: '#000', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Add Friend'.toUpperCase()}</Text></TouchableOpacity>)
+          (<TouchableOpacity 
+          onPress={() => {
+            sendAFriendRequest(userId, userInfo.profile.id, csrfToken)
+              axios.post(socketBaseUrl+'/socket', {
+               message:`${loggedInUser.user.first_name} sent you a friend request`,
+               event:'friendReq',
+               sender_id: loggedInUser.user.pk,
+               user_id: userInfo.profile.id
+            });
+         }} 
+          style={{ backgroundColor: '#000', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'Add Friend'.toUpperCase()}</Text></TouchableOpacity>)
           :
-          (<TouchableOpacity style={{ backgroundColor: '#43a24e', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'friend request sent'.toUpperCase()}</Text></TouchableOpacity>)
+          (<TouchableOpacity 
+          style={{ backgroundColor: '#43a24e', paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, marginRight: 10 }}><Text style={styles.clickableText}>{'friend request sent'.toUpperCase()}</Text></TouchableOpacity>)
         }
       </View>
     </View>
@@ -47,11 +72,19 @@ function gamersComponent(userInfo, props) {
 
 function renderMatches(gameInfo) {
   const { first_name, last_name } = gameInfo.winner;
-  
+  //console.log(gameInfo.winner.profile);
   return (
     <View style={{ marginTop: 40, flexDirection: 'row' }}>
       <View style={{ flex: 0.5, alignItems: 'center' }}>
-        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 40, width: 40, borderRadius: 5}} />
+         <Image 
+      source={
+      gameInfo && 
+      gameInfo.winner &&
+      gameInfo.winner.profile &&
+      gameInfo.winner.profile.photo_url ?
+      {uri: gameInfo.winner.profile.photo_url.replace('?a', '?alt=media')} : require('../assets/blank.png')} 
+      style={{ height: 40, width: 40, borderRadius: 5}} 
+      />
       </View>
       <View style={{ flex: 2, paddingBottom: 15, borderBottomColor: '#eee', borderBottomWidth: 1 }}>
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
@@ -101,12 +134,14 @@ function Recent(props) {
   const [page, setPage] = useState(2);
   const [fetching, setFetching] = useState(false)
   const [refreshing, setRefreshing] = useState(false);
-  const { gamers, getRecentGames, csrfToken, recentGamers, recentGamersError, is_next_gamer } = props
- 
+  const { gamers, loggedInUser, getRecentGames, csrfToken, recentGamers, recentGamersError, is_next_gamer } = props
+
   useEffect( async () => { 
     setFetching(true)
-   await getRecentGames(csrfToken, 1) 
+    console.log('============ >>>>>');
+   getRecentGames(csrfToken, 1, null, loggedInUser.user.pk);
     updatePage();
+
     setFetching(false)
   }, []); 
 
@@ -119,7 +154,9 @@ function Recent(props) {
   async function handleMore() {
     setFetching(true)
     if (is_next_gamer) {
-      await getRecentGames(csrfToken, page)
+      await getRecentGames(csrfToken, page, null, loggedInUser.user.pk).then( (resp)=>{
+         console.log('calling ====>');
+      })
       updatePage();
     }
     setFetching(false)
@@ -151,11 +188,14 @@ function Recent(props) {
     }
   }
 
-  async function refresh() {
+  function refresh() {
     setRefreshing(true)
-    await getRecentGames(csrfToken, 1, 'refresh');
-    setPage(2);
+    getRecentGames(csrfToken, 1, 'refresh', loggedInUser.user.pk).then( (resp)=>{
+   
     setRefreshing(false)
+    })
+    setPage(2);
+   
   }
 
   useEffect( () => {
@@ -163,16 +203,17 @@ function Recent(props) {
       setComponentView('recent')
     }
   })
-
   return (
     <View style={styles.container}>
-      <View style={{ marginTop: Constants.statusBarHeight, padding: 20 }}>
+      <View style={{ marginTop: statusBarHeight, padding: 20 }}>
         <View style={[styles.shadow, { borderRadius: 20, backgroundColor: '#fff', flexDirection: 'row' }]}>
           <View style={{ width: 60, paddingTop: 10, paddingBottom: 10 }}>
             <View style={{ width: 60, borderRightWidth: 1, borderRightColor: '#eee', justifyContent: 'center', alignItems: 'center' }}>
               <Image style={{ height: 20, width: 20, margin: 10 }} source={require('../assets/images/menu.png')} />
             </View>
           </View>
+
+      {console.log(recentGamers)}
 
           <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 15 }}>
             <TextInput onChangeText={text => searchText(text)} style={{ color: '#78849E', fontSize: 16 }} placeholderTextColor={'#78849E'} placeholder={'Search Gamers'}>
@@ -189,7 +230,7 @@ function Recent(props) {
           Recent Matches
           </Text>
           {
-            recentGamers.length ?
+            recentGamers ?
               (
                 <View style={{ flex: 1 }}>
                   <FlatList 
@@ -199,7 +240,7 @@ function Recent(props) {
                     keyExtractor={item => item.id + ""}
                     onEndReached={handleMore}
                     onEndReachedThreshold={0.5}
-                    keyExtractor={item => item.id + ""} 
+                    keyExtractor={item => item.id + Math.random()} 
                     refreshing={refreshing}
                     onRefresh={refresh}
                     ListFooterComponent={renderFooter}
@@ -229,15 +270,12 @@ function Recent(props) {
 const mapStateToProps = ({ gamersReducer, auth, userDetails }) => ({
   csrfToken: auth.csrfToken,
   gamers: gamersReducer.gamers,
+  loggedInUser: auth.loggedInUser,
   recentGamers: gamersReducer.recentGamers,
   userId: userDetails.statistics.id,
   recentGamersError: gamersReducer.fetchRecentGamersErr,
   is_next_gamer: gamersReducer.is_next_gamer
 })
-
-Recent.navigationOptions = {
-  header: null,
-};
 
 export default connect(mapStateToProps, { getGamers, sendAFriendRequest, getRecentGames })(Recent);
 

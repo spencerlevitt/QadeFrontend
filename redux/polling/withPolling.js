@@ -22,14 +22,15 @@ export const withPolling = (pollingAction=null, duration = 30000, loadScoreConfi
                         if(response && response.scoreConfirmations && response.scoreConfirmations.data) {
                             const scoreConfirmations = response.scoreConfirmations.data;
                             scoreConfirmations.results.map((scoreConfirmation) => {                                
+                               
                                 if (scoreConfirmation.status === 0 
                                         && scoreConfirmation.sender_id !== loggedInUser.user.pk
                                         && (scoreConfirmation.winner.email === loggedInUser.user.email
                                         || scoreConfirmation.loser.email === loggedInUser.user.email)) {
-                                            NavigationService.navigate('ScoreConfirm', { scoreConfirmation, loggedInUser, csrfToken });
+                            
+                                 NavigationService.navigate('ScoreConfirm', { scoreConfirmation, loggedInUser, csrfToken });
                                 }
                             });
-
                         } else {
                             console.log('No pending score confirmations');
                         }

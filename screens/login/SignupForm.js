@@ -5,7 +5,13 @@ import {
   TouchableOpacity,
   Alert
 } from "react-native";
-import { FontAwesome } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { TextInput } from 'react-native-gesture-handler';
 
 export default class SignupForm extends React.Component {

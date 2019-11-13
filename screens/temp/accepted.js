@@ -5,7 +5,13 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ScrollView } from 'react-native-gesture-handler';
 import NavigationService from '../../navigation/NavigationService';
@@ -72,8 +78,13 @@ class Accepted extends React.Component {
                             this.props.acceptedGameRequests.map((acceptedGame, idx) =>
                                 <View key={idx} style={{ height: 80, justifyContent: 'center', paddingLeft: 20 }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
-                                        <Image source={{ uri: 'https://media.istockphoto.com/photos/portrait-of-a-cheerful-young-man-picture-id640021202?k=6&m=640021202&s=612x612&w=0&h=M7WeXoVNTMI6bT404CHStTAWy_2Z_3rPtAghUXwn2rE=' }} style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} />
+                                       <Image
+                                       source={acceptedGame &&
+                                          acceptedGame.photo_url ?
+                                          {uri: acceptedGame.photo_url.replace('?a', '?alt=media')} : 
+                                          require('../../assets/man.png')}
+                                       style={{ height: 35, width: 35, borderRadius: 5, marginRight: 15 }} 
+                                       />
                                         <View style={{ flex: 0.3 }}>
                                             <Text style={[{ fontSize: RFPercentage(2) }]}>
                                                 {`${acceptedGame.first_name} ${acceptedGame.last_name}`}

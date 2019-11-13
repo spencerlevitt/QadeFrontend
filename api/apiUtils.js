@@ -10,7 +10,6 @@ export async function handleResponse(response, responseCategory = null, category
     if(responseCategory && categoryValue) {
       response[responseCategory] = categoryValue;
     }
-
     return response;
   } else if (response.status === HttpStatus.BAD_REQUEST) {
     throw new Error(response);

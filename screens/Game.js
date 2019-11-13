@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from '../constants';
 import Animated from 'react-native-reanimated';
 import { TabView, SceneMap } from 'react-native-tab-view';
 
@@ -98,7 +98,7 @@ export default class ProfileScreen extends React.Component {
   //Render function for TabView
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: '#faf7f7', paddingTop: Constants.statusBarHeight }}>
+      <View style={{ flex: 1, backgroundColor: '#faf7f7', paddingTop: statusBarHeight }}>
         <TabView
           navigationState={this.state}
           renderScene={this._renderScene}

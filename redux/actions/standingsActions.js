@@ -15,14 +15,14 @@ export function loadStandingsError(loadStandingsError) {
   return { type: types.LOAD_STANDINGS_ERROR, loadStandingsError };
 }
 
-export function loadStandings(csrfToken) {
+export function loadStandings(csrfToken, userID) {
   return function (dispatch) {
     dispatch(beginApiCall());
     dispatch(loadStandingsStart());
     const games = ['nba', 'fifa', 'madden', 'nhl'];
     const standings = games.map(game => {
       standingsApi
-        .getStandings(game, csrfToken)
+        .getStandings(game, csrfToken, userID)
         .then(standings => {
           if (standings.status !== HttpStatus.OK) {
             const error = new Error(standings.statusMessage);

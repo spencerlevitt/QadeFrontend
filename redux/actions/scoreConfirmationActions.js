@@ -54,6 +54,12 @@ export function acceptScoreConfirmationsError(acceptScoreError) {
 }
 
 export function acceptScoreConfirmation(gameId, userEmail, payload, csrfToken) {
+   console.log('****');
+   console.log(gameId);
+   console.log(payload);
+   console.log(csrfToken);
+   console.log('****');
+
   return function (dispatch) {
     dispatch(beginApiCall());
     dispatch(acceptScoreConfirmationsStart());

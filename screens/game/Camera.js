@@ -1,33 +1,33 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
-import { MaterialCommunityIcons, AntDesign, EvilIcons } from '@expo/vector-icons';
-import * as Permissions from 'expo-permissions';
-import Constants from 'expo-constants';
-import { Camera } from 'expo-camera';
+import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import Feather from 'react-native-vector-icons/dist/Feather';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
+
+//import * as Permissions from 'expo-permissions';
+import Constants from '../../constants';
+import { RNCamera } from 'react-native-camera';
 
 export default class CameraScreen extends React.Component {
     state = {
         hasCameraPermission: null,
-        type: Camera.Constants.Type.back,
+        type: RNCamera.Constants.Type.back,
         pic: null
     };
 
     async componentDidMount() {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({ hasCameraPermission: status === 'granted' });
+      //   const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      //   this.setState({ hasCameraPermission: status === 'granted' });
     }
 
     render() {
-        const { hasCameraPermission } = this.state;
-        if (hasCameraPermission === null) {
-            return <View />;
-        } else if (hasCameraPermission === false) {
-            return <Text>No access to camera</Text>;
-        } else {
             cameraRef = React.createRef();
             return (
                 <View style={{ flex: 1 }}>
-                    <Camera style={{ flex: 1 }} type={this.state.type} ref={camera => this.camera = camera}>
+                    <RNCamera style={{ flex: 1 }} type={this.state.type} ref={camera => this.camera = camera}>
                         <View style={{ flex: 1 }}>
 
 
@@ -44,7 +44,7 @@ export default class CameraScreen extends React.Component {
                                         justifyContent: 'flex-end',
                                         alignItems: 'flex-end',
                                         marginTop: 20,
-                                        paddingTop: Constants.statusBarHeight,
+                                        paddingTop: statusBarHeight,
                                         padding: 20
                                     }}
                                     onPress={() => this.props.navigation.goBack()}
@@ -76,11 +76,9 @@ export default class CameraScreen extends React.Component {
                             </View>
                             <Image source={{ uri: this.state.photoData }} />
                         </View>
-
-                    </Camera>
+                    </RNCamera>
                 </View>
             );
-        }
     }
 
     handleShortCapture = async () => {
